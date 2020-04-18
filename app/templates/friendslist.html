@@ -1,0 +1,29 @@
+{% extends "base.html"%}
+{% block main %}
+<div id="profiles">
+    <h1 class="profile">Profiles</h1>
+ 
+      {% for friend in friends%}
+      <form action="{{ url_for('link to a specific profile') }}" method="get">
+          <div class="cardbod" id="card-lay" >
+              <ul class="card-lay">
+                  <li><img class="images" src="{{url_for('static',filename=user.photo)}}" alt="image" ></li>
+                  <div class="card-body" >
+                      <li><h4 class="card-title">{{friend.fname}}  {{friend.lname}}</h4></li>
+                      <li class="card-text"><img class="smallimg" src="/static/images/location.png"> {{user.location}}</li>
+                      <li class="card-text"> <img class="smallimg" src="/static/images/gender.png">{{friend.status}}</li>
+                  </div>
+                  <li id="col3">
+                      <button class="btn greenbtn"type="submit">View Profile</button>
+                  </li>
+              </ul>
+              
+          </div>
+      
+       </form>
+          
+         
+      {% endfor %}
+</div>
+ 
+{% endblock %}

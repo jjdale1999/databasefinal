@@ -1,0 +1,114 @@
+drop database if exists myBook;
+create database myBook;
+use  myBook;
+
+create table myBookUser(
+    userId varchar(20),
+    firstName varchar(20),
+    lastName varchar(20),
+    email varchar(50),
+    pword varchar(64),
+   
+    phone varchar(15),
+    primary key(userId)
+
+);
+
+create table uProfile(
+    userId varchar(20),
+    profileNo varchar(20),
+    profilePic LONGBLOB,
+    profileSummary varchar(255),
+    stateLiving varchar(30),
+    countryLiving varchar(30),
+    primary key (userId,profileNo),
+    foreign key(userId) references myBookUser(userId) on delete cascade
+
+
+
+);
+
+create table post(
+    postId varchar(20),
+    userId varchar(20),
+    postDate date,
+    postTime time,
+    primary key(postId,userId),
+    foreign key(userId) references myBookUser(userId)
+
+    /*Set a value for that null to PreviousUser later*/
+
+
+
+);
+
+create table text(
+    postId varchar(20),
+    textId varchar(20),
+    textContent varchar(255),
+    primary key(postId,textId),
+    foreign key(postId) references post(postId) 
+
+
+);
+
+create table image(
+    postId varchar(20),
+    imageId varchar(20),
+    images LONGBLOB,
+    primary key(postId,imageId),
+    foreign key(postId) references post(postId) 
+);
+
+
+
+create table Friendship(
+    userId varchar(20),
+    fUserId varchar(20),
+    fType varchar(20),
+    primary key(userId, fUserId),
+    foreign key (userId) references myBookUser(userId) on delete cascade,
+    foreign key (fUserId) references Friend(fUserId) on delete cascade
+
+
+
+);
+
+create table myBookGroup(
+groupId varchar(20),
+groupName varchar(20),
+createdBy varchar(20),
+primary key(groupId)
+
+
+
+);
+
+create table joinsGroup(
+groupId varchar(20),
+userId varchar(20),
+groupContentViewer varchar(20),
+groupContentEditor varchar(20),
+primary key(groupId,userId),
+foreign key(groupId) references myBookGroup(groupId) on delete cascade,
+foreign key(userId) references myBookUser(userId)
+);
+
+
+/*Set a value for null to PreviousUser for this too later for UserId*/
+
+
+
+create table comment(
+userId varchar(20),
+commentId varchar(20),
+commentDetail varchar(20),
+commentDate date,
+comentTime time,
+primary key (userId,commentId),
+foreign key (userId) references myBookUser(userId) on delete cascade
+
+
+
+
+);

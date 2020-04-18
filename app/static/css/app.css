@@ -1,0 +1,201 @@
+body {
+    padding-top: 5rem;
+    background-color: rgb(234,242,249);
+    position:relative;
+
+}
+
+.card-lay{
+    display:grid;
+    list-style: none;
+    grid-template-columns: 0fr 1fr 1fr ;
+
+}
+
+.user-card-lay{
+    display:grid;
+    grid-gap: 50px;
+    list-style: none;
+    grid-template-columns: 0fr 1fr;
+    position:relative;
+
+}
+.user-images{
+    width:280px;
+    height:230px;
+    position:relative;
+
+}
+.images{
+    margin-top:5%;
+    width:180px;
+    height:150px;
+    position:relative;
+
+}
+#col3{
+    position:relative;
+    text-align: center;
+    margin-top: 70px;
+
+
+}
+#col2{
+    margin-top: 8%;
+    position:relative;
+
+}
+
+#col2 li{
+    margin-bottom: 1em;
+    position:relative;
+
+}
+
+.card-body li{
+    margin-bottom: 1em;
+    position:relative;
+
+}
+
+
+
+  .smallimg{
+    width:35px;
+    height:30px;
+    position:relative;
+
+  }
+
+  
+.text{
+    margin-left:10%;
+    position:relative;
+
+}
+.profile{
+    /* margin:5%; */
+    position:relative;
+
+}
+  .cardbod{
+    margin-bottom:5%;
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-top: 6px solid rgb(72,141,218);
+    border-radius: 0.5rem;
+    background-color: white;
+
+
+  }
+
+  .margindiv{
+      margin:2%;
+      position:relative;
+
+      
+  }
+  .greenbtn {
+    color: #fff;
+    background-color: rgb(128,211,57);
+    border-color: rgb(128,211,57);
+    position:relative;
+
+  }
+  .ubtn{
+      margin-left: 2em;
+      width:40%;
+      padding: 7px;
+      border-radius: 10px;
+      position:relative;
+
+
+  }
+  .lbtxt{
+    display: flex;
+    flex-direction: column;
+    position:relative;
+
+    
+}
+
+.txtbox{
+    width: 60%;
+    border-radius: 5px;
+    position:relative;
+
+}
+
+.formdiv{
+    margin-left:5%;
+    position:relative;
+
+
+}
+.formdiv h1{
+    margin-bottom:3%;
+    position:relative;
+
+}
+.formf{
+    border-top: 6px solid rgb(72,141,218);
+
+    background-color: white;
+    border-radius: 5px;
+    position:relative;
+
+}
+
+.formdiv div{
+    /* margin-top:10px; */
+    margin-bottom:25px;
+    margin-left:40px;
+    font-size: large;
+    position:relative;
+
+}
+.bold{
+    font-weight: 500;
+}
+
+.textareabx
+{
+    width: 60%;
+    border-radius: 5px;
+    min-height: 50%;
+    max-height: 50%;
+    position:relative;
+
+}
+
+
+.home{
+    margin-top: 20%;
+  
+text-align: center;
+border-top:5px solid red;
+border-bottom:5px solid red;
+border-radius: 20px;
+position:relative;
+
+
+}
+.home h1{
+    align-items: center;
+    align-content: center;
+    /* margin-left:10%; */
+        font-size: 90px;
+        position:relative;
+
+
+
+}
+.home h2{
+    /* margin-left:45%; */
+
+}
+
+#profiles{
+    margin-left:5%;
+    /* margin-right:10%; */
+}
+
