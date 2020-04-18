@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+
+{% block main %}
+
+{% include 'flash_messages.html' %}
+<div class="formdiv">
+  <h1 class="page-header">Add Profile</h1>
+    <form class="formf"action="{{ url_for('profile')}}" method="POST" enctype="multipart/form-data">
+      {# Add the file upload field as you learnt for Flask-WTF #}
+      {{form.csrf_token}}
+      <div class='lbtxt'>
+        {{form.username.label (class="bold") }} 
+        {{form.username (class="txtbox")}}
+      </div>
+
+      <div class='lbtxt'>
+        {{form.location.label (class="bold") }} 
+        {{form.location (class="txtbox")}}
+      </div>
+      
+      <div class='lbtxt'>
+        {{form.biography.label (class="bold") }}
+        {{form.biography (class="txtbox",rows='5',cols='10')}}
+      </div>
+    
+      <div class='lbtxt'>
+        {{form.profilepic.label}} 
+        {{form.profilepic (class="txtbox ")}}
+      </div>
+      <div>
+        <button type="submit" name="submit" class="btn greenbtn">Update Profile</button>
+
+      </div>
+    </form>
+</div>
+
+{% endblock %}
