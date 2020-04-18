@@ -9,6 +9,8 @@
                 <li><img class="user-images" src="{{url_for('static',filename=photo)}}" alt="image" ></li>
                 <div id="col2" class="card-body">
                     <li><h4 class="card-title"> {{fname}}  {{lname}}</h4></li>
+                    <li class="card-text"> <img class="smallimg" src="/static/images/email.png"> @{{username}}</li>
+
                     <li class="card-text"> <img class="smallimg" src="/static/images/email.png"> {{email}}</li>
                     <li class="card-text"> <img class="smallimg" src="/static/images/location.png">{{location}}</li>
                     <li class="card-text"> <img class="smallimg" src="/static/images/dateadded.png"> Joined on {{created_date}}</li>
@@ -22,6 +24,8 @@
                 <button class=" greenbtn ubtn" type="submit">Send Message</button>
                 <button class=" btn-primary ubtn" type="submit">Follow</button>
             </div>
+
+            <!-- list all posts for this person -->
             
         </div>
             

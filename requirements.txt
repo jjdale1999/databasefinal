@@ -1,20 +1,3 @@
-# # ----------------------
-# # Flask
-# # ----------------------
-# flask
-# Flask-WTF
-# Flask-SQLAlchemy
-# Flask-Migrate
-# Flask-Script
-# Flask-Login
-# psycopg2-binary
-
-# # ----------------------
-# # Production Server
-# # ----------------------
-# gunicorn
-
-
 # ----------------------
 # Flask
 # ----------------------

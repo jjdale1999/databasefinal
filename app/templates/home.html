@@ -1,44 +1,4 @@
 {% extends "base.html" %}
-
 {% block main %}
-<div class="posts">
-    
-    <h1 class="profile">ALL POSTS</h1>
- 
-    {% for post in posts%}
-   
-        <div class="cardbod" id="card-lay" >
-            <ul class="card-lay">
-
-                <li><img class="images" src="{{url_for('static',filename=post.photo)}}" alt="image" ></li>
-                <div class="card-body">
-                    <li><h4 class="card-title">{{post.username}}</h4></li>
-                    <li class="card-text"> <img class="smallimg" src="/static/images/likes.png">{{post.likes}}</li>
-                    <li class="card-text"> <img class="smallimg" src="/static/images/comments.png">{{post.likes}}</li>
-                </div>
-                
-                <li id="col3">
-                    <button class="btn greenbtn"type="submit">View Profile</button>
-                </li>
-
-                
-                {% for comment in comments%}
-                    <li><h4 class="card-title">{{comment.username}}</h4></li>
-                    <li><h4 class="card-title">{{comment.description}}</h4></li>
-                    <li><h4 class="card-title">{{comment.time}}</h4></li>
-                {% endfor %}
-
-            </ul>
-            
-        </div>
-    
-  
-
-
-        
-       
-    {% endfor %}
-    
-</div>
-
+    {% extends "posts.html" %}
 {% endblock %}
