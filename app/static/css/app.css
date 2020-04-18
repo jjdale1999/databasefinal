@@ -1,3 +1,5 @@
+@import "friendslist.css"; 
+
 body {
     padding-top: 5rem;
     background-color: rgb(234,242,249);
@@ -5,12 +7,7 @@ body {
 
 }
 
-.card-lay{
-    display:grid;
-    list-style: none;
-    grid-template-columns: 0fr 1fr 1fr ;
 
-}
 
 .user-card-lay{
     display:grid;
@@ -26,13 +23,9 @@ body {
     position:relative;
 
 }
-.images{
-    margin-top:5%;
-    width:180px;
-    height:150px;
-    position:relative;
 
-}
+
+
 #col3{
     position:relative;
     text-align: center;
@@ -78,15 +71,20 @@ body {
     position:relative;
 
 }
-  .cardbod{
+  
+
+.cardbod{
     margin-bottom:5%;
     border: 1px solid rgba(0, 0, 0, 0.125);
     border-top: 6px solid rgb(72,141,218);
     border-radius: 0.5rem;
     background-color: white;
 
+    list-style: none;
+
 
   }
+  
 
   .margindiv{
       margin:2%;

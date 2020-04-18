@@ -23,7 +23,7 @@ def format_date_joined(dat):
 @app.route('/')
 def home():
     """Render website's home page."""
-    return render_template('home.html')
+    return render_template('friendslist.html')
 
 
 @app.route('/about/')

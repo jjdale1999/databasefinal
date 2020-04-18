@@ -3,20 +3,27 @@
     <div id="profiles">
         <h1 class="profile">Friend List</h1>
     
-        {% for friend in friends%}
-            <div class="cardbod" id="card-lay" >
+        <div class="cardbod" id="card-lay" >
+            {% for friend in friends%}
                 <ul class="card-lay">
-                    <li><img class="images" src="{{url_for('static',filename=friend.profilepic)}}" alt="image" ></li>
-                    <div class="card-body" >
-                        <li><a href="{{url_for('link to specific profile')}}"> </a><h4 class="card-title">{{friend.fname}}  {{friend.lname}}</h4></li>
-                        <li class="card-text"><img class="smallimg" src="/static/images/location.png"> {{friend.location}}</li>
-                        <li class="card-text"> <img class="smallimg" src="/static/images/gender.png">{{friend.status}}</li>
-                    </div>
-                </ul>
-                
-            </div>
+                    <li><img class="images" src="{{url_for('static',friend.profilepic)}}" alt="image" ></li>
+                    <div>
+                        {%if the person follows back the current user%}
+                        <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
+                        {%endif%}
+                        <li class="card-text name"><a href="{{url_for('link to person profile')}}"> <h4 class="card-title">{{friend.fname}} {{friend.lname}} </h4></a></li>
 
-        {% endfor %}
+
+                    </div>
+                    <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.country}}</li>
+                    <li class="card-text "> <div class="following">Following</div> </li>
+                </ul>
+
+            {% endfor %}
+
+           
+            
+        </div>
     </div>
     
 {% endblock %}

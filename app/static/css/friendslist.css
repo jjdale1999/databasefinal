@@ -1,0 +1,55 @@
+.card-lay{
+    display:grid;
+    list-style: none;
+    grid-template-columns: 0fr 1fr 1fr 1fr;
+
+}
+
+.images{
+    margin-top:45px;
+    width:50px;
+    height:40px;
+    position:relative;
+    border-radius: 30px;
+    margin-right: 10px;
+
+}
+
+
+.card-text{
+    margin-top:48px;
+}
+
+
+.name{
+    margin-top:15px;
+
+}
+
+.small-text{
+    font-size: small;
+
+}
+  .follows_you{
+    margin-top:15px;
+    color:grey;
+
+  }
+.follows_you img{
+    width:15px;
+    height:15px;
+    position:relative;
+}
+
+  .following {
+    margin-left:30%;
+    text-align: center;
+    width:60%;
+    position: relative;
+    border: 3px solid transparent;
+    border-radius: 16px;
+    background: linear-gradient(34deg, rgba(230,230,233,1) 8%, rgba(145,145,214,1) 38%, rgba(133,174,182,1) 78%, rgba(249,249,249,1) 100%);
+    background-clip: content-box;
+    /* just to show box-shadow still works fine */
+    box-shadow: 0 3px 9px rgb(139, 82, 125), inset 0 0 9px white;
+}
