@@ -28,7 +28,7 @@ create table uProfile(
 
 );
 
-create table post(
+create table posts(
     postId varchar(20),
     userId varchar(20),
     postDate date,
@@ -42,7 +42,7 @@ create table post(
 
 );
 
-create table text(
+create table texts(
     postId varchar(20),
     textId varchar(20),
     textContent varchar(255),
@@ -52,7 +52,7 @@ create table text(
 
 );
 
-create table image(
+create table images(
     postId varchar(20),
     imageId varchar(20),
     images LONGBLOB,
@@ -99,7 +99,7 @@ foreign key(userId) references myBookUser(userId)
 
 
 
-create table comment(
+create table comments(
 userId varchar(20),
 commentId varchar(20),
 commentDetail varchar(20),
@@ -112,3 +112,50 @@ foreign key (userId) references myBookUser(userId) on delete cascade
 
 
 );
+
+
+f.write("insert into myBookUser values('"+userId+"','"+firstName+"','"+lastName+"','"+email+"','"+pword+"','"+phonenumber+"'\n");
+
+f.write("insert into uProfile values('"+userId+"','"+profileNo+"','"+profilePic+"','"+profileSummary+"'\n");
+
+f.write("insert into posts values('"+postId+"','"+userId+"','"+postDate+"','"+postTime+"'\n");
+
+f.write("insert into texts values('"+postId+"','"+textId+"','"+textContent+"'\n");
+
+f.write("insert into images values('"+postId+"','"+imageId+"','"+images+"'\n");
+
+f.write("insert into Friend values('"+userId+"','"+fUserId+"','"+fFirstName+"','"+fLastNamey+"','"+fPhoneNum+"'\n");
+
+f.write("insert into Friendship values('"+userId+"','"+fUserId+"','"+fType+"'\n");
+
+f.write("insert into myBookGroup values('"+groupId+"','"+groupName+"','"+createdBy+"'\n");
+
+f.write("insert into joinsGroup values('"+groupId+"','"+userId+"','"+groupContentViewer+"','"+groupContentEditor+"'\n");
+
+f.write("insert into comments values('"+userId+"','"+commentId+"','"+commmentDetail+"','"+commentDate+"','"+comentTime+"'\n");
+
+
+/*Shows text based post by a user if there's a textid*/
+select textContent from texts join posts on texts.postId =  posts.postId join uProfile on posts.userId = uProfile.userId where texts.textId is not null;
+
+/*Shows image based post by a user if there's a imageid*/
+select textContent from images join posts on images.postId =  posts.postId join uProfile on posts.userId = uProfile.userId where images.textId is not null;
+
+/*Show friends that are of "friend" type*/
+select fUserId from Friendship join uProfile on Friendship.userId = uProfile.userId where fType= "friend";
+
+/*Shows a users first and last name along with an associated comment*/
+select firstName,lastName,commentDetail from uProfile join comments  on comments.userId = uProfile.userId;
+/*Shows a users first and last name and associated group*/
+select firstName,lastName, groupName from uProfile join joinsGroup on uProfile.userId = joinsGroup.userId join myBookGroup on joinsGroup.groupId = myBookGroup.groupId;
+
+/*Shows all the first name, last name of users that friend type is "brother" to the associated user*/
+select firstName,lastName from Friendship join uProfile on Friendship.fUserId=uProfile.userId where Friendship.fUserId in(
+
+    select fUserId from Friendship where friendship.userId = '001' and ftype="brother"
+);
+/* Counts the amount of users within the group named "TheRoyalFamily"*/
+select count(userId) from joinsGroup where groupName = "TheRoyalFamily"
+
+/*Shows the first and last name of all the users within the group "TheRoyalFamily"*/
+select firstName,lastName from uProfile join joinsGroup on uProfile.userId= joinsGroup.userId join myBookGroup on myBookGroup.groupId= joinsGroup.groupId where myBookGroup.groupName ='TheRoyalFamily';
