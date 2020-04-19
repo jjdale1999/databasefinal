@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+
+
+
+
+
+
+
+{% block sideprofile %} 
+
+    <div class="sidelay" id="lays" >
+        
+            <ul id="info_list">
+
+                <li><img id="profile-pic" src="/static/images/background.jpg" alt="image" ></li>
+                <div  >
+                    <li class="li-text"><h4 class="card-title"> {{fname}}  {{lname}} Jordanne Dale</h4></li>
+                    <li class="li-text"> <img class="smallimg" src="/static/images/gender.png"> @{{username}}jordannedale</li>
+
+                    <li class="li-text"> <img class="smallimg" src="/static/images/email.png"> {{email}}dalejordanne@gmail.com</li>
+                    <li class="li-text"> <img class="smallimg" src="/static/images/location.png">{{location}}Kingston,Jamaica</li>
+                    <li class="li-text"> <img class="smallimg" src="/static/images/dateadded.png"> Joined on {{created_date}} Sept,2019</li>
+
+                </div>
+            </ul>
+            <div class="aboutme">
+                <h3>About Me</h3>
+                <p class="li-text"> {{biography}}If you're looking for random paragraphs, you've come to the right place. When a random word or a random sentence isn't quite enough, the next logical step is to find a random paragraph. We created the Random Paragraph Generator with you in mind. The process is quite simple. Choose the number of random paragraphs you'd like to see and click the button. Your chosen number of paragraphs will instantly appear.</p>
+                <div id="follow_er_ing">
+                    <li>FOLLOWERS</li>
+                    <li>FOLLOWING</li>
+                    <a  >{{followers}} 100M</a>
+                    <a  >{{followinf}}10k</a>
+                </div>
+               
+            </div>
+
+            <!-- list all posts for this person -->
+            
+            
+
+        
+    </div>
+   
+{% endblock %}
+

@@ -23,7 +23,7 @@ def format_date_joined(dat):
 @app.route('/')
 def home():
     """Render website's home page."""
-    return render_template('friendslist.html')
+    return render_template('sideprofile.html')
 
 
 @app.route('/about/')
@@ -63,9 +63,9 @@ def setupprofile():
                 created_date=format_date_joined(datetime.datetime.now())
                 filename=secure_filename(photo.filename)
                 photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                user = UserProfile(fname, lname, email, location,gender,biography,'/uploads/'+filename,created_date)
-                db.session.add(user)
-                db.session.commit()
+                # user = UserProfile(fname, lname, email, location,gender,biography,'/uploads/'+filename,created_date)
+                # db.session.add(user)
+                # db.session.commit()
 
                 return redirect(url_for('profiles'))
     else:

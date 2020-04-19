@@ -1,0 +1,58 @@
+.sidelay{
+    /* margin-bottom:5%; */
+    border: 1px solid rgba(0, 0, 0, 0.125);
+    border-radius: 0.5rem;
+    background-color: white;
+
+    list-style: none;
+    height: 880px;
+    width:20%;
+
+}
+
+#lays{
+    display:grid;
+    list-style: none;
+}
+
+
+#profile-pic{
+    margin-top:45px;
+    width:265px;
+    height:200px;
+    position:relative;
+    border-radius: 50%;
+    /* margin-right: 10px; */
+
+}
+
+
+.li-text{
+    /* margin-top:48px; */
+    margin-top: 20px;;
+}
+#info_list{
+    list-style: none;
+}
+
+#follow_er_ing{
+    display:grid;
+    /* grid-gap: 50px; */
+    list-style: none;
+    grid-template-columns: 1fr 1fr;
+    position:relative;
+    border-top: 4px solid rgb(187, 181, 181);
+    align-content: center;
+    text-align: center;
+}
+
+#follow_er_ing a{
+ color:blue;
+}
+
+.aboutme{
+    text-align: center ;
+}
+.aboutme h3{
+    color:black;
+}
