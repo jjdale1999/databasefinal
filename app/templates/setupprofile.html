@@ -4,8 +4,8 @@
 
 {% include 'flash_messages.html' %}
 <div class="formdiv">
-  <h1 class="page-header">Add Profile</h1>
-    <form class="formf"action="{{ url_for('profile')}}" method="POST" enctype="multipart/form-data">
+  <h1 class="page-header">SetUp Profile</h1>
+    <form class="formf"action="{{ url_for('setupprofile')}}" method="POST" enctype="multipart/form-data">
       {# Add the file upload field as you learnt for Flask-WTF #}
       {{form.csrf_token}}
       <div class='lbtxt'>

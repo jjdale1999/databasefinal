@@ -8,7 +8,7 @@ import os
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import CreateProfile
+from app.forms import CreateProfile,SignUp
 from app.models import UserProfile
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
@@ -31,14 +31,31 @@ def about():
     """Render the website's about page."""
     return render_template('about.html')
 
-@app.route('/profile',methods=['POST', 'GET'])
-def profile():
+@app.route('/signup',methods=['POST', 'GET'])
+def signup():
+    createuser = SignUp()
+    
+    if request.method == "POST" and  createuser.validate_on_submit():
+                fname = createuser.fname.data
+                lname = createuser.lname.data
+                email = createuser.email.data
+                password=createuser.password.data
+                created_date=format_date_joined(datetime.datetime.now())
+                
+                # user = UserProfile(fname, lname, email, location,gender,biography,'/uploads/'+filename,created_date)
+                # db.session.add(user)
+                # db.session.commit()
+
+                return redirect(url_for('setupprofile'))
+    else:
+                flash_errors(createuser)
+    return render_template('signup.html',form=createuser)    
+@app.route('/setupprofile',methods=['POST', 'GET'])
+def setupprofile():
     createprofile = CreateProfile()
     
     if request.method == "POST" and  createprofile.validate_on_submit():
-                fname = createprofile.fname.data
-                lname = createprofile.lname.data
-                email = createprofile.email.data
+                username = createprofile.username.data
                 location= createprofile.location.data
                 gender = createprofile.gender.data
                 biography=createprofile.biography.data
@@ -53,7 +70,7 @@ def profile():
                 return redirect(url_for('profiles'))
     else:
                 flash_errors(createprofile)
-    return render_template('addprofile.html',form=createprofile)    
+    return render_template('setupprofile.html',form=createprofile)    
 
 @app.route('/profiles')
 def profiles():
