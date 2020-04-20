@@ -2,48 +2,23 @@ from . import db
 from werkzeug.security import generate_password_hash
 
 
+db.engine.execute("create table Users(userId varchar(20),firstName varchar(20),lastName varchar(20),email varchar(50),gender varchar(64),password text,primary key(userId))")
 
-class UserProfile(db.Model):
-    # You can use this to change the table name. The default convention is to use
-    # the class name. In this case a class name of UserProfile would create a
-    # user_profile (singular) table, but if we specify __tablename__ we can change it
-    # to `user_profiles` (plural) or some other name.
-    __tablename__ = 'user_profiles'
+db.engine.execute("create table Profiles(userId varchar(20),profileNo varchar(20),profilePic text,biography text,countryLiving varchar(30),primary key (userId,profileNo),foreign key(userId) references Users(userId) on delete cascade)")
 
-    id = db.Column(db.Integer, primary_key=True)
-    fname = db.Column(db.String(80))
-    lname = db.Column(db.String(80))
-    email = db.Column(db.String(80))
-    location = db.Column(db.String(80))
-    gender = db.Column(db.String(80))
-    biography = db.Column(db.Text())
-    photo = db.Column(db.String(80))
-    created_date= db.Column(db.String(80))
+db.engine.execute("create table posts(userId varchar(20),postId varchar(20),postDate DATE,postTime time,primary key (userId,postId),foreign key(userId) references Users(userId) on delete cascade)")
 
-    def __init__(self, fname, lname, email, location,gender,biography,photo, created_date):
-        self.fname = fname
-        self.lname = lname
-        self.email = email
-        self.location = location
-        self.gender = gender
-        self.biography = biography
-        self.photo = photo
-        self.created_date=created_date
-    
-    def is_authenticated(self):
-        return True
+# db.engine.execute("create table images(postId varchar(20),imageId varchar(20),images text,primary key(postId,imageId),foreign key(postId) references posts(postId) on delete cascade )")
 
-    def is_active(self):
-        return True
+# db.engine.execute("create table texts(postId varchar(20),textId varchar(20),images text,primary key(postId,textId),foreign key(postId) references posts(postId) on delete cascade )")
 
-    def is_anonymous(self):
-        return False
+db.engine.execute("create table Friendship(userId varchar(20),fUserId varchar(20),fType varchar(20),primary key(userId,fUserId),foreign key (userId) references Users(userId) on delete cascade )")
 
-    def get_id(self):
-        try:
-            return unicode(self.id)  # python 2 support
-        except NameError:
-            return str(self.id)  # python 3 support
+db.engine.execute("create table myBookGroup(groupId varchar(20),groupName varchar(20),createdBy varchar(20),primary key(groupId))")
 
-    def __repr__(self):
-        return '<User %r %r %r %r %r %r %r %r>' % (self.fname, self.lname, self.email, self.location,self.gender,self.biography,self.photo,self.created_date)
+db.engine.execute("create table joinsGroup(groupId varchar(20),userId varchar(20),groupContentViewer varchar(20),groupContentEditor varchar(20),primary key(groupId,userId),foreign key(groupId) references myBookGroup(groupId) on delete cascade,foreign key(userId) references Users(userId))")
+
+# db.engine.execute("create table comments(userId varchar(20),postId varchar(20),commentId varchar(20),commentDetail varchar(20),commentDate date,comentTime time,primary key (userId,commentId,postId),foreign key (userId) references Users(userId) on delete cascade,foreign key (postId) references posts(postId) on delete cascade )")
+
+# command use to insert data into postgres
+# \i /Users/jordannedale/Desktop/databasefinal/database.sql 

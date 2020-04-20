@@ -9,7 +9,7 @@ from app import app, db
 from flask import render_template, request, redirect, url_for, flash
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import CreateProfile,SignUp
-from app.models import UserProfile
+# from app.models import UserProfile
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
 import datetime
@@ -39,12 +39,12 @@ def signup():
                 fname = createuser.fname.data
                 lname = createuser.lname.data
                 email = createuser.email.data
+                gender=createuser.gender.data
                 password=createuser.password.data
                 created_date=format_date_joined(datetime.datetime.now())
-                
-                # user = UserProfile(fname, lname, email, location,gender,biography,'/uploads/'+filename,created_date)
-                # db.session.add(user)
-                # db.session.commit()
+                 # get the last userid and then add it to one to get new userid
+                db.engine.execute("insert into Users values('"+"US"+str(userid)+"','"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"')")
+
 
                 return redirect(url_for('setupprofile'))
     else:
@@ -62,9 +62,8 @@ def setupprofile():
                 created_date=format_date_joined(datetime.datetime.now())
                 filename=secure_filename(photo.filename)
                 photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                # user = UserProfile(fname, lname, email, location,gender,biography,'/uploads/'+filename,created_date)
-                # db.session.add(user)
-                # db.session.commit()
+                db.engine.execute("insert into Profiles values('"+"US"+str(userid)+"','"+"PF"+str(profileNo)+"','"+"/uploads/"+filename+"','"+biography+"','"+location+"')")
+
 
                 return redirect(url_for('home'))
     else:
