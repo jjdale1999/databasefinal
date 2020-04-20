@@ -23,11 +23,20 @@
     <header>
         {% include "header.html" %}
     </header>
-    <main>
-      {% block sideprofile %} {% endblock %}
-        <div class="container">
-            {% block main %}{% endblock %}
+    <main >
+     
+        
+      <div class="row">
+        <div class="column left">
+         
+          {% block sideprofile %} {% endblock %}
         </div>
+        <div class="column right" >
+          {% block main%} {%endblock%}
+        </div>
+      </div>
+              
+         
     </main>
     <!-- <footer>
         <div class="container">

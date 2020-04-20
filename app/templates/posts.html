@@ -1,5 +1,8 @@
 {% extends "base.html" %}
+{% block sideprofile %}
 
+{% include 'sideprofile.html' %}
+{% endblock %}
 {% block main %}
 <div class="posts">
     
@@ -9,24 +12,32 @@
    
         <div class="cardbod" id="card-lay" >
             <ul class="card-lay">
-
-                <li><img class="images" src="{{url_for('static',filename=post.photo)}}" alt="image" ></li>
                 <div class="card-body">
                     <li><h4 class="card-title">{{post.username}}</h4></li>
                     <li class="card-text"> <img class="smallimg" src="/static/images/likes.png">{{post.likes}}</li>
                     <li class="card-text"> <img class="smallimg" src="/static/images/comments.png">{{post.likes}}</li>
                 </div>
+
+                <li><img class="images" src="{{url_for('static',filename=post.photo)}}" alt="" ></li>
+                <li>post.description</li>
                 
                 <li id="col3">
-                    <button class="btn greenbtn"type="submit">View Profile</button>
+                    <button class="btn greenbtn">View Comments</button> 
+                    <!-- if button clicked the reveal all comments -->
                 </li>
-
+                <ul class="comments" hidden>
+                    <!-- to unhide it need to create a javascript 
+                        when the button is clicked it shows all the comments something like twitter, 
+                        where a pop up of all comments are shown 
+                                        or 
+                        the hard route and do it like instagram -->
+                    {% for comment in comments%}
+                        <li><h4 class="card-title">{{comment.username}}</h4></li>
+                        <li><h4 class="card-title">{{comment.description}}</h4></li>
+                        <li><h4 class="card-title">{{comment.time}}</h4></li>
+                    {% endfor %}
+                </ul>
                 
-                {% for comment in comments%}
-                    <li><h4 class="card-title">{{comment.username}}</h4></li>
-                    <li><h4 class="card-title">{{comment.description}}</h4></li>
-                    <li><h4 class="card-title">{{comment.time}}</h4></li>
-                {% endfor %}
 
             </ul>
             

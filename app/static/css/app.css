@@ -9,8 +9,27 @@ body {
 
 }
 
-
-
+.column {
+    float: left;
+    padding: 10px;
+  }
+  
+  .left {
+    width: 25%;
+    position: fixed;
+  }
+  
+  .right {
+    width: 65%;
+    margin-left: 390px;
+  }
+  
+  /* Clear floats after the columns */
+  .row:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
 .user-card-lay{
     display:grid;
     grid-gap: 50px;
