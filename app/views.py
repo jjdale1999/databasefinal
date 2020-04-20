@@ -23,7 +23,7 @@ def format_date_joined(dat):
 @app.route('/')
 def home():
     """Render website's home page."""
-    return render_template('sideprofile.html')
+    return render_template('home.html')
 
 
 @app.route('/about/')
@@ -57,9 +57,8 @@ def setupprofile():
     if request.method == "POST" and  createprofile.validate_on_submit():
                 username = createprofile.username.data
                 location= createprofile.location.data
-                gender = createprofile.gender.data
                 biography=createprofile.biography.data
-                photo= createprofile.photo.data
+                photo= createprofile.profilepic.data
                 created_date=format_date_joined(datetime.datetime.now())
                 filename=secure_filename(photo.filename)
                 photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
@@ -67,15 +66,15 @@ def setupprofile():
                 # db.session.add(user)
                 # db.session.commit()
 
-                return redirect(url_for('profiles'))
+                return redirect(url_for('home'))
     else:
                 flash_errors(createprofile)
     return render_template('setupprofile.html',form=createprofile)    
 
-@app.route('/profiles')
-def profiles():
-    user = UserProfile.query.all()
-    return render_template('profiles.html',users=user)
+# @app.route('/profiles')
+# def profiles():
+#     user = UserProfile.query.all()
+#     return render_template('profiles.html',users=user)
     
 
 @app.route('/profile/<userid>')

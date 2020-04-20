@@ -56,7 +56,7 @@ for x in range(3000000):
     #selecting the userid for the post 
     postId=x
     userId=random.randint(1,500000)
-    date_time=fake.date_time_this_decade().split(" ")
+    date_time=fake.date_time_this_decade()
     postDate=fake.date_this_year(before_today=True, after_today=False)
     postTime=fake.time()
     #even for text - odd for post
@@ -65,20 +65,20 @@ for x in range(3000000):
     if(text_photo%2==0):
         textpost= fake.text()
         # insertinto text
-        f.write("insert into text values('"+"PS"+str(postId)+"','"+"TT"+str(textId)+"','"+textpost+"'\n");
+        f.write("insert into text values('"+"PS"+str(postId)+"','"+"TT"+str(textId)+"','"+textpost+"')\n");
         textId+=1
 
     else:
         photopost=fake.image_url()
         while("placeimg" not in photopost):
             photopost=fake.image_url()
-        f.write("insert into image values('"+"PS"+str(postId)+"','"+"IM"+str(imageId)+"','"+photopost+"'\n");
+        f.write("insert into image values('"+"PS"+str(postId)+"','"+"IM"+str(imageId)+"','"+photopost+"')\n");
         imageId+=1
 
         #insert into image
 
     # insert into post 
-    f.write("insert into post values('"+"PS"+str(postId)+"','"+"US"+str(userId)+"','"+postDate+"','"+postTime+"'\n");
+    f.write("insert into post values('"+"PS"+str(postId)+"','"+"US"+str(userId)+"','"+str(postDate)+"','"+postTime+"'\n");
 
 
     #creation of at least 2-40 comments on post
@@ -89,11 +89,11 @@ for x in range(3000000):
         while(userid==cuserid):
             cuserid=random.randint(1,500000)
         commmentDetail=fake.text(max_nb_chars=150, ext_word_list=None)
-        cdate_time=fake.date_time_this_decade().split(" ")
+        cdate_time=fake.date_time_this_decade()
         commentDate=fake.date_this_year(before_today=True, after_today=False)
         comentTime=fake.time()
         # insert into comments 
-        f.write("insert into comment values('"+"CM"+str(commentId)+"','"+"US"+str(cuserid)+"','"+commmentDetail+"','"+commentDate+"','"+comentTime+"'\n");
+        f.write("insert into comment values('"+"CM"+str(commentId)+"','"+"US"+str(cuserid)+"','"+commmentDetail+"','"+str(commentDate)+"','"+comentTime+"')\n");
         commentId+=1
         #likes
         # for z in 
@@ -116,7 +116,7 @@ for x in range(500000):
         fType=random.choice(relationships)
 
         friends.append(friendid)
-        f.write("insert into Friendship values('"+"US"+str(userId)+"','"+"US"+str(friendid)+"','"+fType+"'\n");
+        f.write("insert into Friendship values('"+"US"+str(userId)+"','"+"US"+str(friendid)+"','"+fType+"')\n");
 
     print(x)
 print(" creation of friendships done")
@@ -125,11 +125,11 @@ print(" creation of friendships done")
 #create groups
 users=[]
 status_all=["Editor","Viewer"]
-for x in range(5000):
+for x in range(50):
     groupId=x
     groupName=fake.word()
     createdBy= random.randint(1,500000)
-    f.write("insert into myBookGroup values('"+"GP"+str(groupId)+"','"+groupName+"','"+createdBy+"'\n");
+    f.write("insert into myBookGroup values('"+"GP"+str(groupId)+"','"+groupName+"','"+"US"+str(createdBy)+"')\n");
 
     randnum=random.randint(2,500000)
     for x in range(randnum):
@@ -139,7 +139,7 @@ for x in range(5000):
         users.append(userId)
         status=random.choice(status_all)
 
-        f.write("insert into joinsGroup values('"+"GP"+str(groupId)+"','"+"US"+str(userId)+"','"+status+"'\n");
+        f.write("insert into joinsGroup values('"+"GP"+str(groupId)+"','"+"US"+str(userId)+"','"+status+"')\n");
 
 
 print(" creation of groups done")
