@@ -11,7 +11,7 @@
         <div class="cardbod" id="card-lay" >
             {% for friend in friends%}
                 <ul class="card-lay">
-                    <li><img class="images" src="" alt="image" ></li>
+                    <li><img class="images" src="{{friend.profilepic}}" alt="image" ></li>
                     <div>
                         <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
                         <li class="card-text name"><a href=""> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
