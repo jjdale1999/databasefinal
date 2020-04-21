@@ -40,12 +40,15 @@ for i in range(50):
     while("placeimg" not in profilepic):
         profilepic=fake.image_url()
 
-    biography=fake.text(max_nb_chars=255, ext_word_list=None)
+    biography=fake.text()
     
     # appending to text file
+    biography.replace('\r','')
     f.write("insert into Users values('"+"US"+str(userid)+"','"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"'); \n")
-  
-    f.write("insert into Profiles values('"+"US"+str(userid)+"','"+"PF"+str(profileNo)+"','"+profilepic+"','"+biography+"','"+country+"');\n")
+
+    f.write("insert into Profiles values('"+"US"+str(userid)+"','"+"PF"+str(profileNo)+"','"+profilepic+"','"+username+"','"+biography+"','"+country+"');\n")
+
+   
     print(str(i)+"\n")
 print(" creation of users and profiles done")
 
@@ -54,53 +57,60 @@ textId=1
 imageId=1
 commentId=1
 #creation of 3000000 posts 
-# for x in range(30):
+for x in range(30):
 
-#     #selecting the userid for the post 
-#     postId=x
-#     userId=random.randint(1,50)
-#     date_time=fake.date_time_this_decade()
-#     postDate=fake.date_this_year(before_today=True, after_today=False)
-#     postTime=fake.time()
-#     #even for text - odd for post
-#     text_photo=random.randint(0,20)
+    #selecting the userid for the post 
+    postId=x
+    userId=random.randint(1,50)
+    date_time=fake.date_time_this_decade()
+    postDate=fake.date_this_year(before_today=True, after_today=False)
+    postTime=fake.time()
+    #even for text - odd for post
+    text_photo=random.randint(0,20)
 
-#     if(text_photo%2==0):
-#         textpost= fake.text()
-#         # insertinto text
-#         f.write("insert into text values('"+"PS"+str(postId)+"','"+"TT"+str(textId)+"','"+textpost+"');\n");
-#         textId+=1
+# insert into post 
+    f.write("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(userId)+"','"+str(postDate)+"','"+postTime+"');\n");
 
-#     else:
-#         photopost=fake.image_url()
-#         while("placeimg" not in photopost):
-#             photopost=fake.image_url()
-#         f.write("insert into image values('"+"PS"+str(postId)+"','"+"IM"+str(imageId)+"','"+photopost+"');\n");
-#         imageId+=1
+    if(text_photo%2==0):
+        textpost= fake.text()
+        textpost.replace('\r','')
+        # insertinto text
+        f.write("insert into texts values('"+"PS"+str(postId)+"','"+"TT"+str(textId)+"','"+textpost+"');\n");
 
-#         #insert into image
+        textId+=1
 
-#     # insert into post 
-#     f.write("insert into post values('"+"PS"+str(postId)+"','"+"US"+str(userId)+"','"+str(postDate)+"','"+postTime+"');\n");
+    else:
+        photopost=fake.image_url()
+        while("placeimg" not in photopost):
+            photopost=fake.image_url()
+        f.write("insert into images values('"+"PS"+str(postId)+"','"+"IM"+str(imageId)+"','"+photopost+"');\n");
+
+        imageId+=1
+
+        #insert into image
+
+    
 
 
-#     #creation of at least 2-40 comments on post
-#     randnum=random.randint(2,40)
-#     for y in range(randnum):
-#         # userid of comment
-#         cuserid=random.randint(1,50)
-#         while(userid==cuserid):
-#             cuserid=random.randint(1,50)
-#         commmentDetail=fake.text(max_nb_chars=150, ext_word_list=None)
-#         cdate_time=fake.date_time_this_decade()
-#         commentDate=fake.date_this_year(before_today=True, after_today=False)
-#         comentTime=fake.time()
-#         # insert into comments 
-#         f.write("insert into comment values('"+"CM"+str(commentId)+"','"+"US"+str(cuserid)+"','"+commmentDetail+"','"+str(commentDate)+"','"+comentTime+"');\n");
-#         commentId+=1
-#         #likes
-#         # for z in 
-# print(" creation of post and comments done")
+    #creation of at least 2-40 comments on post
+    randnum=random.randint(2,40)
+    for y in range(randnum):
+        # userid of comment
+        cuserid=random.randint(1,50)
+        while(userid==cuserid):
+            cuserid=random.randint(1,50)
+        commmentDetail=fake.text(max_nb_chars=150, ext_word_list=None)
+        commmentDetail.replace('\r','')
+        cdate_time=fake.date_time_this_decade()
+        commentDate=fake.date_this_year(before_today=True, after_today=False)
+        comentTime=fake.time()
+        # insert into comments 
+        f.write("insert into comments values('"+"PS"+str(postId)+"','"+"CM"+str(commentId)+"','"+"US"+str(cuserid)+"','"+commmentDetail+"','"+str(commentDate)+"','"+comentTime+"');\n");
+
+        commentId+=1
+        #likes
+        # for z in 
+print(" creation of post and comments done")
 
 
 
@@ -119,7 +129,8 @@ for x in range(50):
         fType=random.choice(relationships)
 
         friends.append(friendid)
-        f.write("insert into Friendship values('"+"US"+str(x)+"','"+"US"+str(friendid)+"','"+fType+"');\n");
+        f.write("insert into Friendship values('"+"US"+str(x+1)+"','"+"US"+str(friendid)+"','"+fType+"');\n");
+
 
     print(x)
 print(" creation of friendships done")
@@ -132,7 +143,7 @@ for x in range(50):
     groupId=x
     groupName=fake.word()
     createdBy= random.randint(1,50)
-    f.write("insert into myBookGroup values('"+"GP"+str(groupId)+"','"+groupName+"','"+"US"+str(createdBy)+"');\n");
+    f.write("insert into groups values('"+"GP"+str(groupId)+"','"+groupName+"','"+"US"+str(createdBy)+"');\n");
 
     randnum=random.randint(2,5)
     for x in range(randnum):

@@ -49,7 +49,28 @@ def signup():
                 return redirect(url_for('setupprofile'))
     else:
                 flash_errors(createuser)
-    return render_template('signup.html',form=createuser)    
+    return render_template('signup.html',form=createuser)  
+
+@app.route('/friendlist/<userid>',methods=['GET'])
+def friendlist(userid):
+    friends=db.engine.execute("select * from friendship join users on users.userid=friendship.fuserid where friendship.userid='"+userid+"'")  
+    profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")  
+    followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+userid+"'")   
+    follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+userid+"'")  
+    for x in followings:
+        print(x.following)
+        following=x.following
+    for z in follower:
+        followers=z.following
+    for y in profile:
+        fname=y.firstname
+        lname=y.lastname
+        email=y.email
+        username=y.username
+        location=y.countryliving
+        biography=y.biography
+   
+    return render_template('friendslist.html',friends=friends,fname=fname,username=username,lname=lname,email=email,location=location,biography=biography,followers=followers,following=following)
 @app.route('/setupprofile',methods=['POST', 'GET'])
 def setupprofile():
     createprofile = CreateProfile()

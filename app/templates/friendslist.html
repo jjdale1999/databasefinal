@@ -11,12 +11,10 @@
         <div class="cardbod" id="card-lay" >
             {% for friend in friends%}
                 <ul class="card-lay">
-                    <li><img class="images" src="{{url_for('static',friend.profilepic)}}" alt="image" ></li>
+                    <li><img class="images" src="" alt="image" ></li>
                     <div>
-                        {%if the person follows back the current user%}
                         <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
-                        {%endif%}
-                        <li class="card-text name"><a href="{{url_for('link to person profile')}}"> <h4 class="card-title">{{friend.fname}} {{friend.lname}} </h4></a></li>
+                        <li class="card-text name"><a href=""> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
 
 
                     </div>
