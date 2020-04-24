@@ -30,12 +30,25 @@
                                 {%if (post.images.startswith("https://placeimg.com")) or (post.images.startswith("/static/uploads/"))%}
                                     <button class="dropdown-item" type="button">Set as Profile Picture</button>
                               {%endif%}
-                              <button class="dropdown-item" type="button">Share to Facebook</button>
-                              <button class="dropdown-item" type="button">Share to twitter</button>
+                              <a class="resp-sharing-button__link dropdown-item" href="https://www.facebook.com/sharer/sharer.php?u=jdizzle.jordanne&quote={{post.images}}" target="_blank" aria-label="">
+                                <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small">
+                                  <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+                                    Share to Facebook
+                                  </div>
+                                </div>
+                              </a>
+                              
+                              <a class="resp-sharing-button__link dropdown-item" href="https://twitter.com/intent/tweet/?text={{post.images}}&amp;url=urlToBeReplaced" target="_blank" aria-label="">
+                                <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
+                                    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
+                                        Share to twitter                                    </div>
+                                </div>
+                            </a>
                             </div>
                           </div>
                         </li>
                     </div>
+                    
                 <ul class="postcard-lay">
                     {%if (post.images.startswith("https://placeimg.com")) or (post.images.startswith("/static/uploads/"))%}
                     <img class="postimages" src="{{post.images}}" alt="" >

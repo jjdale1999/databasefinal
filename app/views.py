@@ -97,19 +97,13 @@ def setupprofile():
 @app.route('/createpost/<option>',methods=['POST', 'GET'])
 def createpost(option):
     createpost = CreatePost()
-    print("went before post function")
     textpost=createpost.text.data
-    print(option)
-    print(textpost)
-    postId=35
-    imageId=20
-    textId=21
     postDate='2020-04-24'
     postTime='12:09:00'
-
     if request.method == "POST":
         print("went into function")
-        db.engine.execute("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(1)+"','"+str(postDate)+"','"+postTime+"')")
+        # db.engine.execute("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(1)+"','"+str(postDate)+"','"+postTime+"')")
+        db.engine.execute("insert into posts (userid,postdate,posttime) values('"+str(session['userid'])+"','"+str(postDate)+"','"+postTime+"');\n");
 
         if(textpost!=""):
             # textpost=createpost.text.data
@@ -154,7 +148,7 @@ def userposts(userid):
 
 @app.route('/comments/<postid>')
 def comments(postid):
-    comments=db.engine.execute("select * from comments where postid='"+postid+"'")
+    comments=db.engine.execute("select * from comments where postid='"+str(postid)+"'")
     return render_template('comments.html',comments=comments)
 
 @app.route('/')
@@ -165,7 +159,7 @@ def login():
         username=loginform.username.data
         profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where profiles.username='"+username+"'")  
         for y in profile:
-            session['userid']=y.userid
+            session['userid']=str(y.userid)
             session['fname']=y.firstname
             session['lname']=y.lastname
             session['email']=y.email
@@ -173,8 +167,8 @@ def login():
             session['location']=y.countryliving
             session['biography']=y.biography
             session['profilepic']=y.profilepic
-        followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+session['userid']+"'")   
-        follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+session['userid']+"'")  
+        followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+str(session['userid'])+"'")   
+        follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+str(session['userid'])+"'")  
         for x in followings:
             print(x.following)
         session['following']=x.following

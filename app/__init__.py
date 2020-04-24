@@ -16,7 +16,7 @@ db = SQLAlchemy(app)
 
 
 def comments(postid):
-    comments=db.engine.execute("select * from comments join profiles on comments.userid=profiles.userid where postid='"+postid+"'")
+    comments=db.engine.execute("select * from comments join profiles on comments.userid=profiles.userid where postid='"+str(postid)+"'")
     return comments
 app.jinja_env.globals.update(comments=comments)
 

@@ -20,7 +20,11 @@
     {% block css %} {% endblock%}
   </head>
   <body>
-    <header>
+    <div id="fb-root"></div>
+<script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0"></script>
+    
+<script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=5ea3456fd716680012d49576&product=inline-share-buttons" async="async"></script>
+<header>
         {% include "header.html" %}
     </header>
     <main >
