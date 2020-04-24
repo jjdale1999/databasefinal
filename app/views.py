@@ -8,7 +8,7 @@ import os
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import CreateProfile,SignUp,Login,CreatePost
+from app.forms import CreateProfile,SignUp,Login,CreatePost,FriendType
 # from app.models import UserProfile
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
@@ -24,12 +24,18 @@ def format_date_joined(dat):
 # all individual posts
 @app.route('/posts')
 def posts():
-    form=CreatePost()
+    # form=CreatePost()
     
 #    getting both texts and images posts
+    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
+    form=CreatePost()
     posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
-    
+
+    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' ")
+    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid where posts.userid='"+userid+"'")
     return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+    # return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 @app.route('/grouplist')
@@ -58,6 +64,7 @@ def signup():
                 created_date=format_date_joined(datetime.datetime.now())
                  # get the last userid and then add it to one to get new userid
                 # db.engine.execute("insert into Users values('"+"US"+str(userid)+"','"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"')")
+                db.engine.execute("insert into Users (firstname,lastname,email,gender,password) values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"')")
 
 
                 return redirect(url_for('setupprofile'))
@@ -93,7 +100,13 @@ def setupprofile():
                 flash_errors(createprofile)
     return render_template('setupprofile.html',form=createprofile)   
 
-
+@app.route('/addfollower/<followerid>',methods=['POST'])
+def addfollower(followerid):
+    form=FriendType()
+    friendtype = form.friendtype.data
+    print(friendtype)
+    db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(session['userid'])+"','"+str(followerid)+"','"+friendtype+"')")
+    return redirect(url_for('profile',userid=followerid))
 @app.route('/createpost/<option>',methods=['POST', 'GET'])
 def createpost(option):
     createpost = CreatePost()
@@ -106,7 +119,6 @@ def createpost(option):
         db.engine.execute("insert into posts (userid,postdate,posttime) values('"+str(session['userid'])+"','"+str(postDate)+"','"+postTime+"');\n");
 
         if(textpost!=""):
-            # textpost=createpost.text.data
             db.engine.execute("insert into texts values('"+"PS"+str(postId)+"','"+"TT"+str(textId)+"','"+textpost+"')")
 
         else:
@@ -130,8 +142,9 @@ def createpost(option):
 
 @app.route('/profile/<userid>')
 def profile(userid):
+    form=FriendType()
     users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
-    return render_template('profilepage.html',users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('profilepage.html',form=form,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 # all individual posts for a specific user

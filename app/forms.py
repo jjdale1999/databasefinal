@@ -30,3 +30,7 @@ class CreatePost(FlaskForm):
 class Login(FlaskForm):
     username = StringField('Username', validators=[DataRequired()],render_kw={"placeholder":"Jane"})
     password = PasswordField('Password',validators=[DataRequired()])
+
+
+class FriendType(FlaskForm):
+    friendtype = SelectField('Relationship Type',choices=[('Relatives','Relatives'),('School','School'),('Work','Work')])
