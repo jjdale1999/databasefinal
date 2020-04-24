@@ -21,38 +21,23 @@ def format_date_joined(dat):
 ###
 
 
-# @app.route('/')
-# def home():
-
-#     createpost=CreatePost()
-#     """Render website's home page."""
-#     return render_template('home.html',form=createpost,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
-#     # return render_template('home.html',fname=fname,lname=lname,email=email,location=location,gender=gender,biography=biography,photo=photo,created_date=created_date)
-
 # all individual posts
-@app.route('/')
 @app.route('/posts')
 def posts():
-    session['userid']="US1"
-    session['fname']="dummy "
-    session['lname']="data"
-    session['email']="dummydata@lol.com"
-    session['username']="dummydata123"
-    session['location']="Dummy,Town"
-    session['biography']="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
-    session['profilepic']="/static/images/background.jpg"
-    session['followers']="10K"
-    session['following']="200"
     form=CreatePost()
-    profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+session['userid']+"'")  
     
-    followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+session['userid']+"'")   
-    follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+session['userid']+"'")  
-   
+#    getting both texts and images posts
     posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
     
-    return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
+    return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
+
+@app.route('/grouplist')
+def grouplist():
+    
+    groups=db.engine.execute("SELECT * FROM groups;")
+    
+    return render_template('grouplist.html', groups=groups)
 
 
 @app.route('/about/')
@@ -72,7 +57,7 @@ def signup():
                 password=createuser.password.data
                 created_date=format_date_joined(datetime.datetime.now())
                  # get the last userid and then add it to one to get new userid
-                db.engine.execute("insert into Users values('"+"US"+str(userid)+"','"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"')")
+                # db.engine.execute("insert into Users values('"+"US"+str(userid)+"','"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"')")
 
 
                 return redirect(url_for('setupprofile'))
@@ -85,7 +70,9 @@ def friendlist(userid):
     friends=db.engine.execute("select * from friendship join users on users.userid=friendship.fuserid join profiles on profiles.userid=users.userid where friendship.userid='"+userid+"'")  
   
    
-    return render_template('friendslist.html',friends=friends,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
+    return render_template('friendslist.html',friends=friends,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+
 @app.route('/setupprofile',methods=['POST', 'GET'])
 def setupprofile():
     createprofile = CreateProfile()
@@ -98,7 +85,7 @@ def setupprofile():
                 created_date=format_date_joined(datetime.datetime.now())
                 filename=secure_filename(photo.filename)
                 photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                db.engine.execute("insert into Profiles values('"+"US"+str(userid)+"','"+"PF"+str(profileNo)+"','"+"/uploads/"+filename+"','"+biography+"','"+location+"')")
+                # db.engine.execute("insert into Profiles values('"+"US"+str(userid)+"','"+"PF"+str(profileNo)+"','"+"/uploads/"+filename+"','"+biography+"','"+location+"')")
 
 
                 return redirect(url_for('posts'))
@@ -110,25 +97,36 @@ def setupprofile():
 @app.route('/createpost/<option>',methods=['POST', 'GET'])
 def createpost(option):
     createpost = CreatePost()
-    
-    if request.method == "POST" and  createpost.validate_on_submit():
-        if(option==1):
-            textpost=createpost.text.data
+    print("went before post function")
+    textpost=createpost.text.data
+    print(option)
+    print(textpost)
+    postId=35
+    imageId=20
+    textId=21
+    postDate='2020-04-24'
+    postTime='12:09:00'
+
+    if request.method == "POST":
+        print("went into function")
+        db.engine.execute("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(1)+"','"+str(postDate)+"','"+postTime+"')")
+
+        if(textpost!=""):
+            # textpost=createpost.text.data
             db.engine.execute("insert into texts values('"+"PS"+str(postId)+"','"+"TT"+str(textId)+"','"+textpost+"')")
 
         else:
-            photo= createpost.profilepic.data
+            photo= createpost.image.data
                 # created_date=format_date_joined(datetime.datetime.now())
             filename=secure_filename(photo.filename)
             photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-            db.engine.execute("insert into images values('"+"PS"+str(postId)+"','"+"IM"+str(imageId)+"','"+photo+"')")
+            db.engine.execute("insert into images values('"+"PS"+str(postId)+"','"+"IM"+str(imageId)+"','"+'/static/uploads/'+filename+"')")
 
-        db.engine.execute("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(userId)+"','"+str(postDate)+"','"+postTime+"')")
 
         return redirect(url_for('posts'))
-    else:
-        flash_errors(createprofile)
-        return render_template('setupprofile.html',form=createprofile)  
+    # else:
+    #     flash_errors(createpost)
+    #     return render_template('createpost.html',form=createpost)  
 
 # @app.route('/profiles')
 # def profiles():
@@ -139,23 +137,28 @@ def createpost(option):
 @app.route('/profile/<userid>')
 def profile(userid):
     users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
-    return render_template('profilepage.html',users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
+    return render_template('profilepage.html',users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 # all individual posts for a specific user
 @app.route('/posts/<userid>')
 def userposts(userid):
     form=CreatePost()
-    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid INNER join comments on comments.postid=allpost.postid where posts.userid='"+userid+"' ")
+    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"'")
+
+    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' ")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid where posts.userid='"+userid+"'")
-    
-    return render_template('posts.html',form=form,posts=posts,comments=comments,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
+    return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+    # return render_template('posts.html',form=form,posts=posts,comments=comments,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 @app.route('/comments/<postid>')
 def comments(postid):
     comments=db.engine.execute("select * from comments where postid='"+postid+"'")
     return render_template('comments.html',comments=comments)
-@app.route('/login')
+
+@app.route('/')
+@app.route('/login', methods=['POST', 'GET'])
 def login():
     loginform=Login()
     if request.method == "POST" and  loginform.validate_on_submit():
@@ -180,6 +183,11 @@ def login():
         return redirect('posts')
     return render_template('login.html',form=loginform)
 
+@app.route('/logout')
+def logout():
+    flash("Logged out successfully!!!","success")
+    loginform=Login()
+    return render_template('login.html',form=loginform)
 
 # Flash errors from the form if validation fails
 def flash_errors(form):

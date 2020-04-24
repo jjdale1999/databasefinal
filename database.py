@@ -12,6 +12,16 @@ fake=Faker()
 # profileno starts with PF
 
 #creation of each user and profiles
+def padding(number):
+    # while(len(number)!=500002):
+    #     number="0"+str(number)
+    newnumber=number.zfill(50000)
+
+    return newnumber
+def postidpadding(number):
+    while(len(number)!=3000002):
+        number="0"+str(number)
+    return number
 f= open("database.sql","w+")
 for i in range(50):
     userid = i+1
@@ -44,9 +54,10 @@ for i in range(50):
     
     # appending to text file
     biography.replace('\r','')
-    f.write("insert into Users values('"+"US"+str(userid)+"','"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"'); \n")
+    userid=padding(str(userid))
+    f.write("insert into Users values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"'); \n")
 
-    f.write("insert into Profiles values('"+"US"+str(userid)+"','"+"PF"+str(profileNo)+"','"+profilepic+"','"+username+"','"+biography+"','"+country+"');\n")
+    f.write("insert into Profiles values('"+str(userid)+"','"+profilepic+"','"+username+"','"+biography+"','"+country+"');\n")
 
    
     print(str(i)+"\n")
@@ -62,6 +73,7 @@ for x in range(30):
     #selecting the userid for the post 
     postId=x
     userId=random.randint(1,50)
+    userId=padding(str(userId))
     date_time=fake.date_time_this_decade()
     postDate=fake.date_this_year(before_today=True, after_today=False)
     postTime=fake.time()
@@ -69,13 +81,13 @@ for x in range(30):
     text_photo=random.randint(0,20)
 
 # insert into post 
-    f.write("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(userId)+"','"+str(postDate)+"','"+postTime+"');\n");
+    f.write("insert into posts values('"+str(userId)+"','"+str(postDate)+"','"+postTime+"');\n");
 
     if(text_photo%2==0):
         textpost= fake.text()
         textpost.replace('\r','')
         # insertinto text
-        f.write("insert into texts values('"+"PS"+str(postId)+"','"+"TT"+str(textId)+"','"+textpost+"');\n");
+        f.write("insert into texts values('"+str(postId)+"','"+textpost+"');\n");
 
         textId+=1
 
@@ -83,7 +95,7 @@ for x in range(30):
         photopost=fake.image_url()
         while("placeimg" not in photopost):
             photopost=fake.image_url()
-        f.write("insert into images values('"+"PS"+str(postId)+"','"+"IM"+str(imageId)+"','"+photopost+"');\n");
+        f.write("insert into images values('"+str(postId)+"','"+photopost+"');\n");
 
         imageId+=1
 
@@ -97,15 +109,17 @@ for x in range(30):
     for y in range(randnum):
         # userid of comment
         cuserid=random.randint(1,50)
+        cuserid=padding(str(cuserid))
         while(userid==cuserid):
             cuserid=random.randint(1,50)
+            cuserid=padding(str(cuserid))
         commmentDetail=fake.text(max_nb_chars=150, ext_word_list=None)
         commmentDetail.replace('\r','')
         cdate_time=fake.date_time_this_decade()
         commentDate=fake.date_this_year(before_today=True, after_today=False)
         comentTime=fake.time()
         # insert into comments 
-        f.write("insert into comments values('"+"PS"+str(postId)+"','"+"CM"+str(commentId)+"','"+"US"+str(cuserid)+"','"+commmentDetail+"','"+str(commentDate)+"','"+comentTime+"');\n");
+        f.write("insert into comments values('"+str(postId)+"','"+str(cuserid)+"','"+commmentDetail+"','"+str(commentDate)+"','"+comentTime+"');\n");
 
         commentId+=1
         #likes
@@ -129,7 +143,7 @@ for x in range(50):
         fType=random.choice(relationships)
 
         friends.append(friendid)
-        f.write("insert into Friendship values('"+"US"+str(x+1)+"','"+"US"+str(friendid)+"','"+fType+"');\n");
+        f.write("insert into Friendship values('"+str(x+1)+"','"+str(friendid)+"','"+fType+"');\n");
 
 
     print(x)
@@ -143,17 +157,19 @@ for x in range(50):
     groupId=x
     groupName=fake.word()
     createdBy= random.randint(1,50)
-    f.write("insert into groups values('"+"GP"+str(groupId)+"','"+groupName+"','"+"US"+str(createdBy)+"');\n");
+    f.write("insert into groups values('"+groupName+"','"+str(createdBy)+"');\n");
 
     randnum=random.randint(2,5)
     for x in range(randnum):
         userId=random.randint(1,50)
+        userId=padding(str(userId))
         while((createdBy==userId) or (userId in users)):
             userId=random.randint(1,50)
+            userId=padding(str(userId))
         users.append(userId)
         status=random.choice(status_all)
 
-        f.write("insert into joinsGroup values('"+"GP"+str(groupId)+"','"+"US"+str(userId)+"','"+status+"');\n");
+        f.write("insert into joinsGroup values('"+str(userId)+"','"+status+"');\n");
 
 
 print(" creation of groups done")

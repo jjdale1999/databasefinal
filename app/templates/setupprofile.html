@@ -1,4 +1,4 @@
-{% extends 'base.html' %}
+{% extends 'formBase.html' %}
 
 
 {% block main %}
@@ -6,31 +6,31 @@
 {% include 'flash_messages.html' %}
 <div class="formdiv">
   <h1 class="page-header">SetUp Profile</h1>
-    <form class="formf"action="{{ url_for('setupprofile')}}" method="POST" enctype="multipart/form-data">
+    <form id="signupForm" class="formf"action="{{ url_for('setupprofile')}}" method="POST" enctype="multipart/form-data">
       {# Add the file upload field as you learnt for Flask-WTF #}
       {{form.csrf_token}}
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.username.label (class="bold") }} 
-        {{form.username (class="txtbox")}}
+        {{form.username (class="form-control")}}
       </div>
 
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.location.label (class="bold") }} 
-        {{form.location (class="txtbox")}}
+        {{form.location (class="form-control")}}
       </div>
       
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.biography.label (class="bold") }}
-        {{form.biography (class="txtbox",rows='5',cols='10')}}
+        {{form.biography (class="form-control",rows='5',cols='10')}}
       </div>
     
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.profilepic.label}} 
-        {{form.profilepic (class="txtbox ")}}
+        {{form.profilepic (class="form-control")}}
       </div>
       <div>
-        <button type="submit" name="submit" class="btn greenbtn">Update Profile</button>
-
+        <button type="submit" name="submit" class="btn btn-primary btn-block">Update Profile</button>
+        <br><a href="{{ url_for('login') }}">Already have an account? Click here to log in.</a>
       </div>
     </form>
 </div>

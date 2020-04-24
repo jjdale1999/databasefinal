@@ -159,3 +159,14 @@ select count(userId) from joinsGroup where groupName = "TheRoyalFamily"
 
 /*Shows the first and last name of all the users within the group "TheRoyalFamily"*/
 select firstName,lastName from uProfile join joinsGroup on uProfile.userId= joinsGroup.userId join myBookGroup on myBookGroup.groupId= joinsGroup.groupId where myBookGroup.groupName ='TheRoyalFamily';
+
+update users set userid='US0'+right(userid,2) where userid='US9';
+SELECT * FROM users ORDER BY right(userid,2) ;
+
+select postId from posts order by postid desc limit 1;
+
+select textid from texts order by textid desc limit 1;
+
+select imageid from images order by imageid desc limit 1;
+
+select profileNo from profiles order by profileNo desc limit 1;

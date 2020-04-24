@@ -1,0 +1,25 @@
+{% extends "base.html"%}
+{% block sideprofile %}
+
+    {% include 'sideprofile.html' %}
+{% endblock %}
+
+{% block main %}
+    <div id="profiles">
+        <h1 id="profile">Group List</h1>
+    
+        <div class="cardbod" id="card-lay" >
+            {% for group in groups %}     
+                <div>
+                    <h2>
+                        {{ group.groupname }}
+                    </h2>
+                </div>
+            {% endfor %}
+
+           
+            
+        </div>
+    </div>
+    
+{% endblock %}

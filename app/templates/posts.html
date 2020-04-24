@@ -27,7 +27,7 @@
                             <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             </button>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                {%if post.images.startswith("https://placeimg.com")%}
+                                {%if (post.images.startswith("https://placeimg.com")) or (post.images.startswith("/static/uploads/"))%}
                                     <button class="dropdown-item" type="button">Set as Profile Picture</button>
                               {%endif%}
                               <button class="dropdown-item" type="button">Share to Facebook</button>
@@ -37,8 +37,8 @@
                         </li>
                     </div>
                 <ul class="postcard-lay">
-                        {%if post.images.startswith("https://placeimg.com")%}
-                            <img class="postimages" src="{{post.images}}" alt="" >
+                    {%if (post.images.startswith("https://placeimg.com")) or (post.images.startswith("/static/uploads/"))%}
+                    <img class="postimages" src="{{post.images}}" alt="" >
                         {%else%}
                             <li>{{post.images}}</li>
                         {%endif%}

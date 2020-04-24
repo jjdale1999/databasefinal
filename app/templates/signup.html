@@ -1,45 +1,46 @@
-{% extends 'base.html' %}
+{% extends 'formBase.html' %}
 
 {% block main %}
 
-{% include 'flash_messages.html' %}
 <div class="formdiv">
-  <h1 class="page-header">SignUp</h1>
-    <form class="formf"action="{{ url_for('signup')}}" method="POST" enctype="multipart/form-data">
-      
+  <h1 class="page-header">
+    SignUp
+  </h1>
+  {% include 'flash_messages.html' %}
+    <form id="signupForm" class="formf"action="{{ url_for('signup')}}" method="POST" enctype="multipart/form-data">
       {# Add the file upload field as you learnt for Flask-WTF #}
       {{form.csrf_token}}
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.fname.label (class="bold") }} 
-        {{form.fname (class="txtbox")}}
+        {{form.fname (class="form-control")}}
       </div>
     
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.lname.label (class="bold") }} 
-        {{form.lname (class="txtbox")}}
+        {{form.lname (class="form-control")}}
       </div>
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.gender.label (class="bold") }}
-        {{form.gender (class="txtbox",placeholder="Select Gender")}}
+        {{form.gender (class="form-control",placeholder="Select Gender")}}
       </div>
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.email.label (class="bold") }}  
-        {{form.email (class="txtbox")}}
+        {{form.email (class="form-control")}}
       </div>
      
       
     
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.password.label}} 
-        {{form.password (class="txtbox ")}}
+        {{form.password (class="form-control ")}}
       </div>
-      <div class='lbtxt'>
+      <div class='form-group'>
         {{form.repassword.label}} 
-        {{form.repassword (class="txtbox ")}}
+        {{form.repassword (class="form-control ")}}
       </div>
-      <div>
-        <button type="submit" name="submit" class="btn greenbtn">Sign Up</button>
-
+      <div class="span-col">
+        <button type="submit" name="submit" class="btn btn-primary btn-block">Sign Up</button>
+        <br><a href="{{ url_for('login') }}">Already have an account? Click here to log in.</a>
       </div>
     </form>
 </div>

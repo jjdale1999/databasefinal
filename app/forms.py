@@ -15,7 +15,7 @@ class SignUp(FlaskForm):
 
 
 class CreateProfile(FlaskForm):
-    username = StringField('Username', validators=[DataRequired()],render_kw={"placeholder":"Jane"})
+    username = StringField('Username', validators=[DataRequired()],render_kw={"placeholder":"janedoe123"})
     location = StringField('Location', validators=[DataRequired()],render_kw={"placeholder":"eg. Kingston,Jamaica"})
     biography = TextAreaField('Biography',validators=[DataRequired()])
     profilepic = FileField('Profile Pic',validators=[FileRequired(),FileAllowed(['jpg','jpeg','png','Images Only'])])

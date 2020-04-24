@@ -1,6 +1,8 @@
 @import "friendslist.css"; 
 @import "sideprofile.css"; 
 @import "posts.css"; 
+
+
 body {
     padding-top: 5rem;
     background-color: black;
@@ -227,3 +229,36 @@ position:relative;
     /* margin-right:10%; */
 }
 
+#mainContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#loginContainer{
+    width: 400px;
+
+}
+
+#loginImageDiv {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#logoimg {
+    width: 200px;
+    height: auto;
+}
+
+#signupForm {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    padding-top: 20px;
+    padding-right: 40px;
+}
+
+.span-col {
+    grid-column-start: 1;
+    grid-column-end: 2;
+}
