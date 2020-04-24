@@ -12,55 +12,46 @@
 
         <div class="posts">
             
-            <h1 class="profile">ALL POSTS&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/static/images/createpost.png" class="smallimg" data-toggle="modal" data-target="#exampleModal0" data-whatever="@mdo">
+            <h1 class="profile">ALL POSTS&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/static/images/createpost2.png" class="smallimg" data-toggle="modal" data-target="#exampleModal0" data-whatever="@mdo">
             </h1>
 
             
-{%include 'createpost.html'%}
+            {%include 'createpost.html'%}
             {% for post in posts%}
                 <div class="cardbod" id="postcard-lay" >
-                    <li><h4 class="card-title">{{post.userid}}</h4></li>
-
-                    <ul class="postcard-lay">
+                    <br>
+                    <div class="user-info">
+                        
+                        <li><h4 class="card-title"><img class="commentsuser-images" src="{{post.profilepic}}" alt="" > @{{post.username}}</h4></li>
+                       <li> <div class="dropdown">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
+                                {%if post.images.startswith("https://placeimg.com")%}
+                                    <button class="dropdown-item" type="button">Set as Profile Picture</button>
+                              {%endif%}
+                              <button class="dropdown-item" type="button">Share to Facebook</button>
+                              <button class="dropdown-item" type="button">Share to twitter</button>
+                            </div>
+                          </div>
+                        </li>
+                    </div>
+                <ul class="postcard-lay">
                         {%if post.images.startswith("https://placeimg.com")%}
                             <img class="postimages" src="{{post.images}}" alt="" >
                         {%else%}
                             <li>{{post.images}}</li>
                         {%endif%}
                     </ul>
+                    
                     <div id="comments">
-                        <img class="smallimg" src="/static/images/likes.png">{{post.likes}}12K</li>
+                        <img class="commentimg" src="/static/images/likes.png">{{post.likes}}12K</li>
                         <img class="commentimg" src="/static/images/comments.png" data-toggle="modal" data-target=".bd-example-modal-lg" >
 
                     </div>
-                    <!-- Large modal -->
 
-                    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-lg">
-                            <div class="modal-content">
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                                </div>
-                                
-                                {% for x in  comments(post.postid)  %}
-                                <div class="comments">
-                                    <div class="user-info">
-                                        <li><img class="commentsuser-images" src="{{x.profilepic}}" alt="image" ></li>
-    
-                                        <li><h4 class="card-title">@{{x.username}}</h4></li>
-                                    </div>
-                                    
-                                        <!-- get image for user id and username -->
-                                        <li><h4 class="card-title">{{x.commentdetail}}</h4></li>
-                                        <li><h4 class="card-title">{{x.time}}</h4></li>
-                                </div>
-                                
-                                {%endfor%}
-                                
-                            </div>
-                            
-                        </div>
-                    </div>
+                    <!-- load comments for posts -->
+                    {%include 'comments.html'%}
                     
                                 
                 </div>

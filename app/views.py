@@ -20,12 +20,39 @@ def format_date_joined(dat):
 # Routing for your application.
 ###
 
+
+# @app.route('/')
+# def home():
+
+#     createpost=CreatePost()
+#     """Render website's home page."""
+#     return render_template('home.html',form=createpost,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
+#     # return render_template('home.html',fname=fname,lname=lname,email=email,location=location,gender=gender,biography=biography,photo=photo,created_date=created_date)
+
+# all individual posts
 @app.route('/')
-def home():
-    createpost=CreatePost()
-    """Render website's home page."""
-    return render_template('home.html',form=createpost,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
-    # return render_template('home.html',fname=fname,lname=lname,email=email,location=location,gender=gender,biography=biography,photo=photo,created_date=created_date)
+@app.route('/posts')
+def posts():
+    session['userid']="US1"
+    session['fname']="dummy "
+    session['lname']="data"
+    session['email']="dummydata@lol.com"
+    session['username']="dummydata123"
+    session['location']="Dummy,Town"
+    session['biography']="Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum"
+    session['profilepic']="/static/images/background.jpg"
+    session['followers']="10K"
+    session['following']="200"
+    form=CreatePost()
+    profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+session['userid']+"'")  
+    
+    followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+session['userid']+"'")   
+    follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+session['userid']+"'")  
+   
+    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
+    
+    return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
+
 
 
 @app.route('/about/')
@@ -56,24 +83,9 @@ def signup():
 @app.route('/friendlist/<userid>',methods=['GET'])
 def friendlist(userid):
     friends=db.engine.execute("select * from friendship join users on users.userid=friendship.fuserid join profiles on profiles.userid=users.userid where friendship.userid='"+userid+"'")  
-    profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")  
-    followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+userid+"'")   
-    follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+userid+"'")  
-    for x in followings:
-        print(x.following)
-        following=x.following
-    for z in follower:
-        followers=z.following
-    for y in profile:
-        fname=y.firstname
-        lname=y.lastname
-        email=y.email
-        username=y.username
-        location=y.countryliving
-        biography=y.biography
-        profilepic=y.profilepic
+  
    
-    return render_template('friendslist.html',friends=friends,profilepic=profilepic,fname=fname,username=username,lname=lname,email=email,location=location,biography=biography,followers=followers,following=following)
+    return render_template('friendslist.html',friends=friends,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
 @app.route('/setupprofile',methods=['POST', 'GET'])
 def setupprofile():
     createprofile = CreateProfile()
@@ -89,7 +101,7 @@ def setupprofile():
                 db.engine.execute("insert into Profiles values('"+"US"+str(userid)+"','"+"PF"+str(profileNo)+"','"+"/uploads/"+filename+"','"+biography+"','"+location+"')")
 
 
-                return redirect(url_for('home'))
+                return redirect(url_for('posts'))
     else:
                 flash_errors(createprofile)
     return render_template('setupprofile.html',form=createprofile)   
@@ -113,7 +125,7 @@ def createpost(option):
 
         db.engine.execute("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(userId)+"','"+str(postDate)+"','"+postTime+"')")
 
-        return redirect(url_for('home'))
+        return redirect(url_for('posts'))
     else:
         flash_errors(createprofile)
         return render_template('setupprofile.html',form=createprofile)  
@@ -126,75 +138,18 @@ def createpost(option):
 
 @app.route('/profile/<userid>')
 def profile(userid):
-
-    profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+str("US1")+"'")  
-    for y in profile:
-        fname=y.firstname
-        lname=y.lastname
-        email=y.email
-        username=y.username
-        location=y.countryliving
-        biography=y.biography
-        profilepic=y.profilepic
-    followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+str("US1")+"'")   
-    follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+str("US1")+"'")  
-    for x in followings:
-        print(x.following)
-        following=x.following
-    for z in follower:
-        followers=z.following
     users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
-    return render_template('profilepage.html',users=users,profilepic=profilepic,fname=fname,username=username,lname=lname,email=email,location=location,biography=biography,followers=followers,following=following)
+    return render_template('profilepage.html',users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
 
-# all individual posts
-@app.route('/posts')
-def posts():
-    form=CreatePost()
-    profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+str("US1")+"'")  
-    for y in profile:
-        fname=y.firstname
-        lname=y.lastname
-        email=y.email
-        username=y.username
-        location=y.countryliving
-        biography=y.biography
-        profilepic=y.profilepic
-    followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+str("US1")+"'")   
-    follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+str("US1")+"'")  
-    for x in followings:
-        print(x.following)
-        following=x.following
-    for z in follower:
-        followers=z.following
-    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid")
-    
-    
-    return render_template('posts.html',form=form,posts=posts,profilepic=profilepic,fname=fname,username=username,lname=lname,email=email,location=location,biography=biography,followers=followers,following=following)
 
 # all individual posts for a specific user
 @app.route('/posts/<userid>')
 def userposts(userid):
     form=CreatePost()
-    profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+str("US1")+"'")  
-    for y in profile:
-        fname=y.firstname
-        lname=y.lastname
-        email=y.email
-        username=y.username
-        location=y.countryliving
-        biography=y.biography
-        profilepic=y.profilepic
-    followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+str("US1")+"'")   
-    follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+str("US1")+"'")  
-    for x in followings:
-        print(x.following)
-        following=x.following
-    for z in follower:
-        followers=z.following
     posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid INNER join comments on comments.postid=allpost.postid where posts.userid='"+userid+"' ")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid where posts.userid='"+userid+"'")
     
-    return render_template('posts.html',form=form,posts=posts,comments=comments,profilepic=profilepic,fname=fname,username=username,lname=lname,email=email,location=location,biography=biography,followers=followers,following=following)
+    return render_template('posts.html',form=form,posts=posts,comments=comments,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'])
 
 @app.route('/comments/<postid>')
 def comments(postid):
@@ -222,7 +177,7 @@ def login():
         session['following']=x.following
         for z in follower:
             session['followers']=z.following
-        return redirect('home')
+        return redirect('posts')
     return render_template('login.html',form=loginform)
 
 

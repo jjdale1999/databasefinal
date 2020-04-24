@@ -1,13 +1,13 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-primary fixed-top">
-  <a class="navbar-brand" href="{{ url_for('home') }}">Project 1</a>
+  <a class="navbar-brand" href="{{ url_for('posts') }}"><img class="logoimg" src="/static/images/logo3.png"></a>
   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
     <span class="navbar-toggler-icon"></span>
   </button>
 
-  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+  <div class="collapse navbar-collapse" id="navbarSupportedContent header" >
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href="{{ url_for('home') }}">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{{ url_for('posts') }}">Home <span class="sr-only">(current)</span></a>
       </li>
       <li class="nav-item">
         <a class="nav-link" href="{{ url_for('about') }}">About</a>
@@ -25,4 +25,15 @@
       </li>
     </ul>
   </div>
+  <form class="form-inline" action="{{ url_for('profile',userid=1)}}" method="GET" enctype="multipart/form-data">
+    <div class="input-group">
+      <div class="input-group-prepend">
+        <span class="input-group-text" id="basic-addon1">@</span>
+      </div>
+      <input type="text" class="form-control" placeholder="Username" aria-label="Username" aria-describedby="basic-addon1"> &emsp;
+
+      <button class="btn  my-2 my-sm-0  btn-secondary" type="submit">Search</button>
+
+    </div>
+  </form>
 </nav>

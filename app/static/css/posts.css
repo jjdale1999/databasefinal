@@ -1,7 +1,7 @@
 .postimages{
     margin-top: 15px;
-    width:680px;
-    height:730px;
+    width:580px;
+    height:630px;
     position:relative;
 }
 
@@ -15,10 +15,28 @@
 
 }
 
+.upper{
+        display:grid;
+
+    grid-template-columns: 0fr 1fr ;
+
+}
+.commentinput{
+    width:80%;
+    height:50px;
+}
+.addcomment{
+    margin-left: 20px;
+}
+
 .user-info{
     display:grid;
-     grid-template-columns: 70px 190px ;
+     grid-template-columns: 1fr 0fr;
 
+}
+.commentsuser-info{
+    display:grid;
+    grid-template-columns: 55px 190px;
 }
 .comments{
     border-bottom: 5px solid rgb(233, 231, 231);
