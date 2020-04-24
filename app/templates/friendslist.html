@@ -6,7 +6,7 @@
 
 {% block main %}
     <div id="profiles">
-        <h1 class="profile">Friend List</h1>
+        <h1 id="profile">Friend List</h1>
     
         <div class="cardbod" id="card-lay" >
             {% for friend in friends%}
@@ -14,11 +14,11 @@
                     <li><img class="images" src="{{friend.profilepic}}" alt="image" ></li>
                     <div>
                         <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
-                        <li class="card-text name"><a href=""> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
+                        <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
 
 
                     </div>
-                    <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.country}}</li>
+                    <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.countryliving}}</li>
                     <li class="card-text "> <div class="following">Following</div> </li>
                 </ul>
 

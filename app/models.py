@@ -1,12 +1,6 @@
 from . import db
 from werkzeug.security import generate_password_hash
 
-
-
-
-
-
-
 db.engine.execute("drop table comments")
 db.engine.execute("drop table joinsgroup")
 db.engine.execute("drop table groups")
@@ -35,5 +29,7 @@ db.engine.execute("create table joinsGroup(groupId varchar(255),userId varchar(2
 
 db.engine.execute("create table comments(postId varchar(255),commentId varchar(255),  userId varchar(255),commentDetail varchar(255),commentDate text,comentTime text,primary key (userId,commentId,postId),foreign key (userId) references Users(userId) on delete cascade,foreign key (postId) references posts(postId) on delete cascade )")
 
+
+# create the 3 or more procedures
 # # command use to insert data into postgres
 # # \i /Users/jordannedale/Desktop/databasefinal/database.sql 

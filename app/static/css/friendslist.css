@@ -3,8 +3,21 @@
     list-style: none;
     grid-template-columns: 0fr 1fr 1fr 1fr;
 
-}
+  
 
+}
+#profiles{
+    background-color: rgb(69, 70, 71);
+    background-clip: border-box;
+    /* just to show box-shadow still works fine */
+    box-shadow: 8px 10px 8px rgb(238, 214, 3), inset 0 0 9px white;
+    border-radius: 5px;
+    position:relative;
+}
+#profile{
+    text-align: center;
+
+}
 .images{
     margin-top:45px;
     width:50px;
@@ -48,8 +61,9 @@
     position: relative;
     border: 3px solid transparent;
     border-radius: 16px;
-    background: linear-gradient(34deg, rgba(230,230,233,1) 8%, rgba(145,145,214,1) 38%, rgba(133,174,182,1) 78%, rgba(249,249,249,1) 100%);
+    background: linear-gradient(34deg, rgb(111, 111, 136) 8%, rgb(48, 48, 80) 38%, rgb(33, 54, 58) 78%, rgb(129, 61, 61) 100%);
     background-clip: content-box;
     /* just to show box-shadow still works fine */
     box-shadow: 0 3px 9px rgb(139, 82, 125), inset 0 0 9px white;
+    padding:2px;
 }

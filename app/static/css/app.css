@@ -1,6 +1,6 @@
 @import "friendslist.css"; 
 @import "sideprofile.css"; 
-
+@import "posts.css"; 
 body {
     padding-top: 5rem;
     background-color: black;

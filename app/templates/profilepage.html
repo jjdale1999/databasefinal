@@ -8,15 +8,16 @@
 <div class="blueborder">
     <div class="cardbod" id="card-lay" >
         <div class="margindiv">
+            {%for user in users%}
+
             <ul class="user-card-lay">
-
-                <li><img class="user-images" src="{{url_for('static',filename=photo)}}" alt="image" ></li>
+                <li><img class="user-images" src="{{user.profilepic}}" alt="image" ></li>
                 <div id="col2" class="card-body">
-                    <li><h4 class="card-title"> {{fname}}  {{lname}}</h4></li>
-                    <li class="card-text"> <img class="smallimg" src="/static/images/email.png"> @{{username}}</li>
+                    <li><h4 class="card-title"> {{user.firstname}}  {{user.lastname}}</h4></li>
+                    <li class="card-text"> <img class="smallimg" src="/static/images/email.png"> @{{user.username}}</li>
 
-                    <li class="card-text"> <img class="smallimg" src="/static/images/email.png"> {{email}}</li>
-                    <li class="card-text"> <img class="smallimg" src="/static/images/location.png">{{location}}</li>
+                    <li class="card-text"> <img class="smallimg" src="/static/images/email.png"> {{user.email}}</li>
+                    <li class="card-text"> <img class="smallimg" src="/static/images/location.png">{{user.countryliving}}</li>
                     <li class="card-text"> <img class="smallimg" src="/static/images/dateadded.png"> Joined on {{created_date}}</li>
 
                 </div>
@@ -24,13 +25,15 @@
             </ul>
             <div class="text">
                 <h3>About Me</h3>
-                <p class="card-text"> {{biography}}</p>
+                <p class="card-text"> {{user.biography}}</p>
                 <button class=" greenbtn ubtn" type="submit">Send Message</button>
                 <button class=" btn-primary ubtn" type="submit">Follow</button>
             </div>
 
             <!-- list all posts for this person -->
             
+
+            {%endfor%}
         </div>
             
 

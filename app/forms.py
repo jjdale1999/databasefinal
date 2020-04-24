@@ -22,3 +22,11 @@ class CreateProfile(FlaskForm):
 
 
 
+class CreatePost(FlaskForm):
+   
+    text = TextAreaField('Biography',validators=[DataRequired()])
+    image = FileField('Profile Pic',validators=[FileRequired(),FileAllowed(['jpg','jpeg','png','Images Only'])])
+
+class Login(FlaskForm):
+    username = StringField('Username', validators=[DataRequired()],render_kw={"placeholder":"Jane"})
+    password = PasswordField('Password',validators=[DataRequired()])

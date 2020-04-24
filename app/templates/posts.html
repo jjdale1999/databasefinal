@@ -3,53 +3,72 @@
 
 {% include 'sideprofile.html' %}
 {% endblock %}
+
+
+
 {% block main %}
-<div class="posts">
+
+
+
+        <div class="posts">
+            
+            <h1 class="profile">ALL POSTS&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/static/images/createpost.png" class="smallimg" data-toggle="modal" data-target="#exampleModal0" data-whatever="@mdo">
+            </h1>
+
+            
+{%include 'createpost.html'%}
+            {% for post in posts%}
+                <div class="cardbod" id="postcard-lay" >
+                    <li><h4 class="card-title">{{post.userid}}</h4></li>
+
+                    <ul class="postcard-lay">
+                        {%if post.images.startswith("https://placeimg.com")%}
+                            <img class="postimages" src="{{post.images}}" alt="" >
+                        {%else%}
+                            <li>{{post.images}}</li>
+                        {%endif%}
+                    </ul>
+                    <div id="comments">
+                        <img class="smallimg" src="/static/images/likes.png">{{post.likes}}12K</li>
+                        <img class="commentimg" src="/static/images/comments.png" data-toggle="modal" data-target=".bd-example-modal-lg" >
+
+                    </div>
+                    <!-- Large modal -->
+
+                    <div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                                </div>
+                                
+                                {% for x in  comments(post.postid)  %}
+                                <div class="comments">
+                                    <div class="user-info">
+                                        <li><img class="commentsuser-images" src="{{x.profilepic}}" alt="image" ></li>
     
-    <h1 class="profile">ALL POSTS</h1>
- 
-    {% for post in posts%}
-   
-        <div class="cardbod" id="card-lay" >
-            <ul class="card-lay">
-                <div class="card-body">
-                    <li><h4 class="card-title">{{post.username}}</h4></li>
-                    <li class="card-text"> <img class="smallimg" src="/static/images/likes.png">{{post.likes}}</li>
-                    <li class="card-text"> <img class="smallimg" src="/static/images/comments.png">{{post.likes}}</li>
+                                        <li><h4 class="card-title">@{{x.username}}</h4></li>
+                                    </div>
+                                    
+                                        <!-- get image for user id and username -->
+                                        <li><h4 class="card-title">{{x.commentdetail}}</h4></li>
+                                        <li><h4 class="card-title">{{x.time}}</h4></li>
+                                </div>
+                                
+                                {%endfor%}
+                                
+                            </div>
+                            
+                        </div>
+                    </div>
+                    
+                                
                 </div>
-
-                <li><img class="images" src="{{url_for('static',filename=post.photo)}}" alt="" ></li>
-                <li>post.description</li>
+            
                 
-                <li id="col3">
-                    <button class="btn greenbtn">View Comments</button> 
-                    <!-- if button clicked the reveal all comments -->
-                </li>
-                <ul class="comments" hidden>
-                    <!-- to unhide it need to create a javascript 
-                        when the button is clicked it shows all the comments something like twitter, 
-                        where a pop up of all comments are shown 
-                                        or 
-                        the hard route and do it like instagram -->
-                    {% for comment in comments%}
-                        <li><h4 class="card-title">{{comment.username}}</h4></li>
-                        <li><h4 class="card-title">{{comment.description}}</h4></li>
-                        <li><h4 class="card-title">{{comment.time}}</h4></li>
-                    {% endfor %}
-                </ul>
-                
-
-            </ul>
+            
+            {% endfor %}
             
         </div>
-    
-  
-
-
-        
-       
-    {% endfor %}
-    
-</div>
 
 {% endblock %}
