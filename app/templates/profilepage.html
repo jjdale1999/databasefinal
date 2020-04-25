@@ -11,7 +11,7 @@
             <a href=""class="" type="submit"><img src=''>Send Message</a>
             &emsp; &emsp; 
             <!-- <button class=" btn-primary ubtn" type="submit">Follow</button> -->
-            <a href=""data-toggle="modal" data-target="#exampleModal1" data-whatever="@mdo" data-dismiss="modal" > Follow</a>
+            <a id="follow"href="" data-toggle="modal" data-target="#exampleModal1" data-whatever="@mdo" data-dismiss="modal" > Follow</a>
           </div>
           
             {%for user in users%}
@@ -73,8 +73,8 @@
                     <div class="modal-body">
                       <form action="{{ url_for('addfollower',followerid=user.userid) }}" method="POST" enctype="multipart/form-data">
                         <div class="form-group">
-                          {{form.friendtype.label (class="col-form-label")}}
-                          {{form.friendtype (class="form-control")}}
+                          {{fform.friendtype.label (class="col-form-label")}}
+                          {{fform.friendtype (class="form-control")}}
                           
                         </div>
                         <div class="modal-footer">
