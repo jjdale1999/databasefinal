@@ -29,8 +29,8 @@ def posts():
 #    getting both texts and images posts
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
     form=CreatePost()
-    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
-
+    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
+    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid join friendship on friendship.fuserid=posts.userid where friendship.userid='"+session['userid']+"' order by posts.postid desc")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' ")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid where posts.userid='"+userid+"'")
     return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
@@ -63,7 +63,6 @@ def signup():
                 password=createuser.password.data
                 created_date=format_date_joined(datetime.datetime.now())
                  # get the last userid and then add it to one to get new userid
-                # db.engine.execute("insert into Users values('"+"US"+str(userid)+"','"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"')")
                 db.engine.execute("insert into Users (firstname,lastname,email,gender,password) values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"')")
 
 
@@ -92,8 +91,8 @@ def setupprofile():
                 created_date=format_date_joined(datetime.datetime.now())
                 filename=secure_filename(photo.filename)
                 photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                # db.engine.execute("insert into Profiles values('"+"US"+str(userid)+"','"+"PF"+str(profileNo)+"','"+"/uploads/"+filename+"','"+biography+"','"+location+"')")
-
+                db.engine.execute("insert into Profiles (userid,profilepic,username,biography,countryliving) values('"+str(userid)+"','"+profilepic+"','"+username+"','"+biography+"','"+country+"')")
+		
 
                 return redirect(url_for('posts'))
     else:
@@ -104,7 +103,7 @@ def setupprofile():
 def addfollower(followerid):
     form=FriendType()
     friendtype = form.friendtype.data
-    print(friendtype)
+    # print(friendtype)
     db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(session['userid'])+"','"+str(followerid)+"','"+friendtype+"')")
     return redirect(url_for('profile',userid=followerid))
 @app.route('/createpost/<option>',methods=['POST', 'GET'])
@@ -114,19 +113,21 @@ def createpost(option):
     postDate='2020-04-24'
     postTime='12:09:00'
     if request.method == "POST":
-        print("went into function")
+        # print("went into function")
         # db.engine.execute("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(1)+"','"+str(postDate)+"','"+postTime+"')")
-        db.engine.execute("insert into posts (userid,postdate,posttime) values('"+str(session['userid'])+"','"+str(postDate)+"','"+postTime+"');\n");
-
+        db.engine.execute("insert into posts (userid,postdate,posttime) values('"+str(session['userid'])+"','"+str(postDate)+"','"+postTime+"')")
+        lastpostid= db.engine.execute("select postId from posts order by postid desc limit 1")
+        for last in lastpostid:
+            postId=last.postid
         if(textpost!=""):
-            db.engine.execute("insert into texts values('"+"PS"+str(postId)+"','"+"TT"+str(textId)+"','"+textpost+"')")
+            db.engine.execute("insert into texts (postid,images) values('"+str(postId)+"','"+textpost+"')")
 
         else:
             photo= createpost.image.data
                 # created_date=format_date_joined(datetime.datetime.now())
             filename=secure_filename(photo.filename)
             photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-            db.engine.execute("insert into images values('"+"PS"+str(postId)+"','"+"IM"+str(imageId)+"','"+'/static/uploads/'+filename+"')")
+            db.engine.execute("insert into images (postid,images) values('"+str(postId)+"','"+'/static/uploads/'+filename+"')")
 
 
         return redirect(url_for('posts'))
@@ -151,7 +152,7 @@ def profile(userid):
 @app.route('/posts/<userid>')
 def userposts(userid):
     form=CreatePost()
-    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"'")
+    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' order by posts.postid desc")
 
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' ")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid where posts.userid='"+userid+"'")
@@ -170,31 +171,36 @@ def login():
     loginform=Login()
     if request.method == "POST" and  loginform.validate_on_submit():
         username=loginform.username.data
-        profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where profiles.username='"+username+"'")  
-        for y in profile:
-            session['userid']=str(y.userid)
-            session['fname']=y.firstname
-            session['lname']=y.lastname
-            session['email']=y.email
-            session['username']=y.username
-            session['location']=y.countryliving
-            session['biography']=y.biography
-            session['profilepic']=y.profilepic
-        followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+str(session['userid'])+"'")   
-        follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+str(session['userid'])+"'")  
-        for x in followings:
-            print(x.following)
-        session['following']=x.following
-        for z in follower:
-            session['followers']=z.following
-        return redirect('posts')
+        password=loginform.password.data
+        profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where profiles.username='"+username+"' and password='"+password+"'")  
+        print(profile.rowcount)
+        if (profile.rowcount!=0):
+            for y in profile:
+                session['userid']=str(y.userid)
+                session['fname']=y.firstname
+                session['lname']=y.lastname
+                session['email']=y.email
+                session['username']=y.username
+                session['location']=y.countryliving
+                session['biography']=y.biography
+                session['profilepic']=y.profilepic
+            followings=db.engine.execute("select count(fuserid) as following from friendship where userid='"+str(session['userid'])+"'")   
+            follower=db.engine.execute("select count(userid) as following from friendship where fuserid='"+str(session['userid'])+"'")  
+            for x in followings:
+                # print(x.following)
+                session['following']=x.following
+            for z in follower:
+                session['followers']=z.following
+            return redirect('posts')
+        else:
+            flash('Username or Password is incorrect.','danger')
     return render_template('login.html',form=loginform)
 
 @app.route('/logout')
 def logout():
     flash("Logged out successfully!!!","success")
     loginform=Login()
-    return render_template('login.html',form=loginform)
+    return redirect('login')
 
 # Flash errors from the form if validation fails
 def flash_errors(form):

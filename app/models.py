@@ -66,6 +66,38 @@ db.engine.execute("create table joinsGroup(groupId int,userid int,status varchar
 db.engine.execute("create table comments(commentId SERIAL,postId int ,  userid int,commentDetail varchar(255),commentDate text,commentTime text,primary key (userId,commentId,postId),foreign key (userId) references Users(userId) on delete cascade on update cascade,foreign key (postId) references posts(postId) on delete cascade on update cascade )")
 
 
+
+
+class User(db.Model):
+    # You can use this to change the table name. The default convention is to use
+    # the class name. In this case a class name of UserProfile would create a
+    # user_profile (singular) table, but if we specify __tablename__ we can change it
+    # to `user_profiles` (plural) or some other name.
+    # db.engine.execute("create table Users(userid SERIAL unique,firstName varchar(255),lastName varchar(255),email varchar(50),gender varchar(64),password text,primary key(userId))")
+    id = db.Column(db.Integer, autoincrement=True, primary_key=True)
+    username=db.Column(db.Text,unique=True)
+    password=db.Column(db.Text)
+   
+
+    def __init__(self, fname, lname, email,gender,created_date,username,password,status):
+       
+        self.username = username
+        self.password = password
+    
+    def is_authenticated(self):
+        return True
+
+    def is_active(self):
+        return True
+
+    def is_anonymous(self):
+        return False
+
+    
+    
+
+
+
 # create the 3 or more procedures
 # # command use to insert data into postgres
 # # \i /Users/jordannedale/Desktop/databasefinal/database.sql
