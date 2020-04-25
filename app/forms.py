@@ -34,3 +34,7 @@ class Login(FlaskForm):
 
 class FriendType(FlaskForm):
     friendtype = SelectField('Relationship Type',choices=[('Relatives','Relatives'),('School','School'),('Work','Work')])
+
+
+class Comment(FlaskForm):
+        comment = StringField('Comment', validators=[DataRequired()],render_kw={"placeholder":"Add a Comment"})

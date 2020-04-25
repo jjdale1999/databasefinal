@@ -25,13 +25,14 @@
           {%endfor%}
 
          
-            <form>
+            <form action="{{ url_for('addcomment',postid=post.postid)}}" method="POST" enctype="multipart/form-data">
               <div class="addcomment">
               
-                <li> <img class="commentsuser-images" src="{{profilepic}}" alt="image" > <input type="text" class="commentinput" placeholder="Add comment"></li>
+                <li> <img class="commentsuser-images" src="{{profilepic}}" alt="image" > {{commentform.comment (class="commentinput")}}</li>
               </div>
               <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" >Comment</button>
+                <button type="submit" class="btn btn-secondary" >Comment</button>
+              </a>
               </div>
             </form>
 
@@ -43,3 +44,4 @@
       
   </div>
 </div>
+
