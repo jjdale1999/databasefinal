@@ -131,21 +131,24 @@ def createpost(option):
 
 
         return redirect(url_for('posts'))
-    # else:
-    #     flash_errors(createpost)
-    #     return render_template('createpost.html',form=createpost)  
-
-# @app.route('/profiles')
-# def profiles():
-#     user = UserProfile.query.all()
-#     return render_template('profiles.html',users=user)
+   
     
-
+@app.route('/setprofilepic/<path:image>')
+def setprofilepic(image):
+    setprofilepic=db.engine.execute("update profiles set profilepic='"+image+"' where userid="+session['userid'])
+    print(image)
+    if(image.startswith("static")):
+        session['profilepic']="/"+image
+    else:
+         session['profilepic']=image
+    return redirect(url_for('userposts',userid=session['userid']))
 @app.route('/profile/<userid>')
 def profile(userid):
     form=FriendType()
     users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
-    return render_template('profilepage.html',form=form,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid  where posts.userid='"+str(userid)+"' order by posts.postid desc")
+
+    return render_template('profilepage.html',form=form,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 # all individual posts for a specific user

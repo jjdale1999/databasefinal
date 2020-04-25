@@ -1,7 +1,7 @@
 .postimages{
     margin-top: 15px;
-    width:580px;
-    height:630px;
+    width:380px;
+    height:530px;
     position:relative;
 }
 
@@ -15,6 +15,18 @@
 
 }
 
+.imgsize{
+    width:50px;
+    height:30px;
+}
+.imgsize:hover{
+    width:50px;
+    height:30px;
+    background-color: gray;
+}
+#postcard-lay{
+    width:80%;
+}
 .upper{
         display:grid;
 

@@ -1,6 +1,8 @@
 @import "friendslist.css"; 
 @import "sideprofile.css"; 
 @import "posts.css"; 
+@import "profilepage.css"; 
+
 
 
 body {
@@ -26,7 +28,7 @@ body {
   
   .right {
     width: 65%;
-    margin-left: 390px;
+    margin-left: 490px;
   }
   
   /* Clear floats after the columns */

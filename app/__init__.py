@@ -20,4 +20,14 @@ def comments(postid):
     return comments
 app.jinja_env.globals.update(comments=comments)
 
+def addcomments(postid,cuserid,commmentDetail,commentDate,commentTime):
+    addcomments=db.engine.execute("insert into comments (postid,userid,commentdetail,commentdate,commenttime) values('"+str(postId)+"','"+str(cuserid)+"','"+commmentDetail+"','"+str(commentDate)+"','"+commentTime+"')")
+    return ""
+app.jinja_env.globals.update(addcomments=addcomments)
+
+# def setprofilepic(image,userid):
+#     setprofilepic=db.engine.execute("update profiles set profilepic='"+image+"' where userid="+str(userid))
+#     return ""
+# app.jinja_env.globals.update(setprofilepic=setprofilepic)
+
 from app import views

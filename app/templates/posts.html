@@ -12,66 +12,14 @@
 
         <div class="posts">
             
-            <h1 class="profile">ALL POSTS&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/static/images/createpost2.png" class="smallimg" data-toggle="modal" data-target="#exampleModal0" data-whatever="@mdo">
+            <h1 class="profile">NEWS FEED&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;&emsp;<img src="/static/images/createpost2.png" class="smallimg" data-toggle="modal" data-target="#exampleModal0" data-whatever="@mdo">
             </h1>
 
             
             {%include 'createpost.html'%}
-            {% for post in posts%}
-                <div class="cardbod" id="postcard-lay" >
-                    <br>
-                    <div class="user-info">
-                        
-                        <li><a href="{{url_for('profile',userid=post.fuserid)}}"> <h4 class="card-title"><img class="commentsuser-images" src="{{post.profilepic}}" alt="" > @{{post.username}}</h4></a></li>
-                       <li> <div class="dropdown">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            </button>
-                            <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                {%if (post.images.startswith("https://placeimg.com")) or (post.images.startswith("/static/uploads/"))%}
-                                    <button class="dropdown-item" type="button">Set as Profile Picture</button>
-                              {%endif%}
-                              <a class="resp-sharing-button__link dropdown-item" href="https://www.facebook.com/sharer/sharer.php?u=jdizzle.jordanne&quote={{post.images}}" target="_blank" aria-label="">
-                                <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small">
-                                  <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-                                    Share to Facebook
-                                  </div>
-                                </div>
-                              </a>
-                              
-                              <a class="resp-sharing-button__link dropdown-item" href="https://twitter.com/intent/tweet/?text={{post.images}}&amp;url=urlToBeReplaced" target="_blank" aria-label="">
-                                <div class="resp-sharing-button resp-sharing-button--twitter resp-sharing-button--small">
-                                    <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">
-                                        Share to twitter                                    </div>
-                                </div>
-                            </a>
-                            </div>
-                          </div>
-                        </li>
-                    </div>
-                    
-                <ul class="postcard-lay">
-                    {%if (post.images.startswith("https://placeimg.com")) or (post.images.startswith("/static/uploads/"))%}
-                    <img class="postimages" src="{{post.images}}" alt="" >
-                        {%else%}
-                            <li>{{post.images}}</li>
-                        {%endif%}
-                    </ul>
-                    
-                    <div id="comments">
-                        <img class="commentimg" src="/static/images/likes.png">{{post.likes}}12K</li>
-                        <img class="commentimg" src="/static/images/comments.png" data-toggle="modal" data-target=".bd-example-modal-lg" >
+            {%include 'posttemplate.html'%}
 
-                    </div>
-
-                    <!-- load comments for posts -->
-                    {%include 'comments.html'%}
-                    
-                                
-                </div>
             
-                
-            
-            {% endfor %}
             
         </div>
 
