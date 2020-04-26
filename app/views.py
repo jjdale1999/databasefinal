@@ -117,21 +117,27 @@ def createpost(option):
     postTime='12:09:00'
     if request.method == "POST":
         # print("went into function")
-        # db.engine.execute("insert into posts values('"+"PS"+str(postId)+"','"+"US"+str(1)+"','"+str(postDate)+"','"+postTime+"')")
-        # db.engine.execute("insert into posts (userid,postdate,posttime) values('"+str(session['userid'])+"','"+str(postDate)+"','"+postTime+"')")
+        if(textpost!=""):
+            print("textpost")
+            db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+textpost+"','text','"+str(datetime.datetime.now())+"')")
+
+        else:
+            photo= createpost.image.data
+                # created_date=format_date_joined(datetime.datetime.now())
+            filename=secure_filename(photo.filename)
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+            db.engine.execute("insert into gallery(photourl) values('"+'/static/uploads/'+filename+"')")
+            lastphotoid= db.engine.execute("select photoid from gallery order by photoid desc limit 1")
+            for last in lastphotoid:
+                photoid=last.photoid
+            db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+session['userid']+"')")
+
+            db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+'/static/uploads/'+filename+"','text','"+str(datetime.datetime.now())+"')")
+
         lastpostid= db.engine.execute("select postId from posts order by postid desc limit 1")
         for last in lastpostid:
             postId=last.postid
-        # if(textpost!=""):
-        #     # db.engine.execute("insert into texts (postid,images) values('"+str(postId)+"','"+textpost+"')")
-
-        # else:
-        #     photo= createpost.image.data
-        #         # created_date=format_date_joined(datetime.datetime.now())
-        #     filename=secure_filename(photo.filename)
-        #     photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-        #     # db.engine.execute("insert into images (postid,images) values('"+str(postId)+"','"+'/static/uploads/'+filename+"')")
-
+        db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postId)+"','"+session['userid']+"')")
 
         return redirect(url_for('posts'))
    
@@ -149,8 +155,9 @@ def setprofilepic(image):
 def profile(userid):
     form=FriendType()
     commentform=Comment()
-    users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
-    posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid  where posts.userid='"+str(userid)+"' order by posts.postid desc")
+    users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where users.userid='"+userid+"'")
+    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid  where posts.userid='"+str(userid)+"' order by posts.postid desc")
+    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid  join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where profiles.userid='"+str(userid)+"' order by posts.postid asc")
 
     return render_template('profilepage.html',commentform=commentform,fform=form,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 

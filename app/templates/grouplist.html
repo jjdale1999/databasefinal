@@ -6,14 +6,12 @@
 
 {% block main %}
     <div id="profiles">
-        <h1 id="profile">Group List</h1>
+        <h1 id="profile">MyBook Groups</h1>
     
         <div class="cardbod" id="card-lay" >
             {% for group in groups %}    
                 <ul class="card-lay">
-                    <div>
-                        <li class="card-text name"><a href=""> <h4 class="card-title">{{ group.groupname }}</h4></a></li>
-                    </div>
+                    <li class="card-text name"><a href=""> <h4 class="card-title">{{ group.groupname }}</h4></a></li>
                     <li class="card-text "> <button class="following">View Group</button> <button class="following">Join Group</button> </li>
                 </ul> 
             {% endfor %}            
