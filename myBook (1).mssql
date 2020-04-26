@@ -28,7 +28,7 @@ create table uProfile(
 
 );
 
-create table posts(
+create table userMakesPost(
     postId varchar(20),
     userId varchar(20),
     postDate date,
@@ -36,7 +36,16 @@ create table posts(
     primary key(postId,userId),
     foreign key(userId) references myBookUser(userId)
 
-    /*Set a value for that null to PreviousUser later*/
+
+
+);
+create table posts(
+    postId varchar(20),
+    userId varchar(20),
+    postDate date,
+    postTime time,
+    
+    
 
 
 
@@ -95,7 +104,7 @@ foreign key(userId) references myBookUser(userId)
 );
 
 
-/*Set a value for null to PreviousUser for this too later for UserId*/
+
 
 
 
@@ -109,7 +118,31 @@ primary key (userId,commentId),
 foreign key (userId) references myBookUser(userId) on delete cascade
 
 
+/* A U X I L L A R Y     T A B L E S*/
 
+create table friendFrom(
+        fUserId varchar(20),
+        notif varchar(20),
+        createDate date
+
+
+
+
+);
+create table capacity(
+    almostFullGroup varchar(20),
+    groupNotif varchar(100)
+
+);
+
+/*create table bestFriends(
+        personId varchar(20),
+        theFriendsId varchar(20),
+
+
+
+);
+*/
 
 );
 
@@ -149,10 +182,10 @@ select firstName,lastName,commentDetail from uProfile join comments  on comments
 /*Shows a users first and last name and associated group*/
 select firstName,lastName, groupName from uProfile join joinsGroup on uProfile.userId = joinsGroup.userId join myBookGroup on joinsGroup.groupId = myBookGroup.groupId;
 
-/*Shows all the first name, last name of users that friend type is "brother" to the associated user*/
+/*Shows all the first name, last name of users that friend type is "family" to the associated user*/
 select firstName,lastName from Friendship join uProfile on Friendship.fUserId=uProfile.userId where Friendship.fUserId in(
 
-    select fUserId from Friendship where friendship.userId = '001' and ftype="brother"
+    select fUserId from Friendship where friendship.userId = '001' and ftype="Family"
 );
 /* Counts the amount of users within the group named "TheRoyalFamily"*/
 select count(userId) from joinsGroup where groupName = "TheRoyalFamily"
@@ -162,11 +195,3 @@ select firstName,lastName from uProfile join joinsGroup on uProfile.userId= join
 
 update users set userid='US0'+right(userid,2) where userid='US9';
 SELECT * FROM users ORDER BY right(userid,2) ;
-
-select postId from posts order by postid desc limit 1;
-
-select textid from texts order by textid desc limit 1;
-
-select imageid from images order by imageid desc limit 1;
-
-select profileNo from profiles order by profileNo desc limit 1;

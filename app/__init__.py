@@ -16,9 +16,11 @@ db = SQLAlchemy(app)
 
 
 def comments(postid):
-    comments=db.engine.execute("select * from comments join profiles on comments.userid=profiles.userid where postid='"+str(postid)+"'")
+    comments=db.engine.execute("select addcomments.postid as postid,profiles.username as username,gallery.photourl as photourl,addcomments.userid as userid,commentdetail from addcomments join profiles on profiles.userid=addcomments.userid join comments on addcomments.commentid=comments.commentid join gallery on profiles.profilepic=gallery.photoid where addcomments.postid="+str(postid))
+    
     return comments
 app.jinja_env.globals.update(comments=comments)
+
 
 def addcomments(postid,cuserid,commmentDetail,commentDate,commentTime):
     addcomments=db.engine.execute("insert into comments (postid,userid,commentdetail,commentdate,commenttime) values('"+str(postId)+"','"+str(cuserid)+"','"+commmentDetail+"','"+str(commentDate)+"','"+commentTime+"')")

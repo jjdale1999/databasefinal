@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% block sideprofile %}
+
+{% include 'sideprofile.html' %}
+{% endblock %}
+
+
+
+{% block main %}
+    <select>
+        {%for photo in photos%}
+            <option value="{{photo.photoid}}"> <img src="{{photo.photourl}}">  </option>
+        {%endfor%}
+    </select>
+
+{% endblock %}
