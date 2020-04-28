@@ -16,11 +16,14 @@
       <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
       <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
     <![endif]-->
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+
     <link rel="stylesheet" href="/static/css/app.css">
     {% block css %} {% endblock%}
   </head>
   <body>
     <div id="fb-root"></div>
+    
 <script async defer crossorigin="anonymous" src="https://connect.facebook.net/en_US/sdk.js#xfbml=1&version=v6.0"></script>
     
 <script type="text/javascript" src="https://platform-api.sharethis.com/js/sharethis.js#property=5ea3456fd716680012d49576&product=inline-share-buttons" async="async"></script>
@@ -32,13 +35,15 @@
         
       <div class="row">
         <div class="column left">
-         
           {% block sideprofile %} {% endblock %}
         </div>
+
         <div class="column right" >
           {% block main%} {%endblock%}
         </div>
+
       </div>
+
               
          
     </main>
@@ -51,10 +56,13 @@
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
     <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script> -->
     <!-- Include all compiled plugins (below), or include individual files as needed -->
+
     <script src="/static/js/bootstrap.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"></script>
+    <script src="/static/js/app.js"></script>
+
     {% block js %} {% endblock%}
   </body>
 </html>

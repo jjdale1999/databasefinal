@@ -23,7 +23,6 @@ class CreateProfile(FlaskForm):
 
 
 class CreatePost(FlaskForm):
-   
     text = TextAreaField('Biography',validators=[DataRequired()])
     image = FileField('Profile Pic',validators=[FileRequired(),FileAllowed(['jpg','jpeg','png','Images Only'])])
 
@@ -38,3 +37,6 @@ class FriendType(FlaskForm):
 
 class Comment(FlaskForm):
         comment = StringField('Comment', validators=[DataRequired()],render_kw={"placeholder":"Add a Comment"})
+
+class UploadProfilePic(FlaskForm):
+    profilepic = FileField('Profile Pic',validators=[FileRequired(),FileAllowed(['jpg','jpeg','png','Images Only'])])

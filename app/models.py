@@ -41,6 +41,7 @@ db.engine.execute("create table comments(commentId SERIAL,commentDetail varchar(
 db.engine.execute("create table addcomments(commentId int,postId int,userid int,primary key(commentId,postId))")
 
 
+
 # Edited
 #Tables trigger based
 

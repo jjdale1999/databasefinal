@@ -8,7 +8,7 @@ import os
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import CreateProfile,SignUp,Login,CreatePost,FriendType,Comment
+from app.forms import CreateProfile,SignUp,Login,CreatePost,FriendType,Comment,UploadProfilePic
 # from app.models import UserProfile
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
@@ -27,15 +27,12 @@ def posts():
     # form=CreatePost()
     commentform=Comment()
 
-#    getting both texts and images posts
-    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
+
     form=CreatePost()
-    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid")
-    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid='"+session['userid']+"' order by posts.postid asc")
+  
+    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid='"+session['userid']+"' order by posts.postid desc")
    
-    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid join friendship on friendship.fuserid=posts.userid where friendship.userid='"+session['userid']+"' order by posts.postid desc")
-    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' ")
-    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid where posts.userid='"+userid+"'")
+    
     return render_template('posts.html',commentform=commentform,posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
     # return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
@@ -45,8 +42,32 @@ def posts():
 def grouplist():
     
     groups=db.engine.execute("SELECT * FROM groups;")
+   
     
     return render_template('grouplist.html', groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+@app.route('/groupposts/<groupid>', methods=['POST', 'GET'])
+def groupposts(groupid):
+
+    commentform=Comment()
+
+    groupposts=db.engine.execute("select * from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"')) AS posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid='"+session['userid']+"' order by posts.postid desc")
+    groupinfo=db.engine.execute("SELECT * FROM groups WHERE groupid = '"+groupid+"';")
+    for a in groupinfo:
+        creatorid = a.createdby
+        groupname = a.groupname
+        createddate = a.createddate
+    
+
+    creator=db.engine.execute("SELECT username FROM profiles WHERE userid = '"+creatorid+"';")
+    for b in creator:
+        groupcreator = b.username
+
+    groupposts=db.engine.execute("SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"');")
+    if request.method == "GET":
+        return render_template('groupPosts.html',  creatorid=creatorid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+    return render_template('groupPosts.html', creatorid=creatorid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 @app.route('/about/')
@@ -66,7 +87,7 @@ def signup():
                 password=createuser.password.data
                 created_date=format_date_joined(datetime.datetime.now())
                  # get the last userid and then add it to one to get new userid
-                # db.engine.execute("insert into Users (firstname,lastname,email,gender,password) values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+password+"')")
+                db.engine.execute("insert into Users (firstname,lastname,email,gender,password) values('"+fname+"','"+lname+"','"+email+"','"+gender+"','"+password+"')")
 
 
                 return redirect(url_for('setupprofile'))
@@ -77,7 +98,10 @@ def signup():
 @app.route('/friendlist/<userid>',methods=['GET'])
 def friendlist(userid):
     friends=db.engine.execute("select * from friendship join users on users.userid=friendship.fuserid join profiles on profiles.userid=users.userid where friendship.userid='"+userid+"'")  
-  
+    # need to choice which one is more optimized
+    # select * from friendship join users on users.userid=friendship.fuserid join profiles on profiles.userid=users.userid where friendship.userid=2;
+
+    # select * from users join ((select fuserid,ftype from friendship where userid=2) as friends join (select userid,profileno,profilepic,username,biography,countryliving from profiles)as profile on profile.userid=friends.fuserid) as friend on friend.fuserid=users.userid;
    
     return render_template('friendslist.html',friends=friends,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
@@ -94,7 +118,18 @@ def setupprofile():
                 created_date=format_date_joined(datetime.datetime.now())
                 filename=secure_filename(photo.filename)
                 photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
-                # db.engine.execute("insert into Profiles (userid,profilepic,username,biography,countryliving) values('"+str(userid)+"','"+profilepic+"','"+username+"','"+biography+"','"+country+"')")
+                lastuserid= db.engine.execute("select userid from users order by userid desc limit 1")
+                for last in lastuserid:
+                    userid=last.userid
+                # insert into gallery and addphoto , get the id from that for profilepic
+                db.engine.execute("insert into gallery(photourl) values('"+'/static/uploads/'+filename+"')")
+                lastphotoid= db.engine.execute("select photoid from gallery order by photoid desc limit 1")
+                for last in lastphotoid:
+                    photoid=last.photoid
+              
+                db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+str(userid)+"')")
+
+                db.engine.execute("insert into Profiles (userid,profilepic,username,biography,countryliving) values('"+str(userid)+"','"+str(photoid)+"','"+username+"','"+biography+"','"+location+"')")
 		
 
                 return redirect(url_for('posts'))
@@ -109,6 +144,7 @@ def addfollower(followerid):
     # print(friendtype)
     # db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(session['userid'])+"','"+str(followerid)+"','"+friendtype+"')")
     return redirect(url_for('profile',userid=followerid))
+
 @app.route('/createpost/<option>',methods=['POST', 'GET'])
 def createpost(option):
     createpost = CreatePost()
@@ -142,24 +178,43 @@ def createpost(option):
         return redirect(url_for('posts'))
    
     
-@app.route('/setprofilepic/<path:image>')
-def setprofilepic(image):
-    setprofilepic=db.engine.execute("update profiles set profilepic='"+"/"+image+"' where userid="+session['userid'])
-    print(image)
-    if(image.startswith("static")):
-        session['profilepic']="/"+image
-    else:
-         session['profilepic']=image
-    return redirect(url_for('userposts',userid=session['userid']))
+@app.route('/setprofilepic/<photoid>')
+def setprofilepic(photoid):
+    setprofilepic=db.engine.execute("update profiles set profilepic='"+str(photoid)+"' where userid="+session['userid'])
+    print(photoid)
+  
+    getprofilepic=db.engine.execute("select photourl from gallery where photoid="+str(photoid))
+    for m in getprofilepic:
+        session['profilepic']=m.photourl
+
+    return redirect(url_for('profile',userid=session['userid']))
+
+@app.route('/uploadgallery',methods=['POST'])
+def uploadgallery():
+    uploadform=UploadProfilePic()
+     # insert into gallery and addphoto , get the id from that for profilepic
+
+    photo= uploadform.profilepic.data
+    created_date=format_date_joined(datetime.datetime.now())
+    filename=secure_filename(photo.filename)
+    photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+    db.engine.execute("insert into gallery(photourl) values('"+'/static/uploads/'+filename+"')")
+    lastphotoid= db.engine.execute("select photoid from gallery order by photoid desc limit 1")
+    for last in lastphotoid:
+        photoid=last.photoid
+    
+    db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+str(session['userid'])+"')")
+    return redirect(url_for('profile',userid=session['userid']))
+
 @app.route('/profile/<userid>')
 def profile(userid):
     form=FriendType()
     commentform=Comment()
+    uploadform=UploadProfilePic()
     users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where users.userid='"+userid+"'")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid  where posts.userid='"+str(userid)+"' order by posts.postid desc")
-    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid  join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where profiles.userid='"+str(userid)+"' order by posts.postid asc")
-
-    return render_template('profilepage.html',commentform=commentform,fform=form,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid  join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where profiles.userid='"+str(userid)+"' order by posts.postid desc")
+    return render_template('profilepage.html',uplaodform=uploadform,commentform=commentform,fform=form,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 # all individual posts for a specific user
@@ -179,28 +234,21 @@ def userposts(userid):
     return render_template('profilepage.html',fform=fform,commentform=commentform,posts=posts,form=form,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
     # return render_template('posts.html',form=form,posts=posts,comments=comments,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
 @app.route('/addcomment/<postid>',methods=['GET','POST'])
 def addcomment(postid):
     print("adding comment")
     form=Comment()
     commentDetail=form.comment.data
-    commentDate="2020/04/25"
-    commentTime="2:24:08"
-    # addcomments=db.engine.execute("insert into comments (postid,userid,commentdetail,commentdate,commenttime) values('"+str(postid)+"','"+str(session['userid'])+"','"+commentDetail+"','"+str(commentDate)+"','"+commentTime+"')")
-    
-# db.engine.execute("create table comments(commentId SERIAL,commentDetail varchar(255),commentDateTime timestamp,primary key (commentId) )")
-
-# db.engine.execute("create table addcomments(commentId int,postId int,userid int,primary key(commentId,postId))")
-# import datetime
-
-# x = datetime.datetime.now()
+  
     addcomments=db.engine.execute("insert into comments(commentdetail,commentdatetime) values('"+commentDetail+"','"+str(datetime.datetime.now())+"')")
     lastcommentid=db.engine.execute("select commentid from comments order by commentid desc limit 1")
     for x in lastcommentid:
         commentid=x.commentid
     db.engine.execute("insert into addcomments(commentid,postid,userid) values('"+str(commentid)+"','"+str(postid)+"','"+str(session['userid'])+"')")
 
-    return redirect(url_for('posts'))
+    return redirect(url_for('posts',userid=session['userid']))
+
 @app.route('/comments/<postid>')
 def comments(postid):
     # comments=db.engine.execute("select * from comments where postid='"+str(postid)+"'")

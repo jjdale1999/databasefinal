@@ -12,7 +12,12 @@
             {% for group in groups %}    
                 <ul class="card-lay">
                     <li class="card-text name"><a href=""> <h4 class="card-title">{{ group.groupname }}</h4></a></li>
-                    <li class="card-text "> <button class="following">View Group</button> <button class="following">Join Group</button> </li>
+                    <li class="card-text "> 
+                        <form action="{{ url_for('groupposts', groupid=group.groupid) }}">
+                            <button type="submit" formmethod="get" class="following">View Group</button> 
+                            <button type="submit" formmethod="post" class="following">Join Group</button>
+                        </form>  
+                    </li>
                 </ul> 
             {% endfor %}            
         </div>

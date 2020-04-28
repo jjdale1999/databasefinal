@@ -2,8 +2,38 @@
 @import "sideprofile.css"; 
 @import "posts.css"; 
 @import "profilepage.css"; 
+@import "addphoto.css"; 
+
+.news__list{
+    display:grid;
+    list-style: none;
+    grid-template-columns: repeat(3,1fr);
+    justify-content: center;
+    /* grid-gap: 10%; */
+    overflow:hidden;
+    border-bottom: 10px;
+}
+
+.news__item{
+    /* margin-bottom: 70px; */
+    margin-right:20px;
+    margin-bottom: 20px;
+
+}
+.news__itemimg{
+    /* border-right: 5px;
+    border-left:10px; */
+    width: 200px;
+    height: 200px;
+}
 
 
+.news__list li{
+    border: 1px solid rgb(201, 201, 201);
+    border-radius: 8px;
+    box-shadow: 3.5px 3.5px 5px 1px rgb(211,211,211);
+    padding:4%;
+}
 
 body {
     padding-top: 5rem;
@@ -21,21 +51,33 @@ body {
     padding: 10px;
   }
   
-  .left {
+  /* .left {
     width: 25%;
-    position: fixed;
+    position: left;
   }
   
   .right {
     width: 65%;
     margin-left: 490px;
+    position:right;
   }
   
   /* Clear floats after the columns */
-  .row:after {
+  /* .row:after {
     content: "";
     display: table;
     clear: both;
+  }  */
+
+
+
+  .row{
+    display:grid;
+    grid-gap: 50px;
+    list-style: none;
+    grid-template-columns: 400px 1200px;
+    
+    position:relative; 
   }
 .user-card-lay{
     display:grid;

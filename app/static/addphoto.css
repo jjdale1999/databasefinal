@@ -1,0 +1,25 @@
+
+
+
+.news__list{
+    display:grid;
+    list-style: none;
+    grid-template-columns: repeat(3,1fr);
+    justify-content: center;
+    /* grid-gap: 3%; */
+    overflow:hidden;
+}
+
+.news__list img{
+    /* border-right: 5px;
+    border-left:10px; */
+    width: 5%;
+    height: 5%;
+}
+.news__list li{
+    border: 1px solid rgb(211,211,211);
+    border-radius: 8px;
+    box-shadow: 3.5px 3.5px 5px 1px rgb(211,211,211);
+    padding:4%;
+    border-top: 6px solid rgb(81,188,148);
+}
