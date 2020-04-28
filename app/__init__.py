@@ -23,7 +23,7 @@ def comments(postid):
 app.jinja_env.globals.update(comments=comments)
 
 def getgallery(userid):
-    getgallery=db.engine.execute("select * from addphoto join gallery on gallery.photoid=addphoto.photoid where userid="+str(2) +"order by gallery.photoid")
+    getgallery=db.engine.execute("select * from addphoto join gallery on gallery.photoid=addphoto.photoid where userid="+str(userid) +"order by gallery.photoid")
     return getgallery
 
 app.jinja_env.globals.update(getgallery=getgallery)

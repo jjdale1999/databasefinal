@@ -204,7 +204,7 @@ def uploadgallery():
         photoid=last.photoid
     
     db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+str(session['userid'])+"')")
-    return redirect(url_for('profile',userid=session['userid']))
+    return redirect(url_for('setprofilepic',photoid=photoid))
 
 @app.route('/profile/<userid>')
 def profile(userid):
