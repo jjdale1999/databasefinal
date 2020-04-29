@@ -51,13 +51,13 @@ body {
     padding: 10px;
   }
   
-   .left {
+  /* .left {
     width: 25%;
-    position: fixed;
+    position: left;
   }
   
   .right {
-    width: 250%;
+    width: 65%;
     margin-left: 490px;
     position:right;
   }

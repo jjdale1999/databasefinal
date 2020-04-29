@@ -30,7 +30,7 @@ def posts():
 
     form=CreatePost()
   
-    posts=db.engine.execute("select content from user_post_log join posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+"order by posts.postid desc")
+    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+"order by posts.postid desc")
     uploadform=UploadProfilePic()
 
     
@@ -99,7 +99,7 @@ def signup():
 
 @app.route('/friendlist/<userid>',methods=['GET'])
 def friendlist(userid):
-    friends=db.engine.execute("select * from friendship join users on users.userid=friendship.fuserid join profiles on profiles.userid=users.userid where friendship.userid='"+userid+"'")  
+    friends=db.engine.execute("select * from friendship join users on users.userid=friendship.fuserid join profiles on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where friendship.userid='"+userid+"' ")  
     # need to choice which one is more optimized
     # select * from friendship join users on users.userid=friendship.fuserid join profiles on profiles.userid=users.userid where friendship.userid=2;
 
@@ -146,6 +146,8 @@ def addfollower(followerid):
     friendtype = form.friendtype.data
     # print(friendtype)
     db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(session['userid'])+"','"+str(followerid)+"','"+friendtype+"')")
+    db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(followerid)+"','"+str(session['userid'])+"','"+friendtype+"')")
+
     return redirect(url_for('profile',userid=followerid))
 
 @app.route('/createpost/<option>',methods=['POST', 'GET'])
@@ -289,7 +291,7 @@ def searchuser():
     searcform=SearchForm()
     searchusername=searcform.username.data
     print(searchusername)
-    searchusers=db.engine.execute(" select username,photourl,firstname,lastname,countryliving,profile.userid from (SELECT * FROM profiles WHERE username LIKE '%%"+searchusername+"%%') as profile join users on profile.userid=users.userid join gallery on gallery.photoid=profile.profilepic")
+    searchusers=db.engine.execute(" select username,photourl,firstname,lastname,countryliving,profile.userid from (SELECT * FROM profiles WHERE lower(username) LIKE '%%"+searchusername.lower()+"%%') as profile join users on profile.userid=users.userid join gallery on gallery.photoid=profile.profilepic")
     # users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
 
     # users=db.engine.execute("select * from profiles where username like '%"+searchusername+"%'")
