@@ -8,9 +8,7 @@
                             <img src="/static/images/downarrowoff.png" class=" btn dropdown-toggle imgsize" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                        </img>
                             <div class="dropdown-menu" aria-labelledby="dropdownMenu2">
-                                {%if (post.content.startswith("https://placeimg.com")) or (post.content.startswith("/static/uploads/"))%}
-                                    <a href="{{url_for('setprofilepic',image=post.content)}}" class="dropdown-item" type="button">Set as Profile Picture</a>
-                              {%endif%}
+                               
                               <a class="resp-sharing-button__link dropdown-item" href="https://www.facebook.com/sharer/sharer.php?u=jdizzle.jordanne&quote={{post.content}}" target="_blank" aria-label="">
                                 <div class="resp-sharing-button resp-sharing-button--facebook resp-sharing-button--small">
                                   <div aria-hidden="true" class="resp-sharing-button__icon resp-sharing-button__icon--solid">

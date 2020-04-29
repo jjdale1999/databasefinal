@@ -1,0 +1,106 @@
+{% extends "base.html"%}
+{% block sideprofile %}
+
+{% include 'sideprofile.html' %}
+{% endblock %}
+
+{% block main %}
+    <div class="cardbod" id="profilecard-lay" >
+        <div class="margindiv">
+          <div id="topicons">
+            <a href=""class="" type="submit"><img src=''>Send Message</a>
+            &emsp; &emsp; 
+            <!-- <button class=" btn-primary ubtn" type="submit">Follow</button> -->
+            <a id="follow"href="" data-toggle="modal" data-target="#exampleModal1" data-whatever="@mdo" data-dismiss="modal" > Follow</a>
+          </div>
+          
+            {%for user in users%}
+            
+            <a title="Mert S. Kaplan" href="https://twitter.com/mertskaplan" class="twPc-avatarLink">
+              <img alt="Mert S. Kaplan" src="{{user.photourl}}" class="twPc-avatarImg">
+            </a>
+            <div class="twPc-divUser">
+              <div class="twPc-divName">
+                <a href="">{{user.firstname}}  {{user.lastname}}</a>
+              </div>
+              <span>
+                <a href="">@<span>{{user.username}}</span></a>
+              </span>
+            </div>
+
+            <div id="userinfo">
+              <li class=""> <img class="profilesmallimg" src="/static/images/email.png"> {{user.email}}</li>
+              <li class=""> <img class="profilesmallimg" src="/static/images/location.png">{{user.countryliving}}</li>
+              <li class=""> <img class="profilesmallimg" src="/static/images/dateadded.png"> Joined on {{created_date}}</li>
+            </div>
+            <p class=""> {{user.biography}}</p>
+            
+            <div class="twPc-divStats">
+              <ul class="twPc-Arrange">
+                <li class="twPc-ArrangeSizeFit">
+                  <a href="https://twitter.com/mertskaplan" title="9.840 Tweet">
+                    <span class="twPc-StatLabel twPc-block">Tweets</span>
+                    <span class="twPc-StatValue">9.840</span>
+                  </a>
+                </li>
+                <li class="twPc-ArrangeSizeFit">
+                  <a href="https://twitter.com/mertskaplan/following" title="885 Following">
+                    <span class="twPc-StatLabel twPc-block">Following</span>
+                    <span class="twPc-StatValue">885</span>
+                  </a>
+                </li>
+                <li class="twPc-ArrangeSizeFit">
+                  <a href="https://twitter.com/mertskaplan/followers" title="1.810 Followers">
+                    <span class="twPc-StatLabel twPc-block">Followers</span>
+                    <span class="twPc-StatValue">1.810</span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+
+
+           
+<!-- following a friend -->
+            <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="{{ url_for('addfollower',followerid=user.userid) }}" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                          {{fform.friendtype.label (class="col-form-label")}}
+                          {{fform.friendtype (class="form-control")}}
+                          
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" >Follow</button>
+                          </div>
+            
+                      </form>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
+            <!-- list all posts for this person -->
+           
+
+
+            {%endfor%}
+        </div>
+            
+
+        
+    </div>
+<img src="/static/images/createpost2.png" class="smallimg" data-toggle="modal" data-target="#exampleModal0" data-whatever="@mdo">
+{%include 'createpost.html'%}
+
+{%include 'posttemplate.html'%}
+   
+{% endblock %}

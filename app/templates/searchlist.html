@@ -1,0 +1,33 @@
+{% extends "base.html"%}
+{% block sideprofile %}
+
+    {% include 'sideprofile.html' %}
+{% endblock %}
+
+{% block main %}
+    <div id="profiles">
+        <h1 id="profile">Search List</h1>
+    
+        <div class="cardbod" id="card-lay" >
+            {% for user in searchusers%}
+                <ul class="card-lay">
+                    <li><img class="images" src="{{user.photourl}}" alt="image" ></li>
+                    <div>
+                        <!-- <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li> -->
+                        <li class="card-text name"><a href="{{url_for('profile',userid=user.userid)}}"> <h4 class="card-title">{{user.firstname}} {{user.lastname}} </h4></a></li>
+                        <li class="card-text name"><a href="{{url_for('profile',userid=user.userid)}}"> <h6 class="card-title">@{{user.username}}</h6></a></li>
+
+
+                    </div>
+                    <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{user.countryliving}}</li>
+                    <li class="card-text "> <div class="following">Following</div> </li>
+                </ul>
+
+            {% endfor %}
+
+           
+            
+        </div>
+    </div>
+    
+{% endblock %}

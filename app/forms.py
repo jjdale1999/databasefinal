@@ -23,7 +23,7 @@ class CreateProfile(FlaskForm):
 
 
 class CreatePost(FlaskForm):
-    text = TextAreaField('Biography',validators=[DataRequired()])
+    text = TextAreaField('Content',validators=[DataRequired()])
     image = FileField('Profile Pic',validators=[FileRequired(),FileAllowed(['jpg','jpeg','png','Images Only'])])
 
 class Login(FlaskForm):
@@ -40,3 +40,7 @@ class Comment(FlaskForm):
 
 class UploadProfilePic(FlaskForm):
     profilepic = FileField('Profile Pic',validators=[FileRequired(),FileAllowed(['jpg','jpeg','png','Images Only'])])
+
+
+class SearchForm(FlaskForm):
+        username = StringField('Username', validators=[DataRequired()],render_kw={"placeholder":"Username"})
