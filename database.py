@@ -40,13 +40,13 @@ for i in range(100):
     username=firstname[:3]+lastname[-3:]+str(i)
     email=fake.free_email()
 
-    profilepic=fake.image_url()
+    # profilepic=fake.image_url()
     password=fake.password(length=40, special_chars=False, upper_case=True)
     # encodedpassword=password.encode('utf-16')
     # decodedtext=encodedtext.decode('utf-16')
     # print(decodedtext)
-    while("placeimg" not in profilepic):
-        profilepic=fake.image_url()
+    # while("placeimg" not in profilepic):
+    #     profilepic=fake.image_url()
     profilepic=random.randint(1,500)
     biography=fake.text()
     
@@ -67,6 +67,8 @@ print(" creation of users and profiles done")
 for x in range(1000):
     photoid=x+1
     photourl=fake.image_url()
+    while("placeimg" not in photourl):
+        photourl=fake.image_url()
     userid=random.randint(1,100)
     f.write("insert into gallery (photourl) values('"+photourl+"'); \n")
     f.write("insert into addphoto (photoid,userid) values('"+str(photoid)+"','"+str(userid)+"'); \n")
@@ -131,7 +133,13 @@ for x in range(100):
         commentId+=1
         #likes
         # for z in 
-print(" creation of post and comments done")
+
+    randum=random.randint(2,50)
+    for m in range(randum):
+        f.write("insert into likes (postid,userid) values('"+str(postId)+"','"+str(m+1)+"');\n")
+
+
+print(" creation of post,likes,comments done")
 
 
 
@@ -150,19 +158,31 @@ for x in range(50):
     randnum=random.randint(1,20)
     for y in range(randnum):
         friendid=random.randint(1,50)
-        while((friendid==x) or (friendid in friends)):
-            friendid=random.randint(1,50)
+        # while((friendid in friends)):
+        #     friendid=random.randint(1,50)
+        # while((friendid==userid)):
+        #     friendid=random.randint(1,50)
         fType=random.choice(relationships)
 
         friends.append(friendid)
-        allfriendship.append((friendid,userid))
-        allfriendship.append((userid,friendid))
+        # allfriendship.append((friendid,userid))
+        if(friendid==userid):
+            print("cant be friend with self")
+            continue
+        elif(([userid,friendid] not in allfriendship) and ([friendid,userid] not in allfriendship)):
 
-        f.write("insert into Friendship (userid,fuserid,ftype) values('"+str(userid)+"','"+str(friendid)+"','"+fType+"');\n")
-        f.write("insert into Friendship (userid,fuserid,ftype) values('"+str(friendid)+"','"+str(userid)+"','"+fType+"');\n")
+            f.write("insert into Friendship (userid,fuserid,ftype) values('"+str(userid)+"','"+str(friendid)+"','"+fType+"');\n")
+            f.write("insert into Friendship (userid,fuserid,ftype) values('"+str(friendid)+"','"+str(userid)+"','"+fType+"');\n")
+            allfriendship.append([userid,friendid])
+            print('newfriends')
+        else:
+            print('friendsalready')
+    
 
 
     print(x)
+for p in allfriendship:
+    print(p)
 print(" creation of friendships done")
 
 # db.engine.execute("create table groups(groupId SERIAL,groupName varchar(255),createdBy varchar(255),primary key(groupId))")
@@ -175,7 +195,9 @@ status_all=["Editor","Viewer"]
 for x in range(20):
     breaking=False
     groupId=x+1
-    groupName=fake.word()
+    groupName1=fake.word()
+    groupName2=fake.word()
+    groupName=groupName1+" "+groupName2
     createdBy= random.randint(1,50)
     createddate=fake.date_time_this_year()
     f.write("insert into groups (groupname,createdby,createddate) values('"+groupName+"','"+str(createdBy)+"','"+str(createddate)+"');\n")
@@ -189,12 +211,10 @@ for x in range(20):
         while((createdBy==userId) or (userId in users)):
             if(potentialusers==[]):
                 breaking=True
-                print("True")
                 break
             else:
                 userId=random.choice(potentialusers)
                 potentialusers= [x for x in potentialusers if x != userId]
-                print("userhere already")
         if(breaking==False):
             users.append(userId)
             status=random.choice(status_all)

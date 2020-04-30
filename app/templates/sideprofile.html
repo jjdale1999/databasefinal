@@ -3,8 +3,8 @@
             <ul id="info_list">
 
                 <li><img id="profile-pic" src="{{profilepic}}" alt="image" type="button" onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-black"></li>
-
-                <div>
+<br>
+                <div id="userss_info">
                     <li class="li-text"><h4 class="card-title"> {{fname}}  {{lname}}</h4></li>
                     <li class="li-text"> <img class="smallimg" src="/static/images/gender.png"> @{{username}}</li>
 
@@ -14,14 +14,15 @@
 
                 </div>
             </ul>
+            <br><br>
             <div class="aboutme">
                 <h3>About Me</h3>
                 <p class="li-text"> {{biography}}</p>
+                <br><br>
                 <div id="follow_er_ing">
-                    <li>FOLLOWERS</li>
-                    <li>FOLLOWING</li>
-                    <a >{{followers}}</a>
+                    <li>Friend Count</li>
                     <a  href="{{url_for('friendlist',userid=userid)}}">{{following}}</a>
+                    <br>
                 </div>
                
             </div>

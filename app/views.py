@@ -39,6 +39,16 @@ def posts():
     # return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
+@app.route('/likepost/<postid>/<userid>',methods=['post','get'])
+def likepost(postid,userid):
+    db.engine.execute("insert into likes values("+str(postid)+","+str(userid)+")")
+    return redirect(url_for('posts'))
+
+@app.route('/unlikepost/<postid>/<userid>',methods=['post','get'])
+def unlikepost(postid,userid):
+    db.engine.execute("delete from likes where postid="+str(postid)+" and userid="+str(userid))
+    return redirect(url_for('posts'))
+
 @app.route('/grouplist')
 def grouplist():
     
@@ -52,23 +62,25 @@ def grouplist():
 def groupposts(groupid):
 
     commentform=Comment()
-
-    groupposts=db.engine.execute("select * from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"')) AS posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid='"+session['userid']+"' order by posts.postid desc")
+    uploadform=UploadProfilePic()
+    form=CreatePost()
+    
+    groupposts=db.engine.execute("select * from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+" order by posts.postid desc")
+ 
     groupinfo=db.engine.execute("SELECT * FROM groups WHERE groupid = '"+groupid+"';")
     for a in groupinfo:
         creatorid = a.createdby
         groupname = a.groupname
         createddate = a.createddate
     
-
     creator=db.engine.execute("SELECT username FROM profiles WHERE userid = '"+creatorid+"';")
     for b in creator:
         groupcreator = b.username
-
-    groupposts=db.engine.execute("SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"');")
+# this is why
+    # groupposts=db.engine.execute("SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"');")
     if request.method == "GET":
-        return render_template('groupPosts.html', searchform=SearchForm(),  creatorid=creatorid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
-
+        return render_template('groupPosts.html', form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=creatorid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    
     return render_template('groupPosts.html',searchform=SearchForm(), creatorid=creatorid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
@@ -150,6 +162,16 @@ def addfollower(followerid):
 
     return redirect(url_for('profile',userid=followerid))
 
+@app.route('/deletefollower/<followerid>',methods=['POST',"Get"])
+def deletefollower(followerid):
+    form=FriendType()
+    friendtype = form.friendtype.data
+    # print(friendtype)
+    db.engine.execute("delete from  Friendship where userid="+str(session['userid'])+" and fuserid="+str(followerid))
+    db.engine.execute("delete from  Friendship where userid="+str(followerid)+" and fuserid="+str(session['userid']))
+
+    return redirect(url_for('profile',userid=followerid))
+
 @app.route('/createpost/<option>',methods=['POST', 'GET'])
 def createpost(option):
     createpost = CreatePost()
@@ -192,7 +214,7 @@ def setprofilepic(photoid):
     for m in getprofilepic:
         session['profilepic']=m.photourl
 
-    return redirect(url_for('profile',userid=session['userid']))
+    return redirect(url_for('myprofile'))
 
 @app.route('/uploadgallery',methods=['POST'])
 def uploadgallery():
@@ -287,8 +309,8 @@ def searchuser():
     form=CreatePost()
     fform=FriendType()
     uploadform=UploadProfilePic()
-    commentform=Comment()
     searcform=SearchForm()
+    commentform=Comment()
     searchusername=searcform.username.data
     print(searchusername)
     searchusers=db.engine.execute(" select username,photourl,firstname,lastname,countryliving,profile.userid from (SELECT * FROM profiles WHERE lower(username) LIKE '%%"+searchusername.lower()+"%%') as profile join users on profile.userid=users.userid join gallery on gallery.photoid=profile.profilepic")
@@ -296,6 +318,7 @@ def searchuser():
 
     # users=db.engine.execute("select * from profiles where username like '%"+searchusername+"%'")
     return render_template('searchlist.html',uploadform=uploadform,searchusers=searchusers,searchform=SearchForm(), fform=fform,commentform=commentform,posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
 @app.route('/')
 @app.route('/login', methods=['POST', 'GET'])
 def login():

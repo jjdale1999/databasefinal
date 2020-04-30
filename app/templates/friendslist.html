@@ -20,7 +20,13 @@
 
                     </div>
                     <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.countryliving}}</li>
-                    <li class="card-text "> <div class="following">Following</div> </li>
+                   
+                    <li class="card-text "> 
+                        {% if getfrienship(userid,friend.userid)==1%}
+                           <div class="following"> <a  id="follow" href="{{ url_for('deletefollower',followerid=friend.userid) }}"  > UnFriend</a></div> 
+                        {%endif%}
+                      
+                    </li>
                 </ul>
 
             {% endfor %}

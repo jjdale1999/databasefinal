@@ -4,6 +4,21 @@
 @import "profilepage.css"; 
 @import "addphoto.css"; 
 
+
+.blue{
+    color: black;
+    /* background-color: rgb(64, 61, 238); */
+    box-shadow: 0 5px 10px rgb(64, 61, 238), inset 0 0 9px rgb(64, 61, 238);
+}
+.white{
+    color: black;
+    background-color: white;
+}
+#accountsettings{
+    width: 35px;
+    height: 30px;
+    border-radius: 20px;
+}
 .news__list{
     display:grid;
     list-style: none;
@@ -75,8 +90,9 @@ body {
     display:grid;
     grid-gap: 50px;
     list-style: none;
-    grid-template-columns: 400px 1200px;
-    
+    grid-template-columns: 400px 80%;
+    /* grid-template-columns: 400px 1200px; */
+
     
   }
 .user-card-lay{

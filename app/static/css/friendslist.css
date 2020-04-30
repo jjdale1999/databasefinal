@@ -1,7 +1,7 @@
 .card-lay{
     display:grid;
     list-style: none;
-    grid-template-columns: 0fr 1fr 1fr 1fr;
+    grid-template-columns: 10% 30% 30% 20%;
 
   
 
@@ -13,6 +13,7 @@
     box-shadow: 8px 10px 8px rgb(238, 214, 3), inset 0 0 9px white;
     border-radius: 5px;
     position:relative;
+    width:60%;
 }
 #profile{
     text-align: center;
@@ -57,7 +58,7 @@
   .following {
     margin-left:30%;
     text-align: center;
-    width:60%;
+    width:100%;
     position: relative;
     border: 3px solid transparent;
     border-radius: 16px;

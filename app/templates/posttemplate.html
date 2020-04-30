@@ -2,8 +2,8 @@
                 <div class="cardbod" id="postcard-lay" >
                     <br>
                     <div class="user-info">
-                        
-                        <li><a href="{{url_for('profile',userid=post.fuserid)}}"> <h4 class="card-title"><img class="commentsuser-images" src="{{post.photourl}}" alt="" > @{{post.username}}</h4></a></li>
+
+                        <li><a href="{{url_for('profile',userid=post.fuserid)}}"> <h4 class="card-title"><img class="commentsuser-images" src="{{post.photourl}}" alt="" > {{post.firstname}}  @{{post.username}}</h4></a></li>
                        <li> <div class="dropdown">
                             <img src="/static/images/downarrowoff.png" class=" btn dropdown-toggle imgsize" type="button" id="dropdownMenu2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                        </img>
@@ -37,11 +37,22 @@
                     </ul>
                     
                     <div id="comments">
-                        <img class="commentimg" src="/static/images/likes.png">{{post.likes}}12K</li>
+                        {% if getlikes(post.postid,userid)==1%}
+                              <a href="{{url_for('unlikepost',postid=post.postid,userid=userid)}}" ><img class="commentimg blue" src="/static/images/likes.png"> {{getlikescount(post.postid)}} likes</a>
+                              <a class="" data-toggle="collapse" href="#post{{post.postid}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                                <img class="commentimg" src="/static/images/comments.png" >
+                              </a>
+                          {% else %}
+                            <a href="{{url_for('likepost',postid=post.postid,userid=userid)}}" id="unlike" class="white"><img class="commentimg" src="/static/images/likes.png">{{getlikescount(post.postid)}} likes</a>
+                            <a class="" data-toggle="collapse" href="#post{{post.postid}}" role="button" aria-expanded="false" aria-controls="collapseExample">
+                              <img class="commentimg" src="/static/images/comments.png" >
+                            </a>  
+                          </form>
+                        {% endif %}
                         
-                        <a class="" data-toggle="collapse" href="#post{{post.postid}}" role="button" aria-expanded="false" aria-controls="collapseExample">
-                          <img class="commentimg" src="/static/images/comments.png" >
-                        </a>
+                       
+                        
+   
                     </div>
                     <!-- load comments for posts -->
 

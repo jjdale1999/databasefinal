@@ -29,6 +29,31 @@ def getgallery(userid):
 app.jinja_env.globals.update(getgallery=getgallery)
 
 
+def getlikes(postid,userid):
+    length=0
+    getlikes=db.engine.execute("select userid from likes where postid="+str(postid)+"and userid="+str(userid))
+    for x in getlikes:
+        length=1
+    return length
+app.jinja_env.globals.update(getlikes=getlikes)
+
+
+def getlikescount(postid):
+    countid=0
+    getlikescount=db.engine.execute("select count(userid) as countid from likes where postid="+str(postid))
+    for x in getlikescount:
+        countid=x.countid
+    return countid
+app.jinja_env.globals.update(getlikescount=getlikescount)
+
+
+def getfrienship(userid,friendid):
+    length=0
+    getfrienship=db.engine.execute("select * from friendship where userid="+str(userid)+" and fuserid="+str(friendid))
+    for x in getfrienship:
+        length=1
+    return length
+app.jinja_env.globals.update(getfrienship=getfrienship)
 
 #     setprofilepic=db.engine.execute("update profiles set profilepic='"+image+"' where userid="+str(userid))
 #     return ""

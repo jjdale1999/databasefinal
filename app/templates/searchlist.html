@@ -20,9 +20,44 @@
 
                     </div>
                     <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{user.countryliving}}</li>
-                    <li class="card-text "> <div class="following">Following</div> </li>
+                    <li class="card-text "> 
+                    {% if getfrienship(userid,user.userid)==1%}
+                       <div class="following"> <a  id="follow" href="{{ url_for('deletefollower',followerid=user.userid) }}"  > UnFriend</a></div> 
+                    {%else%}
+                    <div class="following"> <a id="follow" href="" data-toggle="modal" data-target="#exampleModal1" data-whatever="@mdo" data-dismiss="modal" > Add Friend</a> </div>
+                    {%endif%}
+                </li>
                 </ul>
 
+                           
+<!-- following a friend -->
+            <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-header">
+                      <h5 class="modal-title" id="exampleModalLabel">New message</h5>
+                      <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                      </button>
+                    </div>
+                    <div class="modal-body">
+                      <form action="{{ url_for('addfollower',followerid=user.userid) }}" method="POST" enctype="multipart/form-data">
+                        <div class="form-group">
+                          {{fform.friendtype.label (class="col-form-label")}}
+                          {{fform.friendtype (class="form-control")}}
+                          
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                            <button type="submit" class="btn btn-primary" >Follow</button>
+                          </div>
+            
+                      </form>
+                    </div>
+                    
+                  </div>
+                </div>
+              </div>
             {% endfor %}
 
            
