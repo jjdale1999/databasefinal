@@ -14,12 +14,14 @@
         <h6>
             <b>Group Creator:</b> @{{ creator }} <br>
             <b>Created on:</b> {{ createddate }} <br>
-            <!-- <div class="following"><a  id="follow" href="{{ url_for('joingroup', userID=userid, groupID=groupid) }}"  >Join Group</a></div> -->
+            <div class="groupbtns"><a  id="follow" href="{{ url_for('joingroup', userID=userid, groupID=groupid) }}"  >Join Group</a></div>
+            <button  id="follow" class="groupbtns" onclick="document.getElementById('id21').style.display='block'"  >View Members</button>
         </h6>
 
         
             {%include 'createpost.html'%}
             {%include 'posttemplate.html'%}
+            {% include 'memberslist.html' %}
         
         
     </div>

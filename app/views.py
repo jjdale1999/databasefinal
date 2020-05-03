@@ -101,8 +101,7 @@ def joingroup(groupID, userID):
     if exists:
         flash("You are already a member of this group!", "danger")
         groups=db.engine.execute("SELECT * FROM groups;")
-        uploadform=UploadProfilePic()
-        return render_template('grouplist.html',searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+        return groupposts(groupID)
     else:
         time = datetime.datetime.now()
         time = time.strftime("%Y-%m-%d %H:%M:%S")

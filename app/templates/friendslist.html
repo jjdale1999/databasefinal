@@ -9,6 +9,12 @@
         <h1 id="profile">Friend List</h1>
     
         <div class="cardbod" id="card-lay" >
+            <ul class="nav nav-tabs">
+                <li class="active"><a href="#">Work</a></li>
+                <li><a href="#">School</a></li>
+                <li><a href="#">Relatives</a></li>
+            
+            </ul>
             {% for friend in friends%}
                 <ul class="card-lay">
                     <li><img class="images" src="{{friend.photourl}}" alt="image" ></li>
