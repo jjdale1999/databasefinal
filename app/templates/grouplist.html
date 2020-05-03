@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+{% include 'flash_messages.html' %}
     <div id="profiles">
         <h1 id="profile">MyBook Groups</h1>
     
@@ -14,8 +15,10 @@
                     <li class="card-text name"><a href=""> <h4 class="card-title">{{ group.groupname }}</h4></a></li>
                     <li class="card-text "> 
                         <form action="{{ url_for('groupposts', groupid=group.groupid) }}">
-                            <button type="submit" formmethod="get" class="following">View Group</button> 
-                            <button type="submit" formmethod="post" class="following">Join Group</button>
+                            <button type="submit" formmethod="get" class="following">View Group</button>
+                        </form> 
+                        <form action="{{ url_for('joingroup', userID=userid, groupID=group.groupid) }}">
+                            <button type="submit" formmethod="get" class="following">Join Group</button>
                         </form>  
                     </li>
                 </ul> 

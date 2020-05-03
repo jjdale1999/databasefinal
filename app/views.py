@@ -58,9 +58,8 @@ def grouplist():
     
     return render_template('grouplist.html',searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
-@app.route('/groupposts/<groupid>', methods=['POST', 'GET'])
+@app.route('/groupposts/<groupid>')
 def groupposts(groupid):
-
     commentform=Comment()
     uploadform=UploadProfilePic()
     form=CreatePost()
@@ -78,11 +77,29 @@ def groupposts(groupid):
         groupcreator = b.username
 # this is why
     # groupposts=db.engine.execute("SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"');")
-    if request.method == "GET":
-        return render_template('groupPosts.html', form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=creatorid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    # if request.method == "GET":
+    return render_template('groupPosts.html', form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=creatorid, groupid = groupid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+ 
+@app.route('/joingroup/<groupID>/<userID>')
+def joingroup(groupID, userID):
+    value=db.engine.execute("SELECT userid FROM joinsgroup WHERE userid = '"+userID+"' AND groupid = '"+groupID+"';")
+    exists = 0
+    for val in value:
+        exists = val
     
-    return render_template('groupPosts.html',searchform=SearchForm(), creatorid=creatorid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
-
+    if exists:
+        flash("You are already a member of this group!", "danger")
+        groups=db.engine.execute("SELECT * FROM groups;")
+        uploadform=UploadProfilePic()
+        return render_template('grouplist.html',searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    else:
+        time = datetime.datetime.now()
+        time = time.strftime("%Y-%m-%d %H:%M:%S")
+        db.engine.execute("INSERT INTO joinsGroup (groupid,userid,status,joindate) values('"+groupID+"','"+userID+"','Viewer','"+time+"');")
+        #insert into joinsGroup (groupid,userid,status,joindate) values('1','9','Viewer','2020-04-22 00:11:48');
+        flash("You are now a member of this group!", "success")
+        return groupposts(groupID)
+        
 
 @app.route('/about/')
 def about():

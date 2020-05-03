@@ -51,7 +51,7 @@ db.engine.execute("create table addcomments(commentId int,postId int,userid int,
 db.engine.execute("create table likes (postid int ,userid int,primary key(postid,userid),foreign key(postid) references posts(postid) on delete cascade on update cascade,foreign key(userid) references users(userid) on delete cascade on update cascade)")
 
 
-posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+"order by posts.postid desc")
+# posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+"order by posts.postid desc")
 
 # Edited
 #Tables trigger based
@@ -63,6 +63,7 @@ db.engine.execute("create table capacity(almostFullGroup varchar(20),groupNotif 
 # create the 3 or more procedures
 # # command use to insert data into postgres
 # # \i /Users/jordannedale/Desktop/databasefinal/database.sql
+# # \i /home/rahmoi/Desktop/LABS/COMP3161/databasefinal/database.sql
 
 #Can scrap these if you don't like them I can think of others but after all the changes
 #(First Trigger)Trigger shoing "Date of Friendshp"

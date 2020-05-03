@@ -4,6 +4,7 @@
 {% include 'sideprofile.html' %}
 {% endblock %}
 {% block main %}
+{% include 'flash_messages.html' %}
     <div class="posts">
                 
         <h1 class="profile">
@@ -12,7 +13,8 @@
         </h1>
         <h6>
             <b>Group Creator:</b> @{{ creator }} <br>
-            <b>Created on:</b> {{ createddate }}
+            <b>Created on:</b> {{ createddate }} <br>
+            <!-- <div class="following"><a  id="follow" href="{{ url_for('joingroup', userID=userid, groupID=groupid) }}"  >Join Group</a></div> -->
         </h6>
 
         
