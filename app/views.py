@@ -58,6 +58,17 @@ def grouplist():
     
     return render_template('grouplist.html',searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
+@app.route('/mygroups')
+def mygroups():
+    userid=session['userid']
+    groups=db.engine.execute("SELECT g.groupid, groupname, createdby, createddate FROM groups g JOIN joinsgroup jg ON g.groupid = jg.groupid WHERE userid = '"+userid+"';")
+    #SELECT g.groupid, groupname, createdby, createddate FROM groups g JOIN joinsgroup jg ON g.groupid = jg.groupid WHERE userid = 28;
+    uploadform=UploadProfilePic()
+
+    
+    return render_template('mygroups.html',searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+
 @app.route('/groupposts/<groupid>')
 def groupposts(groupid):
     commentform=Comment()

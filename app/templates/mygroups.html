@@ -7,7 +7,7 @@
 {% block main %}
 {% include 'flash_messages.html' %}
     <div id="profiles">
-        <h1 id="profile">MyBook Groups</h1>
+        <h1 id="profile">MyGroups List</h1>
     
         <div class="cardbod" id="card-lay" >
             {% for group in groups %}    
@@ -17,9 +17,6 @@
                         <form action="{{ url_for('groupposts', groupid=group.groupid) }}">
                             <button type="submit" formmethod="get" class="following">View Group</button>
                         </form> 
-                        <form action="{{ url_for('joingroup', userID=userid, groupID=group.groupid) }}">
-                            <button type="submit" formmethod="get" class="following">Join Group</button>
-                        </form>  
                     </li>
                 </ul> 
             {% endfor %}            
