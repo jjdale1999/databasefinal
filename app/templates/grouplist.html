@@ -11,15 +11,11 @@
     
         <div class="cardbod" id="card-lay" >
             {% for group in groups %}    
-                <ul class="card-lay">
+                <ul class="grouplist">
                     <li class="card-text name"><a href="{{ url_for('groupposts', groupid=group.groupid) }}"> <h4 class="card-title">{{ group.groupname }}</h4></a></li>
                     <li class="card-text "> 
-                        <form action="{{ url_for('groupposts', groupid=group.groupid) }}">
-                            <button type="submit" formmethod="get" class="following">View Group</button>
-                        </form> 
-                        <form action="{{ url_for('joingroup', userID=userid, groupID=group.groupid) }}">
-                            <button type="submit" formmethod="get" class="following">Join Group</button>
-                        </form>  
+                        <a href="{{ url_for('groupposts', groupid=group.groupid) }}" class="grouplistbtns">View Group</a>
+                        <a href="{{ url_for('joingroup', userID=userid, groupID=group.groupid) }}" class="grouplistbtns">Join Group</a>
                     </li>
                 </ul> 
             {% endfor %}            

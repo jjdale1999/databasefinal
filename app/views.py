@@ -76,8 +76,9 @@ def groupposts(groupid):
     form=CreatePost()
     
     groupposts=db.engine.execute("select * from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+" order by posts.postid desc")
- 
     groupinfo=db.engine.execute("SELECT * FROM groups WHERE groupid = '"+groupid+"';")
+    groupmembers = db.engine.execute("SELECT * FROM joinsgroup JOIN users ON users.userid = joinsgroup.userid JOIN profiles ON profiles.userid = users.userid JOIN gallery ON gallery.photoid = profiles.profilepic WHERE groupid = '"+groupid+"';")
+    #select * from joinsgroup join users on users.userid=joinsgroup.userid join profiles on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where groupid = 1; 
     for a in groupinfo:
         creatorid = a.createdby
         groupname = a.groupname
@@ -89,7 +90,7 @@ def groupposts(groupid):
 # this is why
     # groupposts=db.engine.execute("SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"');")
     # if request.method == "GET":
-    return render_template('groupPosts.html', form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=creatorid, groupid = groupid, groupname=groupname, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('groupPosts.html', form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=creatorid, groupid = groupid, groupname=groupname, groupmembers=groupmembers, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
  
 @app.route('/joingroup/<groupID>/<userID>')
 def joingroup(groupID, userID):
