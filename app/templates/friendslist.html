@@ -5,6 +5,7 @@
 {% endblock %}
 
 {% block main %}
+
     <div id="profiles">
         <h1 id="profile">Friend List</h1>
     
@@ -13,8 +14,12 @@
                 <li class="active"><a href="#">Work</a></li>
                 <li><a href="#">School</a></li>
                 <li><a href="#">Relatives</a></li>
-            
             </ul>
+            <!-- <div class="w3-bar w3-border-bottom">
+                <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Paris')">Upload a Photo</button>
+        
+               <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'London')"> Select a Profile Pic </button>
+            </div> -->
             {% for friend in friends%}
                 <ul class="card-lay">
                     <li><img class="images" src="{{friend.photourl}}" alt="image" ></li>
