@@ -8,7 +8,7 @@
     <div class="posts">
                 
         <h1 class="profile">
-            <img src="/static/images/createpost2.png" class="smallimg" data-toggle="modal" data-target="#exampleModal0" data-whatever="@mdo"/>
+            <img src="/static/images/createpost2.png" class="smallimg" data-toggle="modal" data-target="#newgrouppost" data-whatever="@mdo"/>
             <b>{{ groupname }}</b>
         </h1>
         <h6>
@@ -22,6 +22,7 @@
 
         
             {%include 'createpost.html'%}
+            {%include 'creategrouppost.html'%}
             {%include 'posttemplate.html'%}
             {% include 'memberslist.html' %}
         

@@ -68,6 +68,45 @@ def mygroups():
     
     return render_template('mygroups.html',searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
+@app.route('/creategrouppost/<groupID>/<postType>', methods=['POST', 'GET'])
+def creategrouppost(groupID, postType):
+    createpost = CreatePost()
+    textpost=createpost.text.data
+    
+    if request.method == "POST":
+        # print("went into function")
+        if postType == 'text' and textpost!="":
+            db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+textpost+"','text','"+str(datetime.datetime.now())+"')")
+            lastTextPostID= db.engine.execute("SELECT postid FROM posts ORDER BY postid DESC LIMIT 1")
+            for last in lastTextPostID:
+                postid=last.postid
+            db.engine.execute("INSERT INTO  groupposts(groupid,postid) values('"+groupID+"', '"+str(postid)+"');")
+            # db.engine.execute("INSERT INTO  user_post_log(postid, userid) VALUES('"+str(postid)+"','"+str(session['userid'])+"')")
+            #select * from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc
+            return groupposts(groupID)
+
+        elif postType == 'image':
+            photo= createpost.image.data
+                # created_date=format_date_joined(datetime.datetime.now())
+            filename=secure_filename(photo.filename)
+            photo.save(os.path.join(app.config['UPLOAD_FOLDER'],filename))
+            db.engine.execute("insert into gallery(photourl) values('"+'/static/uploads/'+filename+"')")
+            lastphotoid= db.engine.execute("select photoid from gallery order by photoid desc limit 1")
+            for last in lastphotoid:
+                photoid=last.photoid
+            db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+session['userid']+"')")
+
+            db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+'/static/uploads/'+filename+"','image','"+str(datetime.datetime.now())+"')")
+
+            lastpostid= db.engine.execute("select postId from posts order by postid desc limit 1")
+            for last in lastpostid:
+                postId=last.postid
+            db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postId)+"','"+session['userid']+"')")
+            db.engine.execute("INSERT INTO  groupposts(groupid,postid) values('"+groupID+"', '"+str(postId)+"');")
+
+            return groupposts(groupID)
+        
+
 
 @app.route('/groupposts/<groupid>')
 def groupposts(groupid):
@@ -75,7 +114,7 @@ def groupposts(groupid):
     uploadform=UploadProfilePic()
     form=CreatePost()
     
-    groupposts=db.engine.execute("select * from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+" order by posts.postid desc")
+    groupposts=db.engine.execute("select * from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
     groupinfo=db.engine.execute("SELECT * FROM groups WHERE groupid = '"+groupid+"';")
     groupmembers = db.engine.execute("SELECT * FROM joinsgroup JOIN users ON users.userid = joinsgroup.userid JOIN profiles ON profiles.userid = users.userid JOIN gallery ON gallery.photoid = profiles.profilepic WHERE groupid = '"+groupid+"';")
     #select * from joinsgroup join users on users.userid=joinsgroup.userid join profiles on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where groupid = 1; 
