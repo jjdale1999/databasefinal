@@ -10,39 +10,112 @@
         <h1 id="profile">Friend List</h1>
     
         <div class="cardbod" id="card-lay" >
-            <ul class="nav nav-tabs">
+           <!-- <ul class="nav nav-tabs">
                 <li class="active"><a href="#">Work</a></li>
                 <li><a href="#">School</a></li>
                 <li><a href="#">Relatives</a></li>
-            </ul>
-            <!-- <div class="w3-bar w3-border-bottom">
-                <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'Paris')">Upload a Photo</button>
+            </ul>  -->
+             <div class="w3-bar w3-border-bottom">
+                    <button class="tablink w3-bar-item w3-button" onclick="document.getElementById('Work').style.display='block'; document.getElementById('School').style.display='none'; document.getElementById('Relatives').style.display='none'; document.getElementById('Friends').style.display='none';">Work</button>
+            
+                    <button class="tablink w3-bar-item w3-button" onclick="document.getElementById('Work').style.display='none'; document.getElementById('School').style.display='none'; document.getElementById('Relatives').style.display='block'; document.getElementById('Friends').style.display='none';"> Relatives </button>
+
+                    <button class="tablink w3-bar-item w3-button" onclick="document.getElementById('Work').style.display='none'; document.getElementById('School').style.display='block'; document.getElementById('Relatives').style.display='none'; document.getElementById('Friends').style.display='none';"> School </button>
+            </div> 
+            <div id="results">
+                    <div id="Work" style="display: none;">
+                        {% for friend in work %}
+                            <ul class="card-lay">
+                                <li><img class="images" src="{{friend.photourl}}" alt="image" ></li>
+                                <div>
+                                    <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
+                                    <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
+                                    <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h6 class="card-title">@{{friend.username}} </h6></a></li>
         
-               <button class="tablink w3-bar-item w3-button" onclick="openCity(event, 'London')"> Select a Profile Pic </button>
-            </div> -->
-            {% for friend in friends%}
-                <ul class="card-lay">
-                    <li><img class="images" src="{{friend.photourl}}" alt="image" ></li>
-                    <div>
-                        <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
-                        <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
-                        <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h6 class="card-title">@{{friend.username}} </h6></a></li>
-
-
+        
+                                </div>
+                                <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.countryliving}}</li>
+                            
+                                <li class="card-text "> 
+                                    {% if getfrienship(userid,friend.userid)==1%}
+                                    <div class="following"> <a  id="follow" href="{{ url_for('deletefollower',followerid=friend.userid) }}"  > UnFriend</a></div> 
+                                    {%endif%}
+                                
+                                </li>
+                            </ul>
+                        {% endfor %}
                     </div>
-                    <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.countryliving}}</li>
-                   
-                    <li class="card-text "> 
-                        {% if getfrienship(userid,friend.userid)==1%}
-                           <div class="following"> <a  id="follow" href="{{ url_for('deletefollower',followerid=friend.userid) }}"  > UnFriend</a></div> 
-                        {%endif%}
-                      
-                    </li>
-                </ul>
 
-            {% endfor %}
+                    <div id="School" style="display: none;">
+                        {% for friend in school %}
+                            <ul class="card-lay">
+                                <li><img class="images" src="{{friend.photourl}}" alt="image" ></li>
+                                <div>
+                                    <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
+                                    <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
+                                    <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h6 class="card-title">@{{friend.username}} </h6></a></li>
+        
+        
+                                </div>
+                                <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.countryliving}}</li>
+                            
+                                <li class="card-text "> 
+                                    {% if getfrienship(userid,friend.userid)==1%}
+                                    <div class="following"> <a  id="follow" href="{{ url_for('deletefollower',followerid=friend.userid) }}"  > UnFriend</a></div> 
+                                    {%endif%}
+                                
+                                </li>
+                            </ul>
+                        {% endfor %}
+                    </div>
 
-           
+                    <div id="Relatives" style="display: none;">
+                        {% for friend in relatives %}
+                            <ul class="card-lay">
+                                <li><img class="images" src="{{friend.photourl}}" alt="image" ></li>
+                                <div>
+                                    <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
+                                    <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
+                                    <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h6 class="card-title">@{{friend.username}} </h6></a></li>
+        
+        
+                                </div>
+                                <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.countryliving}}</li>
+                            
+                                <li class="card-text "> 
+                                    {% if getfrienship(userid,friend.userid)==1%}
+                                    <div class="following"> <a  id="follow" href="{{ url_for('deletefollower',followerid=friend.userid) }}"  > UnFriend</a></div> 
+                                    {%endif%}
+                                
+                                </li>
+                            </ul>
+                        {% endfor %}
+                    </div>
+
+                    <div id="Friends">
+                        {% for friend in friends %}
+                            <ul class="card-lay">
+                                <li><img class="images" src="{{friend.photourl}}" alt="image" ></li>
+                                <div>
+                                    <li class="follows_you"> <img class="smallimg" src="/static/images/gender.png">Follows You</li>
+                                    <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h4 class="card-title">{{friend.firstname}} {{friend.lastname}} </h4></a></li>
+                                    <li class="card-text name"><a href="{{url_for('profile',userid=friend.userid)}}"> <h6 class="card-title">@{{friend.username}} </h6></a></li>
+        
+        
+                                </div>
+                                <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{friend.countryliving}}</li>
+                            
+                                <li class="card-text "> 
+                                    {% if getfrienship(userid,friend.userid)==1%}
+                                    <div class="following"> <a  id="follow" href="{{ url_for('deletefollower',followerid=friend.userid) }}"  > UnFriend</a></div> 
+                                    {%endif%}
+                                
+                                </li>
+                            </ul>
+                        {% endfor %}
+                    </div>
+
+            </div>      
             
         </div>
     </div>
