@@ -17,6 +17,9 @@
             <div id="groupbtnsdiv">
                 <a  id="follow" class="groupbtns" href="{{ url_for('joingroup', userID=userid, groupID=groupid) }}"  >Join Group</a>
                 <a  id="follow" href="#" class="groupbtns" onclick="document.getElementById('id21').style.display='block'"  >View Members</a>
+                {% if creatorid == userid %}
+                    <a  id="follow" class="groupbtns" href="#" onclick="document.getElementById('addmember').style.display='block'">Add Member</a>
+                {% endif %}
             </div>
         </h6>
 
@@ -25,6 +28,7 @@
             {%include 'creategrouppost.html'%}
             {%include 'posttemplate.html'%}
             {% include 'memberslist.html' %}
+            {% include 'addmember.html' %}
         
         
     </div>
