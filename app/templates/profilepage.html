@@ -17,7 +17,7 @@
             {% if getfrienship(userid,user.userid)==1%}
                 <a id="follow" href="{{ url_for('deletefollower',followerid=user.userid) }}"  > UnFriend</a>
             {%else%}
-                <a id="follow" href="" data-toggle="modal" data-target="#exampleModal1" data-whatever="@mdo" data-dismiss="modal" > Add Friend</a>
+                <a id="follow" href="" data-toggle="modal" data-target="#friendtype" data-whatever="@mdo" data-dismiss="modal" > Add Friend</a>
             {%endif%}
           </div>
             <a title="Mert S. Kaplan" href="https://twitter.com/mertskaplan" class="twPc-avatarLink">
@@ -65,7 +65,7 @@
 
            
 <!-- following a friend -->
-            <div class="modal fade" id="exampleModal1" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="friendtype" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog" role="document">
                   <div class="modal-content">
                     <div class="modal-header">

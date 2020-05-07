@@ -8,7 +8,7 @@ import os
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import CreateProfile,SignUp,Login,CreatePost,FriendType,Comment,UploadProfilePic,SearchForm
+from app.forms import CreateProfile,SignUp,Login,CreatePost,FriendType,Comment,UploadProfilePic,SearchForm, CreateGroupForm
 # from app.models import UserProfile
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
@@ -59,12 +59,39 @@ def grouplist():
 
 @app.route('/mygroups')
 def mygroups():
+    createGroupForm = CreateGroupForm()
     userid=session['userid']
     groups=db.engine.execute("SELECT g.groupid, groupname, createdby, createddate FROM groups g JOIN joinsgroup jg ON g.groupid = jg.groupid WHERE userid = '"+userid+"';")
     uploadform=UploadProfilePic()
 
     
-    return render_template('mygroups.html',searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('mygroups.html',searchform=SearchForm(), uploadform=uploadform, createGroupForm=createGroupForm, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+@app.route('/creategroup', methods=['POST','GET'])
+def creategroup():
+    createGroupForm = CreateGroupForm()
+    userid=session['userid']
+    groups=db.engine.execute("SELECT g.groupid, groupname, createdby, createddate FROM groups g JOIN joinsgroup jg ON g.groupid = jg.groupid WHERE userid = '"+userid+"';")
+    uploadform=UploadProfilePic()
+
+    if request.method == "POST":
+        groupname = createGroupForm.groupname.data
+        time = datetime.datetime.now()
+        time = time.strftime("%Y-%m-%d %H:%M:%S")
+        db.engine.execute("INSERT INTO  groups(groupname,createdby, createddate) values('"+groupname+"','"+str(userid)+"','"+time+"');")
+        lastGroupID= db.engine.execute("SELECT groupid FROM groups ORDER BY groupid DESC LIMIT 1")
+        for last in lastGroupID:
+            groupid=last.groupid
+
+        time = datetime.datetime.now()
+        time = time.strftime("%Y-%m-%d %H:%M:%S")
+        db.engine.execute("INSERT INTO joinsGroup (groupid,userid,status,joindate) values('"+str(groupid)+"','"+userid+"','Editor','"+time+"');")
+        flash("You just created the '"+groupname+"' MyBook Group" , "success")
+
+
+    
+    return render_template('mygroups.html',searchform=SearchForm(), uploadform=uploadform, createGroupForm=createGroupForm, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
 
 @app.route('/creategrouppost/<groupID>/<postType>', methods=['POST', 'GET'])
 def creategrouppost(groupID, postType):
@@ -86,6 +113,7 @@ def creategrouppost(groupID, postType):
                 for last in lastTextPostID:
                     postid=last.postid
                 db.engine.execute("INSERT INTO  groupposts(groupid,postid) values('"+groupID+"', '"+str(postid)+"');")
+                db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postid)+"','"+session['userid']+"')")
                 return groupposts(groupID)
 
             elif postType == 'image':
@@ -136,8 +164,18 @@ def groupposts(groupid):
 # this is why
     # groupposts=db.engine.execute("SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"');")
     # if request.method == "GET":
-    return render_template('groupPosts.html', form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=creatorid, groupid = groupid, groupname=groupname, groupmembers=groupmembers, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+    return render_template('groupPosts.html', form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=int(creatorid), groupid = groupid, groupname=groupname, groupmembers=groupmembers, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=int(session['userid']))
  
+@app.route('/groupstatus/<groupid>/<userid>/<status>',methods=['POST', 'GET'])
+def groupstatus(groupid, userid, status):
+    if request.method == "POST":
+        if str(status) == 'Editor':
+            db.engine.execute("UPDATE joinsgroup SET status =  'Viewer' WHERE groupid = "+groupid+" AND userid = "+userid)
+        else:
+            db.engine.execute("UPDATE joinsgroup SET status =  'Editor' WHERE groupid = "+groupid+" AND userid = "+userid)
+    return groupposts(groupid)
+
 @app.route('/joingroup/<groupID>/<userID>')
 def joingroup(groupID, userID):
     value=db.engine.execute("SELECT userid FROM joinsgroup WHERE userid = '"+userID+"' AND groupid = '"+groupID+"';")
@@ -427,6 +465,19 @@ def login():
         else:
             flash('Username or Password is incorrect.','danger')
     return render_template('login.html',form=loginform)
+
+@app.route('/admin' ,methods=['GET', 'POST'])
+def admin():
+    #db.engine.execute("")
+    #write a query to get all the usernames from the profiles table and store it here in a variable group and order by userid
+    #write a query to count all the fuserid's in the friendship table and store it here in a variable group and order by userid
+    #write a query to count all the postid's in the user_post_log table and store it here in a variable group and order by userid
+    #write a query to count all the commentid's in the comments table and store it here in a variable group and order by userid
+
+    #write code that will combine all of that data in a list of lists and pass it to the admin template then traverse it there
+
+    return render_template('admin.html')
+
 
 @app.route('/logout')
 def logout():

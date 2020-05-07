@@ -43,4 +43,8 @@ class UploadProfilePic(FlaskForm):
 
 
 class SearchForm(FlaskForm):
-        username = StringField('Username', validators=[DataRequired()],render_kw={"placeholder":"Username"})
+    username = StringField('Username', validators=[DataRequired()],render_kw={"placeholder":"Username"})
+
+
+class CreateGroupForm(FlaskForm):
+    groupname = StringField('Group Name', validators=[DataRequired()],render_kw={"placeholder":"Enter new group name here"})

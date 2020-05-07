@@ -17,9 +17,18 @@
                   <li class="card-text name"><a href="{{url_for('profile',userid=member.userid)}}"> <h4 class="card-title">{{member.firstname}} {{member.lastname}} </h4></a></li>
                   <li class="card-text name"><a href="{{url_for('profile',userid=member.userid)}}"> <h6 class="card-title">@{{member.username}} </h6></a></li>
               </div>
-              <li class="card-text"><img class="smallimg" src="/static/images/location.png">{{member.countryliving}}</li>
-              
-              <li class="card-text ">Content {{member.status}}</li>
+              <li class="card-text">Content {{member.status}}</li>
+              {% if creatorid == userid %}
+                  {% if member.userid == userid %}
+                    <li class="card-text "><b>Group Creator</b></li>
+                  {% else %}
+                    {% if member.status == 'Editor' %}
+                      <li class="card-text "><form method="POST" action="{{ url_for('groupstatus', groupid = groupid, userid = member.userid, status = 'Editor') }}"><button type="submit" class="btn btn-primary">Make a Content Viewer</button></form></li>
+                    {% else %}
+                      <li class="card-text "><form method="POST" action="{{ url_for('groupstatus', groupid = groupid, userid = member.userid, status = 'Viewer') }}"><button type="submit" class="btn btn-primary">Make a Content Editor</button></form></li>
+                    {% endif %}
+                  {% endif %}
+              {% endif %}
           </ul>
 
             {% endfor %}

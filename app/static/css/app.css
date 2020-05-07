@@ -364,3 +364,7 @@ position:relative;
     list-style: none;
     grid-template-columns: 30% 70%;
 }
+
+#creategroupbtn {
+    margin: 2%;
+}

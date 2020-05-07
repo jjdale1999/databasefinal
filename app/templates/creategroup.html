@@ -1,0 +1,38 @@
+
+
+  <div class="w3-container">
+   
+    <div id="creategroup" class="w3-modal">
+     <div class="w3-modal-content w3-card-4 w3-animate-zoom">
+      <header class="w3-container w3-blue"> 
+       <span onclick="document.getElementById('creategroup').style.display='none'" 
+       class="w3-button w3-blue w3-xlarge w3-display-topright">&times;</span>
+       <h2>Start New Group</h2>
+      </header>
+
+      <div class="modal-body">
+        <form action="{{ url_for('creategroup')}}" method="POST">
+          <div class="form-group">
+            
+            {{createGroupForm.groupname.label (class="col-form-label")}}
+            {{createGroupForm.groupname (class="form-control")}}
+            
+          </div>
+          <div class="modal-footer">
+              <button type="submit" class="btn btn-primary">Create</button>
+          </div>
+
+        </form>
+      </div>
+        
+    
+      <div class="w3-container w3-light-grey w3-padding">
+       <button class="w3-button w3-right w3-white w3-border" 
+       onclick="document.getElementById('creategroup').style.display='none'">Close</button>
+      </div>
+     </div>
+    </div>
+
+    </div>
+
+     
