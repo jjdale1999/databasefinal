@@ -385,7 +385,7 @@ def myprofile():
     uploadform=UploadProfilePic()
     users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where users.userid='"+session['userid']+"'")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid  where posts.userid='"+str(userid)+"' order by posts.postid desc")
-    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid  join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where profiles.userid='"+str(session['userid'])+"' order by posts.postid desc")
+    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid  join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where profiles.userid='"+str(session['userid'])+"' AND user_post_log.postid NOT IN(SELECT postid FROM groupposts) order by posts.postid desc")
     return render_template('myprofilepage.html',searchform=SearchForm(), form=form,uploadform=uploadform,commentform=commentform,fform=fform,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
