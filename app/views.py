@@ -149,7 +149,7 @@ def groupposts(groupid):
     uploadform=UploadProfilePic()
     form=CreatePost()
     
-    groupposts=db.engine.execute("select * from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
+    groupposts=db.engine.execute("select user_post_log.postid, user_post_log.userid, content, ctype, postdatetime, profileno, profilepic, username, countryliving, photoid, photourl from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
     groupinfo=db.engine.execute("SELECT * FROM groups WHERE groupid = '"+groupid+"';")
     groupmembers = db.engine.execute("SELECT * FROM joinsgroup JOIN users ON users.userid = joinsgroup.userid JOIN profiles ON profiles.userid = users.userid JOIN gallery ON gallery.photoid = profiles.profilepic WHERE groupid = '"+groupid+"';")
     nonMembers = db.engine.execute("SELECT * FROM users u JOIN profiles p ON u.userid = p.userid JOIN gallery g ON g.photoid = p.profilepic WHERE u.userid NOT IN (SELECT userid FROM joinsgroup WHERE groupid = "+groupid+");")
@@ -479,24 +479,45 @@ def login():
 def admin():
     #Just a starter for the admin interface. Way more information, details, and styles will be added to the template
     
-    #db.engine.execute("")
-    listLen = 0
-    usernames = db.engine.execute("SELECT username FROM profiles ORDER BY (userid)") #query to get all the usernames from the profiles table grouped and ordered by userid
-    friendsCount = db.engine.execute("SELECT COUNT(fuserid) AS friends_count FROM friendship GROUP BY (userid) ORDER BY (userid)") #query to count all the fuserid's in the friendship table grouped and ordered by userid
+    usernames = db.engine.execute("SELECT userid, username FROM profiles ORDER BY (userid)") #query to get all the usernames from the profiles table grouped and ordered by userid
+    friendsCount = db.engine.execute("SELECT userid, COUNT(fuserid) AS friends_count FROM friendship GROUP BY (userid) ORDER BY (userid)") #query to count all the fuserid's in the friendship table grouped and ordered by userid
+    postsCount= db.engine.execute("SELECT userid, COUNT(postid) AS post_counts FROM user_post_log GROUP BY (userid) ORDER BY (userid)")
+    commentsCount=db.engine.execute("SELECT userid, COUNT(commentid) AS comment_counts FROM addcomments GROUP BY (userid) ORDER BY (userid);")
 
-    #write a query to count all the postid's in the user_post_log table and store it here in a variable group and order by userid
-    #write a query to count all the commentid's in the comments table and store it here in a variable group and order by userid
+    userInfoList = []
     
-    usernamesList = [username[0] for username in usernames]
-    friendsCountList = [int(noOfFriends[0]) for noOfFriends in friendsCount]
-    friendsCountList.extend([0 for i in range(50)])#take this out when admin page is 100% complete
+    for username in usernames:
 
-    # print("HHHHHHHHEEEEEEEEEEEERRRRRRRRRRREEEEEEEEEEEE")
-    # print(str(len(usernamesList))+" "+str(len(friendsCountList)))
-    
-    #NB: need to find a way to set the records in the lists 0 when they don't exist 
-    
-    userInfoList = [[usernamesList[i], friendsCountList[i]] for i in range(len(usernamesList))] #code that will combine all of that data in a list of lists to be passed to the admin template then it can be traversed there
+        currentUserID = int(username[0])
+        currentUserName = str(username[1])
+
+        currentUserInfo = [currentUserName, 0, 0, 0]
+        
+        for noOfFriends in friendsCount:
+            currentFriendCountID = int(noOfFriends[0])
+            currentFriendCount = int(noOfFriends[1])
+
+            if currentUserID == currentFriendCountID:
+                currentUserInfo[1] = currentFriendCount
+                break
+
+        for noOfPosts in postsCount:
+            currentPostCountID = int(noOfPosts[0])
+            currentPostCount = int(noOfPosts[1])
+
+            if currentUserID == currentPostCountID:
+                currentUserInfo[2] = currentPostCount
+                break
+        
+        for noOfComments in commentsCount:
+            currentCommentCountID = int(noOfComments[0])
+            currentCommentCount = int(noOfComments[1])
+
+            if currentUserID == currentCommentCountID:
+                currentUserInfo[3] = currentCommentCount
+                break
+        
+        userInfoList.append(currentUserInfo)
 
     return render_template('admin.html', userInfoList=userInfoList)
 
