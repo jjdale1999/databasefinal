@@ -35,26 +35,14 @@
     </tr>
   </thead>
   <tbody>
-  {% for user in users  %}
+  {% for userInfo in userInfoList  %}
     <tr>
-      <th scope="row">{{user.username}}  </th>
-      <td>Mark</td>
-      <td>{{user.post_no}}</td>
-      <td>@mdo</td>
+      <th scope="row">{{userInfo[0]}}  </th>
+      <td>{{userInfo[1]}}</td>
+      <td>number of posts will go here</td>
+      <td>number of comments made will go here</td>
     </tr>
     {% endfor %}
-    <tr>
-      <th scope="row"></th>
-      <td>Jacob</td>
-      <td>Thornton</td>
-      <td>@fat</td>
-    </tr>
-    <tr>
-      <th scope="row">3</th>
-      <td>Larry</td>
-      <td>the Bird</td>
-      <td>@twitter</td>
-    </tr>
   </tbody>
 </table>
     </main>

@@ -477,15 +477,28 @@ def login():
 
 @app.route('/admin' ,methods=['GET', 'POST'])
 def admin():
+    #Just a starter for the admin interface. Way more information, details, and styles will be added to the template
+    
     #db.engine.execute("")
-    #write a query to get all the usernames from the profiles table and store it here in a variable group and order by userid
-    #write a query to count all the fuserid's in the friendship table and store it here in a variable group and order by userid
+    listLen = 0
+    usernames = db.engine.execute("SELECT username FROM profiles ORDER BY (userid)") #query to get all the usernames from the profiles table grouped and ordered by userid
+    friendsCount = db.engine.execute("SELECT COUNT(fuserid) AS friends_count FROM friendship GROUP BY (userid) ORDER BY (userid)") #query to count all the fuserid's in the friendship table grouped and ordered by userid
+
     #write a query to count all the postid's in the user_post_log table and store it here in a variable group and order by userid
     #write a query to count all the commentid's in the comments table and store it here in a variable group and order by userid
+    
+    usernamesList = [username[0] for username in usernames]
+    friendsCountList = [int(noOfFriends[0]) for noOfFriends in friendsCount]
+    friendsCountList.extend([0 for i in range(50)])#take this out when admin page is 100% complete
 
-    #write code that will combine all of that data in a list of lists and pass it to the admin template then traverse it there
+    # print("HHHHHHHHEEEEEEEEEEEERRRRRRRRRRREEEEEEEEEEEE")
+    # print(str(len(usernamesList))+" "+str(len(friendsCountList)))
+    
+    #NB: need to find a way to set the records in the lists 0 when they don't exist 
+    
+    userInfoList = [[usernamesList[i], friendsCountList[i]] for i in range(len(usernamesList))] #code that will combine all of that data in a list of lists to be passed to the admin template then it can be traversed there
 
-    return render_template('admin.html')
+    return render_template('admin.html', userInfoList=userInfoList)
 
 
 @app.route('/logout')
