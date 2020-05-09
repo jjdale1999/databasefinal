@@ -5,6 +5,10 @@
 @import "addphoto.css"; 
 
 
+.sizing{
+    width: 90%;
+    height:2000%;
+}
 .blue{
     color: black;
     /* background-color: rgb(64, 61, 238); */

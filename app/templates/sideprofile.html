@@ -1,6 +1,6 @@
     <div class="sidelay" id="lays" >
-        
             <ul id="info_list">
+                <a href="{{url_for('editprofile')}}"><i class="fa fa-2x fa-edit "></i></a>
 
                 <li><img id="profile-pic" src="{{profilepic}}" alt="image" type="button" onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-black"></li>
 <br>
@@ -14,18 +14,20 @@
 
                 </div>
             </ul>
+           
             <br><br>
             <div class="aboutme">
                 <h3>About Me</h3>
                 <p class="li-text"> {{biography}}</p>
-                <br><br>
+                <br><br><br>
                 <div id="follow_er_ing">
                     <li>Friend Count</li>
                     <a  href="{{url_for('friendlist',userid=userid)}}">{{following}}</a>
-                    <br>
                 </div>
                
             </div>
+            
+      
 
             <!-- list all posts for this person -->
             

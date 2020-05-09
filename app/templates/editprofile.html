@@ -1,9 +1,77 @@
 
 
- {% extends "base.html"%}
+ {% extends "editbase.html"%}
 
 
 {% block main %}
-<h1>EDIT PROFILE</h1>
-   
+<div class="container">
+    <h1>Edit Profile</h1>
+  	<hr>
+	
+      <div class="col-md-10 personal-info">
+        
+        <h3>Personal info</h3>
+        
+        <form class="form-horizontal" action="{{ url_for('editprofile')}}" method="POST" enctype="multipart/form-data"role="form">
+          <div class="form-group">
+            <label class="col-lg-3 control-label">First name:</label>
+            <div class="col-lg-8">
+              {{editprofile.fname (class="form-control",value=fname) }}
+
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Last name:</label>
+            <div class="col-lg-8">
+              {{editprofile.lname (class="form-control",value=lname)}}
+
+            </div>
+          </div>
+        
+          <div class="form-group">
+            <label class="col-lg-3 control-label">Email:</label>
+            <div class="col-lg-8">
+              {{editprofile.email (class="form-control",value=email)}}
+
+            </div>
+          </div>
+          
+          <div class="form-group">
+            <label class="col-md-3 control-label">Username:</label>
+            <div class="col-md-8">
+              {{editprofile.username (class="form-control",value=username)}}
+
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Password:</label>
+            <div class="col-md-8">
+              {{editprofile.password (class="form-control")}}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Confirm password:</label>
+            <div class="col-md-8">
+              {{editprofile.repassword (class="form-control")}}
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-md-3 control-label">Location:</label>
+            <div class="col-md-8">
+              {{editprofile.location (class="form-control",value=location)}}
+            </div>
+          </div>
+         
+          <div class="form-group">
+            <label class="col-md-3 control-label"></label>
+            <div class="col-md-8">
+              <input type="submit" class="btn btn-primary" value="Save Changes">
+              <span></span>
+              <input type="reset" class="btn btn-default" value="Cancel">
+            </div>
+          </div>
+        </form>
+      </div>
+  </div>
+<hr>
 {% endblock %}

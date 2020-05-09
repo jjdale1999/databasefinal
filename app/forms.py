@@ -48,3 +48,14 @@ class SearchForm(FlaskForm):
 
 class CreateGroupForm(FlaskForm):
     groupname = StringField('Group Name', validators=[DataRequired()],render_kw={"placeholder":"Enter new group name here"})
+
+
+class EditProfile(FlaskForm):
+    fname = StringField('First Name', validators=[DataRequired()],render_kw={"placeholder":"Jane"})
+    lname = StringField('Last Name', validators=[DataRequired()],render_kw={"placeholder":"Doe"})
+    email = StringField('Email', validators=[DataRequired(), Email()],render_kw={"placeholder":"eg. jdoe@example.com"})
+    password = PasswordField('Password')
+    repassword = PasswordField('Re-Type Password')
+    username = StringField('Username', validators=[DataRequired()],render_kw={"placeholder":"janedoe123"})
+    location = StringField('Location', validators=[DataRequired()],render_kw={"placeholder":"eg. Kingston,Jamaica"})
+

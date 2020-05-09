@@ -8,7 +8,7 @@ import os
 from app import app, db
 from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, current_user, login_required
-from app.forms import CreateProfile,SignUp,Login,CreatePost,FriendType,Comment,UploadProfilePic,SearchForm, CreateGroupForm
+from app.forms import CreateProfile,SignUp,Login,CreatePost,FriendType,Comment,UploadProfilePic,SearchForm, CreateGroupForm,EditProfile
 # from app.models import UserProfile
 from werkzeug.security import check_password_hash
 from werkzeug.utils import secure_filename
@@ -34,7 +34,7 @@ def posts():
     uploadform=UploadProfilePic()
 
     
-    return render_template('posts.html',searchform=SearchForm(), uploadform=uploadform,commentform=commentform,posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('posts.html',editprofile=EditProfile(),searchform=SearchForm(), uploadform=uploadform,commentform=commentform,posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
     # return render_template('posts.html',posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
@@ -55,7 +55,7 @@ def grouplist():
     groups=db.engine.execute("SELECT * FROM groups;")
     uploadform=UploadProfilePic()
 
-    return render_template('grouplist.html',searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('grouplist.html',editprofile=EditProfile(),searchform=SearchForm(), uploadform=uploadform, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 @app.route('/mygroups')
 def mygroups():
@@ -65,7 +65,7 @@ def mygroups():
     uploadform=UploadProfilePic()
 
     
-    return render_template('mygroups.html',searchform=SearchForm(), uploadform=uploadform, createGroupForm=createGroupForm, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('mygroups.html',editprofile=EditProfile(),searchform=SearchForm(), uploadform=uploadform, createGroupForm=createGroupForm, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 @app.route('/creategroup', methods=['POST','GET'])
 def creategroup():
@@ -90,7 +90,7 @@ def creategroup():
 
 
     
-    return render_template('mygroups.html',searchform=SearchForm(), uploadform=uploadform, createGroupForm=createGroupForm, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('mygroups.html',editprofile=EditProfile(),searchform=SearchForm(), uploadform=uploadform, createGroupForm=createGroupForm, groups=groups,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 @app.route('/creategrouppost/<groupID>/<postType>', methods=['POST', 'GET'])
@@ -165,7 +165,7 @@ def groupposts(groupid):
     # groupposts=db.engine.execute("SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"');")
     # if request.method == "GET":
 
-    return render_template('groupPosts.html', form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=int(creatorid), groupid = groupid, groupname=groupname, groupmembers=groupmembers, nonMembers=nonMembers, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=int(session['userid']))
+    return render_template('groupPosts.html',editprofile=EditProfile(), form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=int(creatorid), groupid = groupid, groupname=groupname, groupmembers=groupmembers, nonMembers=nonMembers, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=int(session['userid']))
  
 @app.route('/groupstatus/<groupid>/<userid>/<status>',methods=['POST', 'GET'])
 def groupstatus(groupid, userid, status):
@@ -241,7 +241,7 @@ def friendlist(userid):
     # select * from users join ((select fuserid,ftype from friendship where userid=2) as friends join (select userid,profileno,profilepic,username,biography,countryliving from profiles)as profile on profile.userid=friends.fuserid) as friend on friend.fuserid=users.userid;
     uploadform=UploadProfilePic()
 
-    return render_template('friendslist.html', searchform=SearchForm(), uploadform=uploadform,work=work, school=school, relatives=relatives, friends=friends,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('friendslist.html',editprofile=EditProfile(), searchform=SearchForm(), uploadform=uploadform,work=work, school=school, relatives=relatives, friends=friends,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 @app.route('/setupprofile',methods=['POST', 'GET'])
@@ -373,9 +373,62 @@ def profile(userid):
         posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid  join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where profiles.userid='"+str(userid)+"' order by posts.postid desc")
     else:
         posts=[]
-    return render_template('profilepage.html',searchform=SearchForm(), uploadform=uploadform,commentform=commentform,fform=form,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('profilepage.html',editprofile=EditProfile(),searchform=SearchForm(), uploadform=uploadform,commentform=commentform,fform=form,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+
+@app.route('/editprofile',methods=['POST','GET'])
+def editprofile():
+    editprofile=EditProfile()
+    if request.method == "POST":
+        username=editprofile.username.data
+        if(username!=session['username']):
+            db.engine.execute("update profiles set username='"+username+"' where userid="+session['userid'])
+            session['username']=username
+
+        lname=editprofile.lname.data
+        if(lname!=session['lname']):
+            db.engine.execute("update users set lastname='"+lname+"' where userid="+session['userid'])
+            session['lname']=lname
 
 
+        fname=editprofile.fname.data
+        if(fname!=session['fname']):
+            db.engine.execute("update users set firstname='"+fname+"' where userid="+session['userid'])
+            session['fname']=fname
+
+
+        email=editprofile.email.data
+        if(email!=session['email']):
+            db.engine.execute("update users set email='"+email+"' where userid="+session['userid'])
+            session['email']=email
+
+
+    
+        # gender = editprofile.gender.data
+        # if(email!=session['gender']):
+        #     db.engine.execute("update")
+
+        
+        password =editprofile.password.data
+        repassword = editprofile.repassword.data
+
+        if(password!="" and repassword!="" and password==repassword):
+            db.engine.execute("update users set password='"+password+"' where userid="+session['userid'])
+
+        
+        location = editprofile.location.data
+        if(location!=session['location']):
+            db.engine.execute("update profiles set countryliving='"+location+"' where userid="+session['userid'])
+            session['location']=location
+
+
+        # biography = editprofile.biography.data
+        # if(biography!=""):
+        #     db.engine.execute("update profiles set biography='"+biography+"'")
+
+     
+
+        return redirect(url_for('posts'))
+    return render_template('editprofile.html',editprofile=editprofile,searchform=SearchForm(),profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 @app.route('/myprofile')
 def myprofile():
     form=CreatePost()
@@ -386,7 +439,7 @@ def myprofile():
     users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where users.userid='"+session['userid']+"'")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid  where posts.userid='"+str(userid)+"' order by posts.postid desc")
     posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid  join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where profiles.userid='"+str(session['userid'])+"' AND user_post_log.postid NOT IN(SELECT postid FROM groupposts) order by posts.postid desc")
-    return render_template('myprofilepage.html',searchform=SearchForm(), form=form,uploadform=uploadform,commentform=commentform,fform=fform,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('myprofilepage.html',editprofile=EditProfile(),searchform=SearchForm(), form=form,uploadform=uploadform,commentform=commentform,fform=fform,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
 # all individual posts for a specific user
@@ -403,7 +456,7 @@ def userposts(userid):
 
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' ")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid where posts.userid='"+userid+"'")
-    return render_template('profilepage.html',searchform=SearchForm(), fform=fform,commentform=commentform,posts=posts,form=form,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('profilepage.html',editprofile=EditProfile(),searchform=SearchForm(), fform=fform,commentform=commentform,posts=posts,form=form,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
     # return render_template('posts.html',form=form,posts=posts,comments=comments,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
@@ -440,7 +493,7 @@ def searchuser():
     # users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
 
     # users=db.engine.execute("select * from profiles where username like '%"+searchusername+"%'")
-    return render_template('searchlist.html',uploadform=uploadform,searchusers=searchusers,searchform=SearchForm(), fform=fform,commentform=commentform,posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    return render_template('searchlist.html',editprofile=EditProfile(),uploadform=uploadform,searchusers=searchusers,searchform=SearchForm(), fform=fform,commentform=commentform,posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 @app.route('/')
 @app.route('/login', methods=['POST', 'GET'])
@@ -551,7 +604,7 @@ def add_header(response):
 @app.errorhandler(404)
 def page_not_found(error):
     """Custom 404 page."""
-    return render_template('404.html'), 404
+    return render_template('404.html',searchform=SearchForm()), 404
 
 
 if __name__ == '__main__':
