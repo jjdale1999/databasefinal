@@ -38,15 +38,15 @@
             <div class="twPc-divStats">
               <ul class="twPc-Arrange">
                 <li class="twPc-ArrangeSizeFit">
-                  <a href="https://twitter.com/mertskaplan/following" >
+                  <a >
                     <span class="twPc-StatLabel twPc-block">Posts</span>
                     <span class="twPc-StatValue">{{postcount}}</span>
                   </a>
                 </li>
                 <li class="twPc-ArrangeSizeFit">
-                  <a href="https://twitter.com/mertskaplan/followers" >
+                  <a href="{{url_for('friendlist',userid=userid)}}" >
                     <span class="twPc-StatLabel twPc-block">FRIENDS</span>
-                    <span class="twPc-StatValue"><a  href="{{url_for('friendlist',userid=userid)}}">{{followers}}</a></span>
+                    <span class="twPc-StatValue">{{followers}}</span>
                   </a>
                 </li>
               </ul>
