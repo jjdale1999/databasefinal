@@ -20,31 +20,12 @@
     <link rel="stylesheet" href="/static/css/app.css">
     {% block css %} {% endblock%}
   </head>
-  <body>
+  <body id="adminBody">
     <header>
-       
+        {% include "adminHeader.html" %}
     </header>
     <main >
-        <table class="table">
-  <thead class="thead-dark">
-    <tr>
-      <th scope="col">Users</th>
-      <th scope="col">No. of Friends </th>
-      <th scope="col">No. of Posts</th>
-      <th scope="col">No. of Comments</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for userInfo in userInfoList  %}
-    <tr>
-      <th scope="row">{{userInfo[0]}}  </th>
-      <td>{{userInfo[1]}}</td>
-      <td>{{userInfo[2]}}</td>
-      <td>{{userInfo[3]}}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+        {% block main%} {%endblock%}
     </main>
     <!-- <footer>
         <div class="container">

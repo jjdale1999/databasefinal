@@ -1,0 +1,48 @@
+{% extends "adminBase.html" %}
+
+{% block main %}
+      
+      <div class="container py-5">
+        <h1 class="display-5">Admin Interface</h1>
+        <ul class="nav nav-tabs">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('userinfo') }}">Users Info</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('groupinfo') }}">Groups Info</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link active" href="{{ url_for('postinfo') }}"><b>Posts Info</b></a>
+            </li>
+          </ul>
+        <br>
+        <div class="alert alert-secondary" role="alert">
+          <b>Total Number of Posts: </b>{{ totalPosts }}<br>
+          <b>Average Number of Posts per User: </b>{{ averageNumberOfPosts }}<br>
+          <b>Average Number of Likes per Post: </b>{{ averageNumberOfLikes }}<br>
+        </div>
+        
+        <div class="table-wrapper-scroll-y my-custom-scrollbar table-responsive">
+          <table class="table table-striped table-hover table-sm">
+            <thead class="thead-dark" style="height: 0px;">
+              <tr>
+                <th scope="col">Post ID</th>
+                <th scope="col">Post Type</th>
+                <th scope="col">No. of Likes</th>
+                <th scope="col">Post Owner</th>
+              </tr>
+            </thead>
+            <tbody>
+            {% for postInfo in postInfoList  %}
+              <tr>
+                <th scope="row">{{postInfo[0]}}  </th>
+                <td>{{postInfo[1]}}</td>
+                <td>{{postInfo[2]}}</td>
+                <td>@{{postInfo[3]}}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>      
+{% endblock %}

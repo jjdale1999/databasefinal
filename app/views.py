@@ -306,7 +306,6 @@ def createpost(option):
         if(textpost!=""):
             print("textpost")
             db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+textpost+"','text','"+str(datetime.datetime.now())+"')")
-
         else:
             photo= createpost.image.data
                 # created_date=format_date_joined(datetime.datetime.now())
@@ -499,6 +498,24 @@ def searchuser():
     # users=db.engine.execute("select * from profiles where username like '%"+searchusername+"%'")
     return render_template('searchlist.html',editprofile=EditProfile(),uploadform=uploadform,searchusers=searchusers,searchform=SearchForm(), fform=fform,commentform=commentform,posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
+
+@app.route('/adminsearchuser',methods=['POST'])
+def adminsearchuser():
+    searcform=SearchForm()
+    searchusername=searcform.username.data
+    searchusers=db.engine.execute(" select username,photourl,firstname,lastname,countryliving,profile.userid from (SELECT * FROM profiles WHERE lower(username) LIKE '%%"+searchusername.lower()+"%%') as profile join users on profile.userid=users.userid join gallery on gallery.photoid=profile.profilepic")
+
+    return render_template('adminsearchlist.html',allusers=searchusers,searchform=SearchForm())
+
+@app.route('/page/<id>')
+def page(id):
+    searcform=SearchForm()
+    searchusername=searcform.username.data
+    userprofile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where users.userid='"+id+"'")
+    userposts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid join gallery on profiles.profilepic=gallery.photoid where user_post_log.userid='"+id+"' order by posts.postid desc")
+    return render_template('page.html',userprofiles=userprofile,userposts=userposts,searchform=SearchForm())
+
+
 @app.route('/')
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -532,16 +549,31 @@ def login():
             flash('Username or Password is incorrect.','danger')
     return render_template('login.html',form=loginform)
 
-@app.route('/admin' ,methods=['GET', 'POST'])
-def admin():
-    #Just a starter for the admin interface. Way more information, details, and styles will be added to the template
-    
-    usernames = db.engine.execute("SELECT userid, username FROM profiles ORDER BY (userid)") #query to get all the usernames from the profiles table grouped and ordered by userid
-    friendsCount = db.engine.execute("SELECT userid, COUNT(fuserid) AS friends_count FROM friendship GROUP BY (userid) ORDER BY (userid)") #query to count all the fuserid's in the friendship table grouped and ordered by userid
-    postsCount= db.engine.execute("SELECT userid, COUNT(postid) AS post_counts FROM user_post_log GROUP BY (userid) ORDER BY (userid)")
-    commentsCount=db.engine.execute("SELECT userid, COUNT(commentid) AS comment_counts FROM addcomments GROUP BY (userid) ORDER BY (userid);")
+@app.route('/userinfo' ,methods=['GET', 'POST'])
+def userinfo():
+
+    userCount= db.engine.execute("SELECT COUNT(userid) AS users_count FROM users")
+    totalUsers = 0
+    for val in userCount:
+        totalUsers = val.users_count
+
+    avgGroupCreated=db.engine.execute("SELECT AVG(create_count) AS avg_create FROM (SELECT COUNT(groupid) AS create_count FROM groups GROUP BY createdby) AS avg_Create")
+    averageGroupsCreatedPerUser = 0
+    for val in avgGroupCreated:
+        averageGroupsCreatedPerUser = val.avg_create
+
+    avgGroupJoined=db.engine.execute("SELECT AVG(join_Count) AS avg_joined FROM (SELECT COUNT(groupid) AS join_Count FROM joinsgroup GROUP BY userid) AS avg_Joined")
+    averageGroupsJoinedPerUser = 0
+    for val in avgGroupJoined:
+        averageGroupsJoinedPerUser = val.avg_joined
+
 
     userInfoList = []
+
+    usernames = db.engine.execute("SELECT userid, username FROM profiles ORDER BY (userid)")
+    friendsCount = db.engine.execute("SELECT userid, COUNT(fuserid) AS friends_count FROM friendship GROUP BY (userid) ORDER BY (userid)")
+    postsCount= db.engine.execute("SELECT userid, COUNT(postid) AS post_counts FROM user_post_log GROUP BY (userid) ORDER BY (userid)")
+    commentsCount=db.engine.execute("SELECT userid, COUNT(commentid) AS comment_counts FROM addcomments GROUP BY (userid) ORDER BY (userid);")
     
     for username in usernames:
 
@@ -576,7 +608,102 @@ def admin():
         
         userInfoList.append(currentUserInfo)
 
-    return render_template('admin.html', userInfoList=userInfoList)
+    return render_template('userInfo.html', userInfoList=userInfoList, totalUsers=totalUsers, averageGroupsCreatedPerUser=int(round(averageGroupsCreatedPerUser)), averageGroupsJoinedPerUser=int(round(averageGroupsJoinedPerUser)), searchform = SearchForm())
+
+@app.route('/groupinfo' ,methods=['GET', 'POST'])
+def groupinfo():
+
+    groupCount= db.engine.execute("SELECT COUNT(groupid) AS noofgroups FROM groups ")
+    totalGroups = 0
+    for val in groupCount:
+        totalGroups = val.noofgroups
+
+    avgPostsCount=db.engine.execute("SELECT AVG(post_count) AS avg_posts FROM (SELECT COUNT(postid) AS post_count FROM groupposts GROUP BY groupid) AS avg_Posts")
+    averagePostsPerGroup = 0
+    for val in avgPostsCount:
+        averagePostsPerGroup = val.avg_posts
+
+    average_members= db.engine.execute("SELECT AVG(no_members) AS avg_members FROM (SELECT COUNT(userid) AS no_members FROM joinsgroup GROUP BY groupid) AS avgMembers;")
+    avgMembers = 0
+    for val in average_members:
+        avgMembers = val.avg_members
+
+
+    groupInfoList = []
+
+    groupIDs= db.engine.execute("SELECT groupid FROM groups ORDER BY(groupid)")
+
+    for groupID in groupIDs:
+        for val in groupID:
+            currentGroupID = str(val)
+
+        groupnames= db.engine.execute("SELECT groupname FROM groups WHERE groupid = "+currentGroupID)
+        for text in groupnames:
+            groupname = text.groupname
+        
+        noofmembers = db.engine.execute("SELECT COUNT(userid) AS members FROM joinsgroup WHERE groupid = "+currentGroupID+" GROUP BY(groupid)")
+        for val in noofmembers:
+            members = val.members
+
+        noofposts = db.engine.execute("SELECT count(postid) AS posts FROM groupposts WHERE groupid = "+currentGroupID+" GROUP BY(groupid)")
+        for val in noofposts:
+            posts = val.posts
+
+        groupcreators = db.engine.execute("SELECT username FROM groups g JOIN profiles p ON CAST(g.createdby AS INTEGER) = p.userid WHERE groupid = "+currentGroupID+"")
+        for text in groupcreators:
+            groupcreator = text.username
+
+        currentGroupInfo = [groupname, members, posts, groupcreator]
+        groupInfoList.append(currentGroupInfo)
+        
+
+    return render_template('groupInfo.html', groupInfoList=groupInfoList, totalGroups=totalGroups, avgMembers=int(round(avgMembers)), averagePostsPerGroup=int(round(averagePostsPerGroup)), searchform = SearchForm())
+
+@app.route('/postinfo' ,methods=['GET', 'POST'])
+def postinfo():
+
+    postsCount=db.engine.execute("SELECT COUNT(postid) AS noofposts FROM posts")
+    totalPosts = 0
+    for val in postsCount:
+        totalPosts = val.noofposts
+
+    avgPosts=db.engine.execute("SELECT AVG(noOfposts) AS avgposts FROM (SELECT COUNT(postid) AS noOfposts FROM user_post_log GROUP BY(userid)) AS postsPerUser")
+    averageNumberOfPosts = 0
+    for val in avgPosts:
+        averageNumberOfPosts = val.avgposts
+
+    avgLikes = db.engine.execute("SELECT AVG(likes) AS avglikes FROM (SELECT COUNT(userid) AS likes FROM likes GROUP BY(postid)) AS noOfLikes")
+    averageNumberOfLikes = 0
+    for val in avgLikes:
+        averageNumberOfLikes = val.avglikes
+    
+
+    postInfoList = []
+
+    postIDs=db.engine.execute("SELECT postid FROM posts ORDER BY(postid)")
+
+    for postID in postIDs:
+        for val in postID:
+            currentPostID = str(val)
+
+        currentpostType = db.engine.execute("SELECT ctype FROM posts WHERE postid = "+currentPostID)
+        for text in currentpostType:
+            postType = text.ctype
+        
+        noOfLikes = db.engine.execute("SELECT COUNT(userid) as likes FROM likes WHERE postid ="+currentPostID)
+        for val in noOfLikes:
+            likes = val.likes
+
+        postOwner = db.engine.execute("SELECT username FROM user_post_log upl JOIN profiles p ON upl.userid = p.userid WHERE postid ="+currentPostID)
+        for text in postOwner:
+            owner = text.username
+
+        currentPostInfo = [currentPostID, postType, likes, owner]
+
+        postInfoList.append(currentPostInfo)
+
+
+    return render_template('postInfo.html', postInfoList=postInfoList, searchform = SearchForm(), totalPosts=totalPosts, averageNumberOfPosts=int(round(averageNumberOfPosts)), averageNumberOfLikes=int(round(averageNumberOfLikes)))
 
 
 @app.route('/logout')
@@ -584,6 +711,22 @@ def logout():
     flash("Logged out successfully!!!","success")
     loginform=Login()
     return redirect('login')
+
+@app.route('/allusers')
+def allusers():
+    allusers=db.engine.execute("select * from users join profiles on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic ORDER BY(profileno)")
+
+    return render_template('allusers.html', allusers=allusers, searchform = SearchForm())
+
+@app.route('/allgroups')
+def allgroups():
+    allgroups=db.engine.execute("SELECT * FROM groups g JOIN profiles p ON CAST(g.createdby AS INTEGER) = p.userid ORDER BY(groupid)")
+    return render_template('allgroups.html', allgroups=allgroups, searchform = SearchForm())
+
+@app.route('/allposts')
+def allposts():
+    allposts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
+    return render_template('allposts.html', allposts=allposts, searchform = SearchForm())
 
 # Flash errors from the form if validation fails
 def flash_errors(form):

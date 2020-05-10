@@ -1,0 +1,42 @@
+{% extends "adminBase.html" %}
+
+{% block main %}
+{% for userprofile in userprofiles %}
+<div id="centerDiv">
+    <div id="pageDiv">
+        <div id="pageImageDiv">
+            <img alt="image" src="{{userprofile.photourl}}" id="pageImage">
+        </div>
+        <div id="pageInfoDiv">
+            <h4><b>{{userprofile.firstname}}  {{userprofile.lastname}}</b></h4>
+            <h5 class="text-muted"><b>@{{userprofile.username}}</b></h5>
+            <h6 class="text-muted"> <img class="profilesmallimg" src="/static/images/email.png"> {{userprofile.email}}</h6>
+            <h6 class="text-muted"> <img class="profilesmallimg" src="/static/images/location.png">from {{userprofile.countryliving}}</h6>
+        </div>
+    </div>
+</div>
+{% endfor %}
+<div class="container py-5">
+    <h3 class="display-5">User Posts:</h3>
+    <div id="div-scrollbar" class="table-wrapper-scroll-y my-custom-scrollbar table-responsive">
+        <div id="centerDiv">
+            <div id="postDiv">
+                {% for post in userposts %}
+                    {% if post.ctype == 'text' %}
+                    <div id="centerDiv">
+                        <div class="allposts">
+                            <div class="post-info"><h4><img class="allposts-dp" src="{{ post.photourl }}" alt="image"> <b>@{{ post.username }}</b> </h4> <br> <h5>{{ post.content }}</h5> <br> <h6 class="text-muted">posted on {{post.postdatetime}}</h6></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if post.ctype == 'image' %}
+                    <div class="allposts">
+                        <div class="post-info"><h4><img class="allposts-dp" src="{{ post.photourl }}" alt="image"> <b>@{{ post.username }}</b> </h4> <br> <img class="allposts-image" src="{{ post.content }}" alt="image"> <br><br> <h6 class="text-muted">posted on {{post.postdatetime}}</h6></div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

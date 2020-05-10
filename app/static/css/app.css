@@ -372,3 +372,123 @@ position:relative;
 #creategroupbtn {
     margin: 2%;
 }
+
+#adminBody {
+    background-color: white;
+    color: black;
+}
+
+#tableDiv{
+
+}
+
+.table {
+    text-align: center;
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    width: 100%;
+    height: 250px;
+    overflow: auto;
+  }
+.table-wrapper-scroll-y {
+    display: block;
+ }
+
+#div-scrollbar{
+    height: 430px;
+    border: 2px solid grey;
+    border-radius: 5px;
+    background-color: whitesmoke;
+}
+
+#centerDiv{
+   display: flex;
+   justify-content: center; 
+}
+
+.alluser-image{
+    border-radius: 100%;
+    height: 80px;
+    width: 80px;
+}
+
+#gridDiv {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+}
+
+.allusers {
+    display: grid;
+    grid-template-columns: 80px auto;
+    grid-gap: 25px;
+    border-top: 5px solid rgb(6, 182, 144);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    height: fit-content;
+    width: fit-content;
+    margin-top: 20px;
+    margin-left: 20px;
+    margin-bottom: 20px;
+    background-color: white;
+}
+
+.allgroups {
+    border-top: 5px solid rgb(6, 182, 144);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 10px;
+    height: fit-content;
+    width: fit-content;
+    margin: 40px;
+    background-color: white;
+}
+
+.allposts-dp {
+    height: 50px;
+    width: 50px;
+    border-radius: 100%;
+}
+
+.allposts-image {
+    height: 500px;
+    width: 500px;
+    border-radius: 5%;
+}
+
+.allposts{
+    border-top: 5px solid rgb(6, 182, 144);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    height: fit-content;
+    width: fit-content;
+    margin: 40px;
+    background-color: white;
+}
+
+#postDiv {
+    width: min-content;
+}
+
+#pageDiv {
+    color: black;
+    border-top: 5px solid rgb(6, 182, 144);
+    border-radius: 10px;
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    padding: 20px;
+    height: fit-content;
+    width: fit-content;
+    background-color: white;
+    display: grid;
+    grid-template-columns: auto 100%;
+    grid-gap: 20px;
+}
+
+#pageImage {
+    height: 150px;
+    width: 150px;
+    border-radius: 5%;
+}

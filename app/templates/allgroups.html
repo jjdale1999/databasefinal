@@ -1,0 +1,18 @@
+{% extends "adminBase.html" %}
+
+{% block main %}
+    <div class="container py-5">
+        <h1 class="display-5">All MyBook Groups</h1>
+        <div id="div-scrollbar" class="table-wrapper-scroll-y my-custom-scrollbar table-responsive">
+            <div id="centerDiv">
+                <div id="gridDiv">
+                    {% for group in allgroups %}
+                    <div class="allgroups">
+                        <div class="group-info"><h4> <b>{{ group.groupname }}</b> </h4> <h5>created by @{{ group.username }}</h5> <h6 class="text-muted">created on {{group.createddate}}</h6></div>
+                    </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

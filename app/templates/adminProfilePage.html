@@ -1,0 +1,26 @@
+{% extends "adminBase.html" %}
+
+{% block main %}
+<div class="container py-5">
+    <div id="div-scrollbar" class="table-wrapper-scroll-y my-custom-scrollbar table-responsive">
+        <div id="centerDiv">
+            <div id="postDiv">
+                {% for post in allposts %}
+                    {% if post.ctype == 'text' %}
+                    <div id="centerDiv">
+                        <div class="allposts">
+                            <div class="post-info"><h4><img class="allposts-dp" src="{{ post.photourl }}" alt="image"> <b>@{{ post.username }}</b> </h4> <br> <h5>{{ post.content }}</h5> <br> <h6 class="text-muted">posted on {{post.postdatetime}}</h6></div>
+                        </div>
+                    </div>
+                    {% endif %}
+                    {% if post.ctype == 'image' %}
+                    <div class="allposts">
+                        <div class="post-info"><h4><img class="allposts-dp" src="{{ post.photourl }}" alt="image"> <b>@{{ post.username }}</b> </h4> <br> <img class="allposts-image" src="{{ post.content }}" alt="image"> <br><br> <h6 class="text-muted">posted on {{post.postdatetime}}</h6></div>
+                    </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
