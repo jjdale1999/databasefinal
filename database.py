@@ -50,12 +50,13 @@ for i in range(500000):
    
     profilepic=random.randint(1,500)
     biography=fake.text()
-    
+    createddate=fake.date_time_this_year()
+
     # appending to text file
     biography.replace('\r','')
     f.write("insert into Users (firstname,lastname,email,gender,password) values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+str(password)+"'); \n")
 
-    f.write("insert into Profiles (userid,profilepic,username,biography,countryliving) values('"+str(userid)+"','"+str(profilepic)+"','"+username+"','"+biography+"','"+country+"');\n")
+    f.write("insert into Profiles (userid,profilepic,username,biography,countryliving,createddate) values('"+str(userid)+"','"+str(profilepic)+"','"+username+"','"+biography+"','"+country+"','"+str(createddate)+"');\n")
 
    
     print(str(i)+" users \n")
@@ -90,14 +91,14 @@ allfriendship=[]
 usersfriends={}
 lst=np.random.choice(500000, 1000, replace=False)
 i=1
-for x in lst:
-    # creation of friends
-    userid=x
-    friends=[]
-    relationships=["Relatives", "School", "Work"]
+# for x in lst:
+#     # creation of friends
+#     userid=x
+#     friends=[]
+#     relationships=["Relatives", "School", "Work"]
 
-    randnum=random.randint(2,10)
-    myfriends=[]
+#     randnum=random.randint(2,10)
+#     myfriends=[]
 
 for x in range(500000):
     # creation of friends
@@ -220,23 +221,23 @@ for x in range(10000):
         # for z in 
 
 
+    # randum=random.randint(2,10)
+    # likeslist=[]
+    # for m in range(randum):
+    #     likeuserid=random.choice(newlist)
+        
+    #     # if ((likeuserid!=userId) and ([likeuserid,userId] in allfriendship) and (likeuserid not in likeslist)):
+
+    #     likeslist.append(likeuserid)
+    #     f.write("insert into likes (postid,userid) values('"+str(postId)+"','"+str(likeuserid)+"');\n")
+
+    
+    # print(str(x)+" likes,post,comments \n")
+
     randum=random.randint(2,10)
     likeslist=[]
     for m in range(randum):
         likeuserid=random.choice(newlist)
-        
-        # if ((likeuserid!=userId) and ([likeuserid,userId] in allfriendship) and (likeuserid not in likeslist)):
-
-        likeslist.append(likeuserid)
-        f.write("insert into likes (postid,userid) values('"+str(postId)+"','"+str(likeuserid)+"');\n")
-
-    
-    print(str(x)+" likes,post,comments \n")
-
-    randum=random.randint(2,50)
-    likeslist=[]
-    for m in range(randum):
-        likeuserid=random.randint(1,500000)
         
         if ((likeuserid!=userId) and ([likeuserid,userId] in allfriendship) and (likeuserid not in likeslist)):
 
@@ -244,7 +245,8 @@ for x in range(10000):
             f.write("insert into likes (postid,userid) values('"+str(postId)+"','"+str(likeuserid)+"');\n")
 
     
-    print(x)
+    print(str(x)+" likes,post,comments \n")
+
 print(" creation of post,likes,comments done")
 
 

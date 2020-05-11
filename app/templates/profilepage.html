@@ -11,17 +11,14 @@
            
           
             {%for user in users%}
-            <a href=""class="" type="submit"><img src=''>Send Message</a>
-            &emsp; &emsp; 
-            <!-- <button class=" btn-primary ubtn" type="submit">Follow</button> -->
             {% if getfrienship(userid,user.userid)==1%}
                 <a id="follow" href="{{ url_for('deletefollower',followerid=user.userid) }}"  > UnFriend</a>
             {%else%}
                 <a id="follow" href="" data-toggle="modal" data-target="#friendtype" data-whatever="@mdo" data-dismiss="modal" > Add Friend</a>
             {%endif%}
           </div>
-            <a title="Mert S. Kaplan" href="https://twitter.com/mertskaplan" class="twPc-avatarLink">
-              <img alt="Mert S. Kaplan" src="{{user.photourl}}" class="twPc-avatarImg">
+            <a   class="twPc-avatarLink">
+              <img alt="USERPROFILEPIC" src="{{user.photourl}}" class="twPc-avatarImg">
             </a>
             <div class="twPc-divUser">
               <div class="twPc-divName">
@@ -35,30 +32,25 @@
             <div id="userinfo">
               <li class=""> <img class="profilesmallimg" src="/static/images/email.png"> {{user.email}}</li>
               <li class=""> <img class="profilesmallimg" src="/static/images/location.png">{{user.countryliving}}</li>
-              <li class=""> <img class="profilesmallimg" src="/static/images/dateadded.png"> Joined on {{created_date}}</li>
+              <li class=""> <img class="profilesmallimg" src="/static/images/dateadded.png"> Joined on {{user.createddate}}</li>
             </div>
             <p class=""> {{user.biography}}</p>
             
             <div class="twPc-divStats">
               <ul class="twPc-Arrange">
                 <li class="twPc-ArrangeSizeFit">
-                  <a href="https://twitter.com/mertskaplan" title="9.840 Tweet">
-                    <span class="twPc-StatLabel twPc-block">Tweets</span>
+                  <a>
+                    <span class="twPc-StatLabel twPc-block">POSTS</span>
                     <span class="twPc-StatValue">9.840</span>
                   </a>
                 </li>
                 <li class="twPc-ArrangeSizeFit">
-                  <a href="https://twitter.com/mertskaplan/following" title="885 Following">
-                    <span class="twPc-StatLabel twPc-block">Following</span>
+                  <a href="" title="885 Following">
+                    <span class="twPc-StatLabel twPc-block">FRIENDS</span>
                     <span class="twPc-StatValue">885</span>
                   </a>
                 </li>
-                <li class="twPc-ArrangeSizeFit">
-                  <a href="https://twitter.com/mertskaplan/followers" title="1.810 Followers">
-                    <span class="twPc-StatLabel twPc-block">Followers</span>
-                    <span class="twPc-StatValue">1.810</span>
-                  </a>
-                </li>
+               
               </ul>
             </div>
 

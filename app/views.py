@@ -30,7 +30,7 @@ def posts():
 
     form=CreatePost()
   
-    posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join friendship on friendship.fuserid=user_post_log.userid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+"order by posts.postid desc")
+    posts=db.engine.execute("select * from user_post_log inner join posts on posts.postid=user_post_log.postid inner join friendship on friendship.fuserid=user_post_log.userid inner join profiles on profiles.userid=user_post_log.userid  inner join gallery on profiles.profilepic=gallery.photoid where friendship.userid="+session['userid']+"order by posts.postid desc")
     uploadform=UploadProfilePic()
 
     
@@ -61,7 +61,7 @@ def grouplist():
 def mygroups():
     createGroupForm = CreateGroupForm()
     userid=session['userid']
-    groups=db.engine.execute("SELECT g.groupid, groupname, createdby, createddate FROM groups g JOIN joinsgroup jg ON g.groupid = jg.groupid WHERE userid = '"+userid+"';")
+    groups=db.engine.execute("SELECT g.groupid, groupname, createdby, createddate FROM groups g INNER JOIN joinsgroup jg ON g.groupid = jg.groupid WHERE userid = '"+userid+"';")
     uploadform=UploadProfilePic()
 
     
@@ -71,7 +71,7 @@ def mygroups():
 def creategroup():
     createGroupForm = CreateGroupForm()
     userid=session['userid']
-    groups=db.engine.execute("SELECT g.groupid, groupname, createdby, createddate FROM groups g JOIN joinsgroup jg ON g.groupid = jg.groupid WHERE userid = '"+userid+"';")
+    groups=db.engine.execute("SELECT g.groupid, groupname, createdby, createddate FROM groups g INNER JOIN joinsgroup jg ON g.groupid = jg.groupid WHERE userid = '"+userid+"';")
     uploadform=UploadProfilePic()
 
     if request.method == "POST":
@@ -149,16 +149,16 @@ def groupposts(groupid):
     uploadform=UploadProfilePic()
     form=CreatePost()
     
-    groupposts=db.engine.execute("select user_post_log.postid, user_post_log.userid, content, ctype, postdatetime, profileno, profilepic, username, countryliving, photoid, photourl from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
-    groupinfo=db.engine.execute("SELECT * FROM groups WHERE groupid = '"+groupid+"';")
-    groupmembers = db.engine.execute("SELECT * FROM joinsgroup JOIN users ON users.userid = joinsgroup.userid JOIN profiles ON profiles.userid = users.userid JOIN gallery ON gallery.photoid = profiles.profilepic WHERE groupid = '"+groupid+"';")
-    nonMembers = db.engine.execute("SELECT * FROM users u JOIN profiles p ON u.userid = p.userid JOIN gallery g ON g.photoid = p.profilepic WHERE u.userid NOT IN (SELECT userid FROM joinsgroup WHERE groupid = "+groupid+");")
+    groupposts=db.engine.execute("select user_post_log.postid, user_post_log.userid, content, ctype, postdatetime, profileno, profilepic, username, countryliving, photoid, photourl from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid INNER join profiles on profiles.userid=user_post_log.userid  INNER join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
+    groupinfo=db.engine.execute("SELECT * FROM groups WHERE groupid = '"+groupid+"'")
+    groupmembers = db.engine.execute("SELECT * FROM joinsgroup JOIN users ON users.userid = joinsgroup.userid INNER JOIN profiles ON profiles.userid = users.userid JOIN gallery ON gallery.photoid = profiles.profilepic WHERE groupid = '"+groupid+"'")
+    nonMembers = db.engine.execute("SELECT * FROM users u JOIN profiles p ON u.userid = p.userid INNER JOIN gallery g ON g.photoid = p.profilepic WHERE u.userid NOT IN (SELECT userid FROM joinsgroup WHERE groupid = "+groupid+")")
     for a in groupinfo:
         creatorid = a.createdby
         groupname = a.groupname
         createddate = a.createddate
     
-    creator=db.engine.execute("SELECT username FROM profiles WHERE userid = '"+creatorid+"';")
+    creator=db.engine.execute("SELECT username FROM profiles WHERE userid = '"+creatorid+"'")
     for b in creator:
         groupcreator = b.username
 # this is why
@@ -178,19 +178,19 @@ def groupstatus(groupid, userid, status):
 
 @app.route('/joingroup/<groupID>/<userID>')
 def joingroup(groupID, userID):
-    value=db.engine.execute("SELECT userid FROM joinsgroup WHERE userid = '"+userID+"' AND groupid = '"+groupID+"';")
+    value=db.engine.execute("SELECT userid FROM joinsgroup WHERE userid = '"+userID+"' AND groupid = '"+groupID+"'")
     exists = 0
     for val in value:
         exists = val
     
     if exists:
         flash("You are already a member of this group!", "danger")
-        groups=db.engine.execute("SELECT * FROM groups;")
+        groups=db.engine.execute("SELECT * FROM groups")
         return groupposts(groupID)
     else:
         time = datetime.datetime.now()
         time = time.strftime("%Y-%m-%d %H:%M:%S")
-        db.engine.execute("INSERT INTO joinsGroup (groupid,userid,status,joindate) values('"+groupID+"','"+userID+"','Viewer','"+time+"');")
+        db.engine.execute("INSERT INTO joinsGroup (groupid,userid,status,joindate) values('"+groupID+"','"+userID+"','Viewer','"+time+"')")
         flash("You are now a member of this group!", "success")
         return groupposts(groupID)
         
@@ -199,7 +199,7 @@ def addmember(groupid, userid):
     if request.method == "POST":
         time = datetime.datetime.now()
         time = time.strftime("%Y-%m-%d %H:%M:%S")
-        db.engine.execute("INSERT INTO joinsGroup (groupid,userid,status,joindate) values('"+groupid+"','"+userid+"','Editor','"+time+"');")
+        db.engine.execute("INSERT INTO joinsGroup (groupid,userid,status,joindate) values('"+groupid+"','"+userid+"','Editor','"+time+"')")
         flash("You just added a new member to this group!", "success")
         return redirect(url_for('groupposts', groupid=groupid))
     return
@@ -280,6 +280,9 @@ def addfollower(followerid):
     form=FriendType()
     friendtype = form.friendtype.data
     # print(friendtype)
+    session['following']+=1
+    session['followers']+=1
+
     db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(session['userid'])+"','"+str(followerid)+"','"+friendtype+"')")
     db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(followerid)+"','"+str(session['userid'])+"','"+friendtype+"')")
 
@@ -290,6 +293,8 @@ def deletefollower(followerid):
     form=FriendType()
     friendtype = form.friendtype.data
     # print(friendtype)
+    session['following']-=1
+    session['followers']-=1
     db.engine.execute("delete from  Friendship where userid="+str(session['userid'])+" and fuserid="+str(followerid))
     db.engine.execute("delete from  Friendship where userid="+str(followerid)+" and fuserid="+str(session['userid']))
 
@@ -491,11 +496,7 @@ def searchuser():
     searcform=SearchForm()
     commentform=Comment()
     searchusername=searcform.username.data
-    print(searchusername)
-    searchusers=db.engine.execute(" select username,photourl,firstname,lastname,countryliving,profile.userid from (SELECT * FROM profiles WHERE lower(username) LIKE '%%"+searchusername.lower()+"%%') as profile join users on profile.userid=users.userid join gallery on gallery.photoid=profile.profilepic")
-    # users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
-
-    # users=db.engine.execute("select * from profiles where username like '%"+searchusername+"%'")
+    searchusers=db.engine.execute(" select username,photourl,firstname,lastname,countryliving,profile.userid from (SELECT username,countryliving,userid,profilepic FROM profiles WHERE lower(username) LIKE '"+searchusername.lower()+"%%') as profile inner join users on profile.userid=users.userid inner join gallery on gallery.photoid=profile.profilepic limit 10")
     return render_template('searchlist.html',editprofile=EditProfile(),uploadform=uploadform,searchusers=searchusers,searchform=SearchForm(), fform=fform,commentform=commentform,posts=posts,form=form,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 
@@ -503,14 +504,13 @@ def searchuser():
 def adminsearchuser():
     searcform=SearchForm()
     searchusername=searcform.username.data
-    searchusers=db.engine.execute(" select username,photourl,firstname,lastname,countryliving,profile.userid from (SELECT * FROM profiles WHERE lower(username) LIKE '%%"+searchusername.lower()+"%%') as profile join users on profile.userid=users.userid join gallery on gallery.photoid=profile.profilepic")
+    searchusers=db.engine.execute(" select username,photourl,firstname,lastname,countryliving,profile.userid from (SELECT username,countryliving,userid,profilepic FROM profiles WHERE lower(username) LIKE '"+searchusername.lower()+"%%') as profile inner join users on profile.userid=users.userid inner join gallery on gallery.photoid=profile.profilepic limit 10")
 
     return render_template('adminsearchlist.html',allusers=searchusers,searchform=SearchForm())
 
 @app.route('/page/<id>')
 def page(id):
     searcform=SearchForm()
-    searchusername=searcform.username.data
     userprofile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic where users.userid='"+id+"'")
     userposts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid join gallery on profiles.profilepic=gallery.photoid where user_post_log.userid='"+id+"' order by posts.postid desc")
     return render_template('page.html',userprofiles=userprofile,userposts=userposts,searchform=SearchForm())
@@ -523,9 +523,9 @@ def login():
     if request.method == "POST" and  loginform.validate_on_submit():
         username=loginform.username.data
         password=loginform.password.data
-        if username=="admin" and password=="juicipatties":
+        if username=="admin" and password=="@Dm1N":
             return userinfo()
-        profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where profiles.username='"+username+"' and password='"+password+"'")  
+        profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where profiles.username='"+username+"' and password='"+password+"' limit 1")  
         print(profile.rowcount)
         if (profile.rowcount!=0):
             for y in profile:
