@@ -5,21 +5,20 @@
                 <li><img id="profile-pic" src="{{profilepic}}" alt="image" type="button" onclick="document.getElementById('id01').style.display='block'" class="w3-button w3-black"></li>
 <br>
                 <div id="userss_info">
-                    <li class="li-text"><h4 class="card-title"> {{fname}}  {{lname}}</h4></li>
+                    <center><li class="li-text"><h4 class="card-title"> {{fname}}  {{lname}}</h4></li></center>
                     <li class="li-text"> <img class="smallimg" src="/static/images/gender.png"> @{{username}}</li>
 
                     <li class="li-text"> <img class="smallimg" src="/static/images/email.png"> {{email}}</li>
                     <li class="li-text"> <img class="smallimg" src="/static/images/location.png">{{location}}</li>
-                    <li class="li-text"> <img class="smallimg" src="/static/images/dateadded.png"> Joined on {{createddate}}</li>
+
 
                 </div>
             </ul>
            
-            <br><br>
             <div class="aboutme">
                 <h3>About Me</h3>
                 <p class="li-text"> {{biography}}</p>
-                <br><br><br>
+                <br><br><br><br>
                 <div id="follow_er_ing">
                     <li>Friend Count</li>
                     <a  href="{{url_for('friendlist',userid=userid)}}">{{following}}</a>

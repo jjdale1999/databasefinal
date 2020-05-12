@@ -144,9 +144,10 @@ body {
 
 
   .smallimg{
-    width:55px;
-    height:50px;
+    width:40px;
+    height:30px;
     position:relative;
+    margin-bottom: 10px;
 
   }
 

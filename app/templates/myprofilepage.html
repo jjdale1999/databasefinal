@@ -8,7 +8,7 @@
     <div class="cardbod" id="profilecard-lay" >
         <div class="margindiv">
           <div id="topicons">
-            <a href=""class="" type="submit"><img src=''>Edit</a>
+            <a href="{{url_for('editprofile')}}">Edit</a>
             &emsp; &emsp; 
             <!-- <button class=" btn-primary ubtn" type="submit">Follow</button> -->
            
@@ -31,7 +31,7 @@
             <div id="userinfo">
               <li class=""> <img class="profilesmallimg" src="/static/images/email.png"> {{user.email}}</li>
               <li class=""> <img class="profilesmallimg" src="/static/images/location.png">{{user.countryliving}}</li>
-              <li class=""> <img class="profilesmallimg" src="/static/images/dateadded.png"> Joined on {{created_date}}</li>
+              <li class=""> <img class="profilesmallimg" src="/static/images/dateadded.png"> Joined on {{user.createddate}}</li>
             </div>
             <p class=""> {{user.biography}}</p>
             

@@ -536,7 +536,7 @@ def login():
         username=loginform.username.data
         password=loginform.password.data
         if username=="admin" and password=="@Dm1N":
-            return userinfo()
+            return redirect(url_for('userinfo'))
         profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where profiles.username='"+username+"' and password='"+password+"' limit 1")  
         print(profile.rowcount)
         if (profile.rowcount!=0):
@@ -584,41 +584,26 @@ def userinfo():
 
     userInfoList = []
 
-    usernames = db.engine.execute("SELECT userid, username FROM profiles ORDER BY (userid)")
-    friendsCount = db.engine.execute("SELECT userid, COUNT(fuserid) AS friends_count FROM friendship GROUP BY (userid) ORDER BY (userid)")
-    postsCount= db.engine.execute("SELECT userid, COUNT(postid) AS post_counts FROM user_post_log GROUP BY (userid) ORDER BY (userid)")
-    commentsCount=db.engine.execute("SELECT userid, COUNT(commentid) AS comment_counts FROM addcomments GROUP BY (userid) ORDER BY (userid);")
+    friendsCount = db.engine.execute("SELECT userid, COUNT(fuserid) AS friends_count FROM friendship GROUP BY (userid) ORDER BY (userid) desc")
     
-    for username in usernames:
+    for user in friendsCount:
 
-        currentUserID = int(username[0])
-        currentUserName = str(username[1])
+        usernames = db.engine.execute("SELECT username FROM profiles where userid="+str(user.userid))
 
+        for username in usernames:
+            currentUserName = username.username
+        
         currentUserInfo = [currentUserName, 0, 0, 0]
-        
-        for noOfFriends in friendsCount:
-            currentFriendCountID = int(noOfFriends[0])
-            currentFriendCount = int(noOfFriends[1])
+        currentUserInfo[1] = user.friends_count
 
-            if currentUserID == currentFriendCountID:
-                currentUserInfo[1] = currentFriendCount
-                break
-
+        postsCount= db.engine.execute("SELECT COUNT(postid) AS post_counts FROM user_post_log where userid="+str(user.userid))
         for noOfPosts in postsCount:
-            currentPostCountID = int(noOfPosts[0])
-            currentPostCount = int(noOfPosts[1])
-
-            if currentUserID == currentPostCountID:
-                currentUserInfo[2] = currentPostCount
-                break
+            currentUserInfo[2] = noOfPosts.post_counts
         
+        commentsCount=db.engine.execute("SELECT COUNT(commentid) AS comment_counts FROM addcomments where userid="+str(user.userid))
         for noOfComments in commentsCount:
-            currentCommentCountID = int(noOfComments[0])
-            currentCommentCount = int(noOfComments[1])
-
-            if currentUserID == currentCommentCountID:
-                currentUserInfo[3] = currentCommentCount
-                break
+            currentUserInfo[3] = noOfComments.comment_counts
+                
         
         userInfoList.append(currentUserInfo)
 
