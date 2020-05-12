@@ -5,7 +5,10 @@ import numpy as np
 
 fake=Faker()
 
-f= open("userprofile.sql","w+")
+u= open("user.sql","w+")
+u2= open("user2.sql","w+")
+p= open("profile.sql","w+")
+p2= open("profile2.sql","w+")
 
 #creation of each user and profiles
 for i in range(500000):
@@ -36,14 +39,21 @@ for i in range(500000):
 
     # appending to text file
     biography.replace('\r','')
-    f.write("insert into Users (firstname,lastname,email,gender,password) values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+str(password)+"'); \n")
-    f.write("insert into Profiles (userid,profilepic,username,biography,countryliving,createddate) values('"+str(userid)+"','"+str(profilepic)+"','"+username+"','"+biography+"','"+country+"','"+str(createddate)+"');\n")
+    if(userid<250000):
+        u.write("insert into Users (firstname,lastname,email,gender,password) values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+str(password)+"'); \n")
+        p.write("insert into Profiles (userid,profilepic,username,biography,countryliving,createddate) values('"+str(userid)+"','"+str(profilepic)+"','"+username+"','"+biography+"','"+country+"','"+str(createddate)+"');\n")
+    else:
+        u2.write("insert into Users (firstname,lastname,email,gender,password) values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+str(password)+"'); \n")
+        p2.write("insert into Profiles (userid,profilepic,username,biography,countryliving,createddate) values('"+str(userid)+"','"+str(profilepic)+"','"+username+"','"+biography+"','"+country+"','"+str(createddate)+"');\n")
 
 
    
     print(str(i)+" users \n")
 print(" creation of users and profiles done")
-f.close()
+u.close()
+u2.close()
+p.close()
+p2.close()
 
 
 f= open("database.sql","w+")
