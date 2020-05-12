@@ -5,20 +5,9 @@ import numpy as np
 
 fake=Faker()
 
-# userid starts with US 
-# commentid starts with CM
-# postid starts with PS
-# groupid starts with GP
-# textid starts with TT
-# imageid starts with IM
-# profileno starts with PF
-
-
 f= open("userprofile.sql","w+")
-#creation of each user and profiles
 
-# db.engine.execute("create table Users(userid SERIAL unique,firstName varchar(255),lastName varchar(255),email varchar(50),gender varchar(64),password text,primary key(userId))")
-# db.engine.execute("create table Profiles(profileNo SERIAL unique,userid int unique,profilePic int,username text,biography text,countryLiving varchar(30),primary key (userId,profileNo),foreign key(userId) references Users(userId) on delete cascade on update cascade)")
+#creation of each user and profiles
 for i in range(500000):
     userid = i+1
     profileNo=userid
@@ -40,13 +29,7 @@ for i in range(500000):
     lastname=fakename[1]
     username=firstname[:3]+lastname[-3:]+str(i)
     email=fake.free_email()
-
-    # profilepic=fake.image_url()
     password=fake.password(length=40, special_chars=False, upper_case=True)
-    # encodedpassword=password.encode('utf-16')
-    # decodedtext=encodedtext.decode('utf-16')
-    # print(decodedtext)
-   
     profilepic=random.randint(1,1000)
     biography=fake.text()
     createddate=fake.date_time_this_year()
@@ -54,13 +37,14 @@ for i in range(500000):
     # appending to text file
     biography.replace('\r','')
     f.write("insert into Users (firstname,lastname,email,gender,password) values('"+firstname+"','"+lastname+"','"+email+"','"+gender+"','"+str(password)+"'); \n")
-
     f.write("insert into Profiles (userid,profilepic,username,biography,countryliving,createddate) values('"+str(userid)+"','"+str(profilepic)+"','"+username+"','"+biography+"','"+country+"','"+str(createddate)+"');\n")
+
 
    
     print(str(i)+" users \n")
 print(" creation of users and profiles done")
 f.close()
+
 
 f= open("database.sql","w+")
 
@@ -298,13 +282,13 @@ f= open("procedures.sql","w+")
 
 
 
-f.write("CREATE PROCEDURE addlike(postid integer, userid integer)\nLANGUAGE sql\nAS $$\ninsert into likes values(postid,userid);\n$$;")
+f.write("CREATE PROCEDURE addlike(postid integer, userid integer)\nLANGUAGE sql\nAS $$\n\tinsert into likes values(postid,userid);\n$$;\n")
 
-f.write("CREATE PROCEDURE addfriend(userid integer, followerid integer,ftype varchar(20))\nLANGUAGE sql\nAS $$\ninsert into Friendship (userid,fuserid,ftype) values(userid,followerid,ftype);\n$$;")
+f.write("CREATE PROCEDURE addfriend(userid integer, followerid integer,ftype varchar(20))\nLANGUAGE sql\nAS $$\n\tinsert into Friendship (userid,fuserid,ftype) values(userid,followerid,ftype);\n$$;\n")
 
-f.write("CREATE PROCEDURE addphotos(photoid integer, userid integer)\nLANGUAGE sql\nAS $$\ninsert into addphoto (photoid,userid) values(photoid,userid);\n$$;")
+f.write("CREATE PROCEDURE addphotos(photoid integer, userid integer)\nLANGUAGE sql\nAS $$\n\tinsert into addphoto (photoid,userid) values(photoid,userid);\n$$;\n")
 
-f.write("CREATE PROCEDURE adduserposts(postid integer, userid integer)\nLANGUAGE sql\nAS $$\ninsert into addphoto (postid,userid) values(postid,userid);\n$$;")
+f.write("CREATE PROCEDURE adduserposts(postid integer, userid integer)\nLANGUAGE sql\nAS $$\n\tinsert into user_post_log (postid,userid) values(postid,userid);\n$$;\n")
 
 print("procedures done")
 f.close()

@@ -26,7 +26,7 @@ db.engine.execute("drop table if exists users")
 
 db.engine.execute("create table Users(userid SERIAL unique,firstName varchar(255),lastName varchar(255),email varchar(200),gender varchar(64),password text,primary key(userId))")
 
-db.engine.execute("create table Profiles(profileNo SERIAL unique,userid int unique,profilePic int,username text,biography text,countryLiving varchar(30),primary key (userId,profileNo),foreign key(userId) references Users(userId) on delete cascade on update cascade)")
+db.engine.execute("create table Profiles(profileNo SERIAL unique,userid int unique,profilePic int,username text,biography text,countryLiving varchar(30),createddate timestamp,primary key (userId,profileNo),foreign key(userId) references Users(userId) on delete cascade on update cascade)")
 
 db.engine.execute("create table gallery(photoid SERIAL,photourl text,primary key (photoid) )")
 
