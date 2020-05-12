@@ -165,7 +165,7 @@ for x in range(5000):
         # userid of comment
 
 
-        cuserid=random.choice(newlist)
+        cuserid=random.choice(lst)
         # print(cuserid)
         
         # if((userId!=cuserid) and ([cuserid,userId] in allfriendship)):
@@ -214,7 +214,7 @@ for x in range(5000):
     randum=random.randint(2,10)
     likeslist=[]
     for m in range(randum):
-        likeuserid=random.choice(newlist)
+        likeuserid=random.choice(lst)
         
         if ((likeuserid!=userId) and ([likeuserid,userId] in allfriendship) and (likeuserid not in likeslist)):
 
