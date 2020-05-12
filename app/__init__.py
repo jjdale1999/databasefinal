@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 import os
+import psycopg2
 
 from flask import render_template
 app = Flask(__name__)
@@ -13,6 +14,10 @@ app.config.from_object(__name__)
 
 
 db = SQLAlchemy(app)
+
+conn = psycopg2.connect("dbname=project2 user=project2 password=project2")
+cur = conn.cursor()
+
 
 
 def comments(postid):

@@ -14,12 +14,11 @@ fake=Faker()
 # profileno starts with PF
 
 
-f= open("database.sql","w+")
+f= open("userprofile.sql","w+")
 #creation of each user and profiles
 
 # db.engine.execute("create table Users(userid SERIAL unique,firstName varchar(255),lastName varchar(255),email varchar(50),gender varchar(64),password text,primary key(userId))")
 # db.engine.execute("create table Profiles(profileNo SERIAL unique,userid int unique,profilePic int,username text,biography text,countryLiving varchar(30),primary key (userId,profileNo),foreign key(userId) references Users(userId) on delete cascade on update cascade)")
-
 for i in range(500000):
     userid = i+1
     profileNo=userid
@@ -48,7 +47,7 @@ for i in range(500000):
     # decodedtext=encodedtext.decode('utf-16')
     # print(decodedtext)
    
-    profilepic=random.randint(1,500)
+    profilepic=random.randint(1,1000)
     biography=fake.text()
     createddate=fake.date_time_this_year()
 
@@ -61,17 +60,20 @@ for i in range(500000):
    
     print(str(i)+" users \n")
 print(" creation of users and profiles done")
+f.close()
 
+f= open("database.sql","w+")
 
 # db.engine.execute("create table gallery(photoid SERIAL,photourl text,primary key (photoid) )")
 # db.engine.execute("create table addphoto(photoid int unique,userid int unique,primary key (photoid,userid), foreign key (userid) references Users(userid) on delete cascade on update cascade,foreign key (photoid) references gallery(photoid) on delete cascade on update cascade  )")
+lst=np.random.choice(500000, 1000, replace=False)
 
 for x in range(20000):
     photoid=x+1
     photourl=fake.image_url()
     while("placeimg" not in photourl):
         photourl=fake.image_url()
-    userid=random.randint(1,100)
+    userid=random.choice(lst)
     f.write("insert into gallery (photourl) values('"+photourl+"'); \n")
     f.write("insert into addphoto (photoid,userid) values('"+str(photoid)+"','"+str(userid)+"'); \n")
 
@@ -89,26 +91,17 @@ for x in range(20000):
 allfriendship=[]
 
 usersfriends={}
-lst=np.random.choice(500000, 1000, replace=False)
 i=1
-# for x in lst:
-#     # creation of friends
-#     userid=x
-#     friends=[]
-#     relationships=["Relatives", "School", "Work"]
 
-#     randnum=random.randint(2,10)
-#     myfriends=[]
-
-for x in range(500000):
+for x in lst:
     # creation of friends
-    userid=x+1
+    userid=x
     friends=[]
     relationships=["Relatives", "School", "Work"]
-
-    randnum=random.randint(1,10)
+    myfriends=[]
+    randnum=random.randint(2,10)
     for y in range(randnum):
-        friendid=random.randint(1,500000)
+        friendid=random.choice(lst)
         
         fType=random.choice(relationships)
 
@@ -133,13 +126,6 @@ for x in range(500000):
     print(str(i)+" friendship \n")
     i+=1
 
-
-       
-    
-
-
-    print(x)
-
 print(" creation of friendships done")
 # db.engine.execute("create table posts(postId SERIAL unique, content text, ctype varchar(15), postDate_Time timestamp,primary key (postId))")
 
@@ -150,7 +136,7 @@ textId=1
 imageId=1
 commentId=1
 #creation of 3000000 posts 
-for x in range(10000):
+for x in range(5000):
 
     #selecting the userid for the post 
     postId=x+1
@@ -159,7 +145,6 @@ for x in range(10000):
     newlist= usersfriends[userId]
     # print(newlist)
 
-    userId=random.randint(1,500000)
     postdatetime=fake.date_time_this_year()
     #even for text - odd for post
     text_photo=random.randint(0,20)
@@ -195,8 +180,6 @@ for x in range(10000):
         commentDetail.replace('\r','')
         commentDateTime=fake.date_time_this_decade()
         # insert into comments 
-
-        cuserid=random.randint(1,500000)
         
         if((userId!=cuserid) and ([cuserid,userId] in allfriendship)):
 
@@ -298,23 +281,30 @@ print(" creation of groups done")
 
 # for x in range(10):
 
-for x in range(200):
+for x in range(10):
         # groupid=random.randint(1,20)
         randnum=random.randint(5,10)
         for y in range(randnum):
-            postid= random.randint(1,1000)
+            postid= random.randint(1,100)
             f.write("insert into groupPosts (groupId ,postid ) values('"+str(x+1)+"','"+str(postid)+"');\n")
         print(x)
 print("creation of groupposts done")
 
+f.close()
 
 
 
+f= open("procedures.sql","w+")
 
 
 
+f.write("CREATE PROCEDURE addlike(postid integer, userid integer)\nLANGUAGE sql\nAS $$\ninsert into likes values(postid,userid);\n$$;")
 
+f.write("CREATE PROCEDURE addfriend(userid integer, followerid integer,ftype varchar(20))\nLANGUAGE sql\nAS $$\ninsert into Friendship (userid,fuserid,ftype) values(userid,followerid,ftype);\n$$;")
 
-    
+f.write("CREATE PROCEDURE addphotos(photoid integer, userid integer)\nLANGUAGE sql\nAS $$\ninsert into addphoto (photoid,userid) values(photoid,userid);\n$$;")
 
+f.write("CREATE PROCEDURE adduserposts(postid integer, userid integer)\nLANGUAGE sql\nAS $$\ninsert into addphoto (postid,userid) values(postid,userid);\n$$;")
 
+print("procedures done")
+f.close()

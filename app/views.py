@@ -5,7 +5,7 @@ Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
 This file creates your application.
 """
 import os
-from app import app, db
+from app import app, db,cur,conn
 from flask import render_template, request, redirect, url_for, flash, session
 from flask_login import login_user, logout_user, current_user, login_required
 from app.forms import CreateProfile,SignUp,Login,CreatePost,FriendType,Comment,UploadProfilePic,SearchForm, CreateGroupForm,EditProfile
@@ -41,7 +41,8 @@ def posts():
 
 @app.route('/likepost/<postid>/<userid>',methods=['post','get'])
 def likepost(postid,userid):
-    db.engine.execute("insert into likes values("+str(postid)+","+str(userid)+")")
+    cur.execute("CALL addlike("+str(postid)+","+str(userid)+")")
+    conn.commit()
     return redirect(url_for('posts'))
 
 @app.route('/unlikepost/<postid>/<userid>',methods=['post','get'])
@@ -113,7 +114,9 @@ def creategrouppost(groupID, postType):
                 for last in lastTextPostID:
                     postid=last.postid
                 db.engine.execute("INSERT INTO  groupposts(groupid,postid) values('"+groupID+"', '"+str(postid)+"');")
-                db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postid)+"','"+session['userid']+"')")
+                # db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postid)+"','"+session['userid']+"')")
+                cur.execute("CALL adduserposts("+str(postid)+",'"+str(session['userid'])+"')")
+                conn.commit()
                 return groupposts(groupID)
 
             elif postType == 'image':
@@ -124,15 +127,18 @@ def creategrouppost(groupID, postType):
                 lastphotoid= db.engine.execute("select photoid from gallery order by photoid desc limit 1")
                 for last in lastphotoid:
                     photoid=last.photoid
-                db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+session['userid']+"')")
-
+                # db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+session['userid']+"')")
+                cur.execute("CALL addphotos("+str(photoid)+",'"+str(session['userid'])+"')")
+                conn.commit()
                 db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+'/static/uploads/'+filename+"','image','"+str(datetime.datetime.now())+"')")
 
                 lastpostid= db.engine.execute("select postId from posts order by postid desc limit 1")
                 for last in lastpostid:
                     postId=last.postid
 
-                db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postId)+"','"+session['userid']+"')")
+                # db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postId)+"','"+session['userid']+"')")
+                cur.execute("CALL adduserposts("+str(postId)+",'"+str(session['userid'])+"')")
+                conn.commit()
                 db.engine.execute("INSERT INTO  groupposts(groupid,postid) values('"+groupID+"', '"+str(postId)+"');")
 
                 return groupposts(groupID)
@@ -265,8 +271,9 @@ def setupprofile():
                 for last in lastphotoid:
                     photoid=last.photoid
               
-                db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+str(userid)+"')")
-
+                # db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+str(userid)+"')")
+                cur.execute("CALL addphotos("+str(photoid)+",'"+str(session['userid'])+"')")
+                conn.commit()
                 db.engine.execute("insert into Profiles (userid,profilepic,username,biography,countryliving) values('"+str(userid)+"','"+str(photoid)+"','"+username+"','"+biography+"','"+location+"')")
 		
 
@@ -283,9 +290,10 @@ def addfollower(followerid):
     session['following']+=1
     session['followers']+=1
 
-    db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(session['userid'])+"','"+str(followerid)+"','"+friendtype+"')")
-    db.engine.execute("insert into Friendship (userid,fuserid,ftype) values('"+str(followerid)+"','"+str(session['userid'])+"','"+friendtype+"')")
-
+    cur.execute("CALL addfriend("+str(session['userid'])+","+str(followerid)+",'"+friendtype+"')")
+    conn.commit()
+    cur.execute("CALL addfriend("+str(followerid)+","+str(session['userid'])+",'"+friendtype+"')")
+    conn.commit()
     return redirect(url_for('profile',userid=followerid))
 
 @app.route('/deletefollower/<followerid>',methods=['POST',"Get"])
@@ -320,15 +328,17 @@ def createpost(option):
             lastphotoid= db.engine.execute("select photoid from gallery order by photoid desc limit 1")
             for last in lastphotoid:
                 photoid=last.photoid
-            db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+session['userid']+"')")
-
+            # db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+session['userid']+"')")
+            cur.execute("CALL addphotos("+str(photoid)+",'"+str(session['userid'])+"')")
+            conn.commit()
             db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+'/static/uploads/'+filename+"','text','"+str(datetime.datetime.now())+"')")
 
         lastpostid= db.engine.execute("select postId from posts order by postid desc limit 1")
         for last in lastpostid:
             postId=last.postid
-        db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postId)+"','"+session['userid']+"')")
-
+        # db.engine.execute("insert into user_post_log(postid ,userid) values ('"+str(postId)+"','"+session['userid']+"')")
+        cur.execute("CALL adduserposts("+str(postId)+",'"+str(session['userid'])+"')")
+        conn.commit()
         return redirect(url_for('posts'))
    
     
@@ -357,7 +367,9 @@ def uploadgallery():
     for last in lastphotoid:
         photoid=last.photoid
     
-    db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+str(session['userid'])+"')")
+    # db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+str(session['userid'])+"')")
+    cur.execute("CALL addphotos("+str(photoid)+",'"+str(session['userid'])+"')")
+    conn.commit()
     return redirect(url_for('setprofilepic',photoid=photoid))
 
 @app.route('/profile/<userid>')
