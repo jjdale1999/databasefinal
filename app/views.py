@@ -17,6 +17,7 @@ import datetime
 def format_date_joined(dat):
     return  dat.strftime("%B %d, %Y") 
 ###
+
 # Routing for your application.
 ###
 
@@ -154,22 +155,17 @@ def groupposts(groupid):
     commentform=Comment()
     uploadform=UploadProfilePic()
     form=CreatePost()
-    
+
     groupposts=db.engine.execute("select user_post_log.postid, user_post_log.userid, content, ctype, postdatetime, profileno, profilepic, username, countryliving, photoid, photourl from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid INNER join profiles on profiles.userid=user_post_log.userid  INNER join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
-    groupinfo=db.engine.execute("SELECT * FROM groups WHERE groupid = '"+groupid+"'")
+    groupinfo=db.engine.execute("SELECT * FROM groups join profiles on profiles.userid=groups.createdby WHERE groupid = '"+groupid+"'")
     groupmembers = db.engine.execute("SELECT * FROM joinsgroup JOIN users ON users.userid = joinsgroup.userid INNER JOIN profiles ON profiles.userid = users.userid JOIN gallery ON gallery.photoid = profiles.profilepic WHERE groupid = '"+groupid+"'")
     nonMembers = db.engine.execute("SELECT * FROM users u JOIN profiles p ON u.userid = p.userid INNER JOIN gallery g ON g.photoid = p.profilepic WHERE u.userid NOT IN (SELECT userid FROM joinsgroup WHERE groupid = "+groupid+")")
     for a in groupinfo:
         creatorid = a.createdby
         groupname = a.groupname
         createddate = a.createddate
-    
-    creator=db.engine.execute("SELECT username FROM profiles WHERE userid = '"+creatorid+"'")
-    for b in creator:
-        groupcreator = b.username
-# this is why
-    # groupposts=db.engine.execute("SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = '"+groupid+"');")
-    # if request.method == "GET":
+        groupcreator = a.username
+
 
     return render_template('groupPosts.html',editprofile=EditProfile(), form=form, uploadform=uploadform, searchform=SearchForm(),  creatorid=int(creatorid), groupid = groupid, groupname=groupname, groupmembers=groupmembers, nonMembers=nonMembers, createddate=createddate, commentform=commentform, creator=groupcreator, groupinfo=groupinfo, posts=groupposts,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=int(session['userid']))
  

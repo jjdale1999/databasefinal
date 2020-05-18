@@ -38,7 +38,7 @@ db.engine.execute("create table user_post_log(postId int, userid int,primary key
 
 db.engine.execute("create table Friendship(userid int,fuserid int,fType varchar(10),primary key(userId,fUserId),foreign key (userId) references Users(userId) on delete cascade on update cascade,foreign key (fuserId) references Users(userId) on delete cascade on update cascade)")
 
-db.engine.execute("create table groups(groupId SERIAL,groupName varchar(255),createdBy varchar(255),createddate timestamp,primary key(groupId))")
+db.engine.execute("create table groups(groupId SERIAL,groupName varchar(255),createdBy int,createddate timestamp,primary key(groupId))")
 
 db.engine.execute("create table joinsGroup(groupId int,userid int,status varchar(10),joindate timestamp,primary key(groupId,userId),foreign key(groupId) references groups(groupId) on delete cascade on update cascade,foreign key(userId) references Users(userId) on delete cascade on update cascade)")
 
