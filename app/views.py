@@ -2,8 +2,8 @@
 Flask Documentation:     http://flask.pocoo.org/docs/
 Jinja2 Documentation:    http://jinja.pocoo.org/2/documentation/
 Werkzeug Documentation:  http://werkzeug.pocoo.org/documentation/
-This file creates your application.
-"""
+This file creates your application."""
+
 import os
 from app import app, db,cur,conn
 from flask import render_template, request, redirect, url_for, flash, session
@@ -159,7 +159,7 @@ def groupposts(groupid):
     groupposts=db.engine.execute("select user_post_log.postid, user_post_log.userid, content, ctype, postdatetime, profileno, profilepic, username, countryliving, photoid, photourl from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid INNER join profiles on profiles.userid=user_post_log.userid  INNER join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
     groupinfo=db.engine.execute("SELECT * FROM groups join profiles on profiles.userid=groups.createdby WHERE groupid = '"+groupid+"'")
     groupmembers = db.engine.execute("SELECT * FROM joinsgroup JOIN users ON users.userid = joinsgroup.userid INNER JOIN profiles ON profiles.userid = users.userid JOIN gallery ON gallery.photoid = profiles.profilepic WHERE groupid = '"+groupid+"'")
-    nonMembers = db.engine.execute("SELECT * FROM users u JOIN profiles p ON u.userid = p.userid INNER JOIN gallery g ON g.photoid = p.profilepic WHERE u.userid NOT IN (SELECT userid FROM joinsgroup WHERE groupid = "+groupid+") limit 20")
+    nonMembers = db.engine.execute("SELECT * FROM users u JOIN profiles p ON u.userid = p.userid INNER JOIN gallery g ON g.photoid = p.profilepic WHERE u.userid NOT IN (SELECT userid FROM joinsgroup WHERE groupid = "+groupid+") order by u.userid desc limit 20")
     for a in groupinfo:
         creatorid = a.createdby
         groupname = a.groupname
@@ -224,7 +224,7 @@ def signup():
                 created_date=format_date_joined(datetime.datetime.now())
                  # get the last userid and then add it to one to get new userid
                 db.engine.execute("insert into Users (firstname,lastname,email,gender,password) values('"+fname+"','"+lname+"','"+email+"','"+gender+"','"+password+"')")
-
+                
 
                 return redirect(url_for('setupprofile'))
     else:
@@ -268,12 +268,12 @@ def setupprofile():
                     photoid=last.photoid
               
                 # db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+str(userid)+"')")
-                cur.execute("CALL addphotos("+str(photoid)+",'"+str(session['userid'])+"')")
+                cur.execute("CALL addphotos("+str(photoid)+",'"+str(userid)+"')")
                 conn.commit()
-                db.engine.execute("insert into Profiles (userid,profilepic,username,biography,countryliving) values('"+str(userid)+"','"+str(photoid)+"','"+username+"','"+biography+"','"+location+"')")
+                db.engine.execute("insert into Profiles (userid,profilepic,username,biography,countryliving,createddate) values('"+str(userid)+"','"+str(photoid)+"','"+username+"','"+biography+"','"+location+"','"+format_date_joined(datetime.datetime.now())+"')")
 		
 
-                return redirect(url_for('posts'))
+                return redirect(url_for('login'))
     else:
                 flash_errors(createprofile)
     return render_template('setupprofile.html',form=createprofile)   
@@ -327,7 +327,7 @@ def createpost(option):
             # db.engine.execute("insert into addphoto(photoid ,userid) values ('"+str(photoid)+"','"+session['userid']+"')")
             cur.execute("CALL addphotos("+str(photoid)+",'"+str(session['userid'])+"')")
             conn.commit()
-            db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+'/static/uploads/'+filename+"','text','"+str(datetime.datetime.now())+"')")
+            db.engine.execute("insert into  posts(content,ctype, postDateTime) values('"+'/static/uploads/'+filename+"','image','"+str(datetime.datetime.now())+"')")
 
         lastpostid= db.engine.execute("select postId from posts order by postid desc limit 1")
         for last in lastpostid:
@@ -385,7 +385,14 @@ def profile(userid):
         posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid  join profiles on profiles.userid=user_post_log.userid  join gallery on profiles.profilepic=gallery.photoid where profiles.userid='"+str(userid)+"' order by posts.postid desc")
     else:
         posts=[]
-    return render_template('profilepage.html',editprofile=EditProfile(),searchform=SearchForm(), uploadform=uploadform,commentform=commentform,fform=form,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
+    postsCounts= db.engine.execute("SELECT COUNT(postid) AS post_counts FROM user_post_log  where userid="+userid+" and postid NOT IN(select postid from groupposts)")
+    for x in postsCounts:
+        postcount=x.post_counts
+    friends=db.engine.execute("select count(userid) as following from friendship where fuserid='"+userid+"'")  
+    for x in friends:
+                # print(x.following)
+        userfollower=x.following
+    return render_template('profilepage.html',userfollower=userfollower,postcount=postcount,editprofile=EditProfile(),searchform=SearchForm(), uploadform=uploadform,commentform=commentform,fform=form,posts=posts,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
 @app.route('/editprofile',methods=['POST','GET'])
 def editprofile():
@@ -468,10 +475,7 @@ def userposts(userid):
     users=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where users.userid='"+userid+"'")
     # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid  where posts.userid='"+str(userid)+"' order by posts.postid desc")
     posts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid where posts.userid='"+str(userid)+"' order by posts.postid desc")
-    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' order by posts.postid desc")
-
-    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid join profiles on posts.userid=profiles.userid where posts.userid='"+userid+"' ")
-    # posts=db.engine.execute("select * from (select * from texts union select * from  images)as allpost join posts on posts.postid= allpost.postid where posts.userid='"+userid+"'")
+   
     return render_template('profilepage.html',editprofile=EditProfile(),searchform=SearchForm(), fform=fform,commentform=commentform,posts=posts,form=form,users=users,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
 
     # return render_template('posts.html',form=form,posts=posts,comments=comments,profilepic=session['profilepic'],fname=session['fname'],username= session['username'],lname=session['lname'],email=session['email'],location=session['location'],biography=session['biography'],followers=session['followers'],following=session['following'],userid=session['userid'])
