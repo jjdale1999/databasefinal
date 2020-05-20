@@ -3,6 +3,7 @@ LANGUAGE sql
 AS $$
 	insert into likes values(postid,userid);
 $$;
+
 CREATE PROCEDURE addfriend(userid integer, followerid integer,ftype varchar(20))
 LANGUAGE sql
 AS $$

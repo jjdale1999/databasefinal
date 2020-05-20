@@ -156,10 +156,18 @@ def groupposts(groupid):
     uploadform=UploadProfilePic()
     form=CreatePost()
     grouppostinfo=[]
-    groupposts=db.engine.execute("select user_post_log.postid, user_post_log.userid, content, ctype, postdatetime, profileno, profilepic, username, countryliving, photoid, photourl from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid INNER join profiles on profiles.userid=user_post_log.userid  INNER join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
     groupinfo=db.engine.execute("SELECT * FROM groups join profiles on profiles.userid=groups.createdby WHERE groupid = '"+groupid+"'")
     groupmembers = db.engine.execute("SELECT * FROM joinsgroup JOIN users ON users.userid = joinsgroup.userid INNER JOIN profiles ON profiles.userid = users.userid JOIN gallery ON gallery.photoid = profiles.profilepic WHERE groupid = '"+groupid+"'")
     nonMembers = db.engine.execute("SELECT * FROM users u JOIN profiles p ON u.userid = p.userid INNER JOIN gallery g ON g.photoid = p.profilepic WHERE u.userid NOT IN (SELECT userid FROM joinsgroup WHERE groupid = "+groupid+") order by u.userid desc limit 20")
+    ingroup=False
+    for x in groupmembers:
+        if(int(session['userid'])==x.userid):
+            ingroup=True
+
+    if(ingroup):
+        groupposts=db.engine.execute("select user_post_log.postid, user_post_log.userid, content, ctype, postdatetime, profileno, profilepic, username, countryliving, photoid, photourl from user_post_log join (SELECT * FROM posts WHERE postid IN (SELECT postid FROM groupposts WHERE groupid = "+groupid+")) AS posts on posts.postid=user_post_log.postid INNER join profiles on profiles.userid=user_post_log.userid  INNER join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
+    else:
+        groupposts=[]
     for a in groupinfo:
         creatorid = a.createdby
         groupname = a.groupname
@@ -535,7 +543,7 @@ def login():
     if request.method == "POST" and  loginform.validate_on_submit():
         username=loginform.username.data
         password=loginform.password.data
-        if username=="admin" and password=="@Dm1N":
+        if username=="admin" and password=="1234":
             return redirect(url_for('userinfo'))
         profile=db.engine.execute("select * from profiles join users on profiles.userid=users.userid where profiles.username='"+username+"' and password='"+password+"' limit 1")  
         print(profile.rowcount)
@@ -679,7 +687,7 @@ def postinfo():
 
     postInfoList = []
 
-    postIDs=db.engine.execute("SELECT postid FROM posts ORDER BY(postid)")
+    postIDs=db.engine.execute("SELECT postid FROM posts order by postid desc limit 100")
 
     for postID in postIDs:
         for val in postID:
@@ -713,7 +721,7 @@ def logout():
 
 @app.route('/allusers')
 def allusers():
-    allusers=db.engine.execute("select * from users join profiles on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic ORDER BY(profileno)")
+    allusers=db.engine.execute("select * from users join profiles on profiles.userid=users.userid join gallery on gallery.photoid=profiles.profilepic ORDER BY(profileno) desc limit 3000")
 
     return render_template('allusers.html', allusers=allusers, searchform = SearchForm())
 
@@ -724,7 +732,7 @@ def allgroups():
 
 @app.route('/allposts')
 def allposts():
-    allposts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc")
+    allposts=db.engine.execute("select * from user_post_log join posts on posts.postid=user_post_log.postid join profiles on profiles.userid=user_post_log.userid join gallery on profiles.profilepic=gallery.photoid order by posts.postid desc limit 300")
     return render_template('allposts.html', allposts=allposts, searchform = SearchForm())
 
 # Flash errors from the form if validation fails
